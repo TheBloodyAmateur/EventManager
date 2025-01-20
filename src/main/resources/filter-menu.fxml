@@ -63,14 +63,6 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label text="Feed" textFill="WHITE" GridPane.rowIndex="11">
-               <font>
-                  <Font name="Peak Rounded Bold" size="25.0" />
-               </font>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
             <ChoiceBox fx:id="choiceTicker" prefWidth="300.0" styleClass="choicebox" stylesheets="@styles/choicebox-style.css" GridPane.halignment="LEFT" GridPane.rowIndex="3">
                <padding>
                   <Insets left="20.0" />
@@ -88,14 +80,6 @@
                </GridPane.margin>
             </ChoiceBox>
             <ChoiceBox fx:id="choiceWL" prefWidth="300.0" styleClass="choicebox" stylesheets="@styles/choicebox-style.css" GridPane.rowIndex="9">
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
-            </ChoiceBox>
-            <ChoiceBox fx:id="choiceFeed" prefWidth="300.0" styleClass="choicebox" stylesheets="@styles/choicebox-style.css" GridPane.rowIndex="12">
                <padding>
                   <Insets left="20.0" />
                </padding>
