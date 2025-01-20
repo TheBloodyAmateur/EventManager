@@ -56,7 +56,7 @@
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Summary: ">
                            <font>
-                              <Font name="Peak Rounded Bold" size="22.0" />
+                              <Font name="System Bold" size="22.0" />
                            </font>
                         </Text>
                         <Text fx:id="cardSummary" strokeType="OUTSIDE" strokeWidth="0.0" text="NVIDIA’s stock dipped after a senior executive met with China’s Vice Commerce Minister amid looming U.S. semiconductor restrictions. Investors are concerned about geopolitical risks, high market expectations, and competition with Apple for the top market value. Despite strong chip demand, uncertainties weigh on the stock.">
