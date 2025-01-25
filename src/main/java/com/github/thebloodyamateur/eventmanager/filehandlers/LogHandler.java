@@ -42,8 +42,6 @@ public class LogHandler {
         // TODO Create a new file name with a timestamp appended to it
     }
 
-
-
     /**
      * Read the log file and return its content as a list of strings.
      *
