@@ -1,45 +1,41 @@
 package com.github.thebloodyamateur.eventmanager.filehandlers;
 
+import lombok.Getter;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
 public class LogHandler {
-    private String filePath = "/var/log/EventManager.log";
+    private String filePath = "/var/log/";
+    @Getter
+    private String fileName;
+    @Getter
+    boolean debugModeOn = false;
+    @Getter
+    boolean informationalModeOn = false;
     private int rotationSize;
-    private int rotationCount = 0;
-    private int rotationPeriodInSeconds = 86400;
+    private int maxSizeInKB;
+    private int rotationPeriodInSeconds;
 
-
-    public LogHandler(String filePath){
-        this.filePath = filePath;
+    public LogHandler(ConfigHandler configHandler) {
+        this.filePath = configHandler.filePath;
+        this.fileName = this.createNewFileName(configHandler.fileName, configHandler.fileExtension);
+        this.rotationSize = configHandler.maxSizeInKB;
+        this.maxSizeInKB = configHandler.maxSizeInKB;
+        this.rotationPeriodInSeconds = configHandler.rotationPeriodInSeconds;
+        this.debugModeOn = configHandler.debugModeOn;
+        this.informationalModeOn = configHandler.informationalModeOn;
     }
 
-    public LogHandler(String filePath, int rotationSize){
-        this.filePath = filePath;
-        this.rotationSize = rotationSize;
-    }
-
-    public LogHandler(String filePath, int rotationSize, int rotationPeriodInSeconds){
-        this.filePath = filePath;
-        this.rotationSize = rotationSize;
-        this.rotationPeriodInSeconds = rotationPeriodInSeconds;
-    }
-
-    public LogHandler(String filePath, int rotationSize, int rotationPeriodInSeconds, int rotationCount){
-        this.filePath = filePath;
-        this.rotationSize = rotationSize;
-        this.rotationPeriodInSeconds = rotationPeriodInSeconds;
-        this.rotationCount = rotationCount;
+    private String createNewFileName(String fileName, String fileExtension) {
+        long currentDate = System.currentTimeMillis();
+        return fileName + "-" + currentDate + fileExtension;
     }
 
     public void rotateLgFile(){
         // TODO Rotate the log file
-    }
-
-    public void createNewFileName(){
-        // TODO Create a new file name with a timestamp appended to it
     }
 
     /**

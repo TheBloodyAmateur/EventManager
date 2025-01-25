@@ -1,6 +1,13 @@
 {
   "debuggingMode": false,
   "informationalMode": false,
+  "file": {
+    "filePath": "/var/log/",
+    "fileName": "application",
+    "fileExtension": ".log",
+    "maxSizeInKB": 10485760,
+    "rotationPeriodInSeconds": 86400
+  },
   "timestamps": ["dd.MM.yyyy h:mm:ss.SSS a z",
     "E, MMM dd yyyy HH:mm:ss z",
     "dd-MMM-yyyy HH:mm:ss.SSS z",
