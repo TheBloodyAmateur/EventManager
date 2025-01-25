@@ -1,9 +1,0 @@
-.icon-button {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 4;
-    -fx-cursor: hand;
-}
-.icon-button:hover {
-    -fx-background-color: rgba(0,0,0,0.05);
-}

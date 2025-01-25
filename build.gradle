@@ -1,14 +1,13 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.14'
 }
 
-group = 'at.ac.fhcampuswien.richAF'
+group = 'com.github.thbloodyamateur.EventManager'
 version = '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_23
 }
 
 repositories {
@@ -21,16 +20,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     // RUNTIME
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
-    implementation 'org.apache.commons:commons-lang3:3.17.0'
-    implementation 'org.jsoup:jsoup:1.18.1'
-    implementation 'org.xerial:sqlite-jdbc:3.45.0.0'
     implementation 'org.json:json:20231013'
-    implementation 'com.j256.ormlite:ormlite-core:5.1'
-    implementation 'com.j256.ormlite:ormlite-jdbc:5.1'
-    implementation 'org.openjfx:javafx-controls:23.0.1'
-    implementation 'org.openjfx:javafx-fxml:23.0.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
     // TESTING
     testImplementation platform('org.junit:junit-bom:5.10.0')
@@ -40,13 +30,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:2.0.7' // Ensure version compatibility
 }
 
-javafx {
-    version = '23.0.1'
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
-}
-
 application {
-    mainClass = 'at.ac.fhcampuswien.richAF.App'
+    mainClass = 'com.github.thbloodyamateur.EventManager.App'
 }
 
 test {
