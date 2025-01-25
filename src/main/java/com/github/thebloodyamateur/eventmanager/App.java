@@ -7,5 +7,7 @@ public class App {
     public static void main(String[] args) {
         ConfigHandler configHandler = new ConfigHandler();
         LogHandler logHandler = new LogHandler(configHandler);
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logWarningMessage("Hello, World!");
     }
 }

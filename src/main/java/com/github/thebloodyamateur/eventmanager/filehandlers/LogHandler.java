@@ -1,23 +1,30 @@
 package com.github.thebloodyamateur.eventmanager.filehandlers;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
 public class LogHandler {
-    private String filePath = "/var/log/";
     @Getter
-    private String fileName;
+    @Setter
+    public String fileName;
     @Getter
     boolean debugModeOn = false;
     @Getter
     boolean informationalModeOn = false;
+    @Getter
+    private String timeFormat;
+    @Getter
+    public String filePath;
     private int rotationSize;
     private int maxSizeInKB;
     private int rotationPeriodInSeconds;
+    private long lastRotationTime;
 
     public LogHandler(ConfigHandler configHandler) {
         this.filePath = configHandler.filePath;
@@ -27,15 +34,32 @@ public class LogHandler {
         this.rotationPeriodInSeconds = configHandler.rotationPeriodInSeconds;
         this.debugModeOn = configHandler.debugModeOn;
         this.informationalModeOn = configHandler.informationalModeOn;
+        this.timeFormat = configHandler.timeFormat;
     }
 
     private String createNewFileName(String fileName, String fileExtension) {
-        long currentDate = System.currentTimeMillis();
-        return fileName + "-" + currentDate + fileExtension;
+        long lastRotationTime = System.currentTimeMillis();
+        return fileName + "-" + lastRotationTime + fileExtension;
+    }
+
+    public void checkIfLogFileNeedsRotation(){
+        // TODO Check if the log file needs rotation
     }
 
     public void rotateLgFile(){
         // TODO Rotate the log file
+    }
+
+    public boolean checkIfLogFileExists(){
+        return new File(this.filePath).exists();
+    }
+
+    public void createLogFile(){
+        try {
+            this.setFileName(String.valueOf(new File(this.getFileName()).createNewFile()));
+        } catch (IOException e) {
+            System.out.println("An error occurred:"+e.getMessage());
+        }
     }
 
     /**

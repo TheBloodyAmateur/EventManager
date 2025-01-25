@@ -2,10 +2,10 @@
   "debuggingMode": false,
   "informationalMode": false,
   "file": {
-    "filePath": "/var/log/",
+    "filePath": "/tmp/",
     "fileName": "application",
     "fileExtension": ".log",
-    "maxSizeInKB": 10485760,
+    "maxSizeInKB": 131072,
     "rotationPeriodInSeconds": 86400
   },
   "timestamps": ["dd.MM.yyyy h:mm:ss.SSS a z",
