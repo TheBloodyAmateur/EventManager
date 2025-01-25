@@ -1,6 +1,6 @@
-package com.github.thebloodyamateur.eventmanager;
+package dev.github.eventmanager;
 
-import com.github.thebloodyamateur.eventmanager.filehandlers.LogHandler;
+import dev.github.eventmanager.filehandlers.LogHandler;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +18,6 @@ public class EventManager {
     public EventManager(LogHandler logHandler) {
         this.logHandler = logHandler;
         this.timeFormat = logHandler.getTimeFormat();
-        System.out.println(this.logHandler.getFileName());
     }
 
     public static String setCorrectOSSeperator(String path){

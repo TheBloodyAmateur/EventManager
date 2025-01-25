@@ -1,4 +1,4 @@
-package com.github.thebloodyamateur.eventmanager.filehandlers;
+package dev.github.eventmanager.filehandlers;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +44,8 @@ public class LogHandler {
 
     public void checkIfLogFileNeedsRotation(){
         // TODO Check if the log file needs rotation
+        long sizeKB = new File(this.filePath).length()/1024;
+
     }
 
     public void rotateLgFile(){

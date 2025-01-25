@@ -1,7 +1,7 @@
-package com.github.thebloodyamateur.eventmanager.filehandlers;
+package dev.github.eventmanager.filehandlers;
 
-import com.github.thebloodyamateur.eventmanager.EventManager;
-import com.github.thebloodyamateur.eventmanager.formatters.TimeStampFormatter;
+import dev.github.eventmanager.EventManager;
+import dev.github.eventmanager.formatters.TimeStampFormatter;
 import lombok.Getter;
 import org.json.JSONObject;
 import org.json.JSONTokener;

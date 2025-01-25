@@ -1,17 +1,14 @@
 {
   "debuggingMode": false,
   "informationalMode": false,
+  "timestamps": "dd.MM.yyyy h:mm:ss.SSS a z",
   "file": {
     "filePath": "/tmp/",
     "fileName": "application",
-    "fileExtension": ".log",
+    "fileExtension": ".log"
+  },
+  "logRotate": {
     "maxSizeInKB": 131072,
     "rotationPeriodInSeconds": 86400
-  },
-  "timestamps": ["dd.MM.yyyy h:mm:ss.SSS a z",
-    "E, MMM dd yyyy HH:mm:ss z",
-    "dd-MMM-yyyy HH:mm:ss.SSS z",
-    "dd-MMM-yyyy HH:mm:ss.SSS",
-    "dd-MMM-yyyy HH:mm:ss z",
-    "dd-MMM-yyyy HH:mm:ss"]
+  }
 }

@@ -1,4 +1,4 @@
-package com.github.thebloodyamateur.eventmanager.formatters;
+package dev.github.eventmanager.formatters;
 
 public class CSVFormatter implements Formatter{
     @Override

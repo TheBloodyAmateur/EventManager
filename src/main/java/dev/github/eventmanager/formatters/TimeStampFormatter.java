@@ -1,4 +1,4 @@
-package com.github.thebloodyamateur.eventmanager.formatters;
+package dev.github.eventmanager.formatters;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;

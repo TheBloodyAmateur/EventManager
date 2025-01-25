@@ -1,4 +1,4 @@
-package com.github.thebloodyamateur.eventmanager.formatters;
+package dev.github.eventmanager.formatters;
 
 public class JSONFormatter implements Formatter{
     // TODO Create a JSON Format

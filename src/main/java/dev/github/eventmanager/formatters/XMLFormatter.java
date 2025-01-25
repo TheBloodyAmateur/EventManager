@@ -1,4 +1,4 @@
-package com.github.thebloodyamateur.eventmanager.formatters;
+package dev.github.eventmanager.formatters;
 
 public class XMLFormatter implements Formatter{
     // TODO Create a XML Format
