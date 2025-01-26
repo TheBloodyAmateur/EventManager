@@ -34,7 +34,7 @@ public class EventManager {
      * @param level The log level of the message.
      * @param message The message to log.
      *
-     * @thows IOException On input error.
+     * @throws IOException On input error.
     * */
     private void logMessage(String level, Object message) {
         if (message instanceof Exception) {
@@ -60,7 +60,7 @@ public class EventManager {
                 this.logHandler.createLogFile();
             }
             // Write the event to the file
-            FileWriter myWriter = new FileWriter(this.logHandler.getFilePath() + this.logHandler.getFileName(), true);
+            FileWriter myWriter = new FileWriter(this.logHandler.getFilePath() + this.logHandler.getCurrentFileName(), true);
             myWriter.write(String.format("[%s] %s %s %s %d: %s\n", time, level, callerClassName, callerMethodName, lineNumber, message));
             myWriter.close();
         } catch (IOException e) {

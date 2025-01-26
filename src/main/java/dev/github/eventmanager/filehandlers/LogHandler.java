@@ -8,11 +8,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LogHandler {
     @Getter
     @Setter
-    public String fileName;
+    public String currentFileName;
+    @Getter
+    public String configHandlerFileName;
     @Getter
     boolean debugModeOn = false;
     @Getter
@@ -29,7 +33,8 @@ public class LogHandler {
 
     public LogHandler(ConfigHandler configHandler) {
         this.filePath = configHandler.filePath;
-        this.fileName = this.createNewFileName(configHandler.fileName, configHandler.fileExtension);
+        this.configHandlerFileName = configHandler.fileName;
+        this.currentFileName = this.createNewFileName(configHandler.fileName, configHandler.fileExtension);
         this.rotationSize = configHandler.maxSizeInKB;
         this.maxSizeInKB = configHandler.maxSizeInKB;
         this.rotationPeriodInSeconds = configHandler.rotationPeriodInSeconds;
@@ -39,7 +44,7 @@ public class LogHandler {
     }
 
     private String createNewFileName(String fileName, String fileExtension) {
-        long lastRotationTime = System.currentTimeMillis();
+        long lastRotationTime = System.currentTimeMillis()/1000;
         return fileName + "-" + lastRotationTime + fileExtension;
     }
 
@@ -53,14 +58,31 @@ public class LogHandler {
         File directory = new File(this.getFilePath());
         File[] files = directory.listFiles();
 
-        // Match all files with the current file name
-        for (File file : files) {
-            System.out.println(file.getName() + " " + file.getName().contains(this.getFileName()));
+        // Create a pattern to match the log file names and extract the timestamp
+        Pattern pattern = Pattern.compile(this.getConfigHandlerFileName()+"-(?<fileTimeStamp>[0-9]+).log");
+
+        try{
+            for (File file : files) {
+                Matcher matcher = pattern.matcher(file.getName());
+                if (matcher.matches()){
+                    // Extract the timestamp from the file name and compare it to the current time
+                    long fileTimeStamp = Long.parseLong(matcher.group("fileTimeStamp"));
+                    long currentTime = System.currentTimeMillis()/1000L;
+                    if((currentTime - fileTimeStamp) > this.rotationPeriodInSeconds){
+                        // Rotate the log file
+                        this.rotateLgFile(file);
+                    }
+                }
+            }
+        } catch (Exception e){
+            System.out.println("An error occurred: "+e.getMessage());
         }
+
     }
 
-    public void rotateLgFile(){
+    public void rotateLgFile(File file){
         // TODO Rotate the log file
+        System.out.println("Rotating log file: "+file.getName());
     }
 
     public boolean checkIfLogFileExists(){
@@ -69,9 +91,9 @@ public class LogHandler {
 
     public void createLogFile(){
         try {
-            this.setFileName(String.valueOf(new File(this.getFileName()).createNewFile()));
+            this.setCurrentFileName(String.valueOf(new File(this.getCurrentFileName()).createNewFile()));
         } catch (IOException e) {
-            System.out.println("An error occurred:"+e.getMessage());
+            System.out.println("An error occurred: "+e.getMessage());
         }
     }
 
@@ -79,7 +101,7 @@ public class LogHandler {
      * Read the log file and return its content as a list of strings.
      *
      * @return The content of the log file as a list of strings.
-     * @thows IOException On input error.
+     * @throws IOException On input error.
      */
     public List<String> readLogFile(){
         BufferedReader reader;
