@@ -1,7 +1,7 @@
 {
   "debuggingMode": false,
   "informationalMode": false,
-  "timestamps": "dd.MM.yyyy h:mm:ss.SSS a z",
+  "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z",
   "file": {
     "filePath": "/tmp/",
     "fileName": "application",

@@ -67,28 +67,17 @@ public class ConfigHandler {
             return;
         }
 
-        // Error handling of the time format validation
-        try{
-            for(Object format : config.getJSONArray("timestamps")){
-                if(TimeStampFormatter.isValidTimeFormat((String) format)){
-                    formats.add((String) format);
-                }
-            }
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            this.availableTimeFormats = replacement;
-            return;
-        }
-
         try {
             debugModeOn = config.getBoolean("debuggingMode");
             informationalModeOn = config.getBoolean("informationalMode");
+            timeFormat = config.getString("timeFormat");
             JSONObject file = config.getJSONObject("file");
             filePath = file.getString("filePath");
             fileName = file.getString("fileName");
             fileExtension = file.getString("fileExtension");
-            maxSizeInKB = file.getInt("maxSizeInKB");
-            rotationPeriodInSeconds = file.getInt("rotationPeriodInSeconds");
+            JSONObject logRotate = config.getJSONObject("logRotate");
+            maxSizeInKB = logRotate.getInt("maxSizeInKB");
+            rotationPeriodInSeconds = logRotate.getInt("rotationPeriodInSeconds");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -97,13 +86,16 @@ public class ConfigHandler {
     }
 
     public String printConfig() {
-        return "debugModeOn: " + debugModeOn + "\n" +
-                "informationalModeOn: " + informationalModeOn + "\n" +
-                "filePath: " + filePath + "\n" +
-                "fileName: " + fileName + "\n" +
-                "fileExtension: " + fileExtension + "\n" +
-                "maxSizeInKB: " + maxSizeInKB + "\n" +
-                "rotationPeriodInSeconds: " + rotationPeriodInSeconds + "\n" +
-                "availableTimeFormats: " + availableTimeFormats + "\n";
+        return "ConfigHandler{" +
+                "debugModeOn=" + debugModeOn +
+                ", informationalModeOn=" + informationalModeOn +
+                ", filePath='" + filePath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileExtension='" + fileExtension + '\'' +
+                ", maxSizeInKB=" + maxSizeInKB +
+                ", rotationPeriodInSeconds=" + rotationPeriodInSeconds +
+                ", availableTimeFormats=" + availableTimeFormats +
+                ", timeFormat='" + timeFormat + '\'' +
+                '}';
     }
 }

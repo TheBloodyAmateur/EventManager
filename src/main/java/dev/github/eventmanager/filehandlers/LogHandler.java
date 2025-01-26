@@ -21,8 +21,9 @@ public class LogHandler {
     private String timeFormat;
     @Getter
     public String filePath;
-    private int rotationSize;
+    @Getter
     private int maxSizeInKB;
+    private int rotationSize;
     private int rotationPeriodInSeconds;
     private long lastRotationTime;
 
@@ -44,8 +45,18 @@ public class LogHandler {
 
     public void checkIfLogFileNeedsRotation(){
         // TODO Check if the log file needs rotation
-        long sizeKB = new File(this.filePath).length()/1024;
 
+        // Get the size of the file in KB
+        //long sizeKB = new File(this.filePath).length()/1024;
+
+        // Get all log files in the current directory
+        File directory = new File(this.getFilePath());
+        File[] files = directory.listFiles();
+
+        // Match all files with the current file name
+        for (File file : files) {
+            System.out.println(file.getName() + " " + file.getName().contains(this.getFileName()));
+        }
     }
 
     public void rotateLgFile(){
