@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,8 +68,13 @@ public class LogHandler {
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.matches()){
                     // Extract the timestamp from the file name and compare it to the current time
-                    long fileTimeStamp = Long.parseLong(matcher.group("fileTimeStamp"));
+//                    long fileTimeStamp = Long.parseLong(matcher.group("fileTimeStamp"));
+//                    long currentTime = System.currentTimeMillis()/1000L;
+
+                    FileTime creationTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
+                    long fileTimeStamp = creationTime.toMillis()/1000L;
                     long currentTime = System.currentTimeMillis()/1000L;
+
                     if((currentTime - fileTimeStamp) > this.rotationPeriodInSeconds){
                         // Rotate the log file
                         this.rotateLgFile(file);
