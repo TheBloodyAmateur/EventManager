@@ -1,8 +1,7 @@
 package dev.github.eventmanager.formatters;
 
-public class CSVFormatter implements Formatter{
-    @Override
-    public String format(String message) {
+public class CSVFormatter extends Formatter {
+    public static String format(String message) {
         return "";
     }
 }

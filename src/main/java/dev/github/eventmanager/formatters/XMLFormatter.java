@@ -1,9 +1,9 @@
 package dev.github.eventmanager.formatters;
 
-public class XMLFormatter implements Formatter{
+public class XMLFormatter extends Formatter {
     // TODO Create a XML Format
-    @Override
-    public String format(String message) {
+    public static String format(String message) {
+        // TODO Create a XML Format
         return "";
     }
 }

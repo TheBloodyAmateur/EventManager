@@ -9,6 +9,7 @@
   },
   "logRotate": {
     "maxSizeInKB": 131072,
-    "rotationPeriodInSeconds": 86400
+    "rotationPeriodInSeconds": 86400,
+    "compressionFormat": "gzip"
   }
 }

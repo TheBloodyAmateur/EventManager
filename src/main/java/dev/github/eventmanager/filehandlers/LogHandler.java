@@ -53,9 +53,6 @@ public class LogHandler {
     public void checkIfLogFileNeedsRotation(){
         // TODO Check if the log file needs rotation
 
-        // Get the size of the file in KB
-        //long sizeKB = new File(this.filePath).length()/1024;
-
         // Get all log files in the current directory
         File directory = new File(this.getFilePath());
         File[] files = directory.listFiles();
@@ -67,27 +64,28 @@ public class LogHandler {
             for (File file : files) {
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.matches()){
-                    // Extract the timestamp from the file name and compare it to the current time
-//                    long fileTimeStamp = Long.parseLong(matcher.group("fileTimeStamp"));
-//                    long currentTime = System.currentTimeMillis()/1000L;
-
-                    FileTime creationTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
-                    long fileTimeStamp = creationTime.toMillis()/1000L;
+                    // Get the creation time of the log file and the current time
+                    FileTime fileTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
+                    long size = new File(this.getFilePath()).length();
+                    long creationTime = fileTime.toMillis()/1000L;
                     long currentTime = System.currentTimeMillis()/1000L;
 
-                    if((currentTime - fileTimeStamp) > this.rotationPeriodInSeconds){
-                        // Rotate the log file
-                        this.rotateLgFile(file);
+                    // Check if the log file needs rotation based on the rotation period
+                    if((currentTime - creationTime) > this.rotationPeriodInSeconds){
+                        this.rotateLogFile(file);
+                    }
+                    // Check if the log file size needs rotation based on the rotation size
+                    else if (size > this.rotationSize){
+                        this.rotateLogFile(file);
                     }
                 }
             }
         } catch (Exception e){
             System.out.println("An error occurred: "+e.getMessage());
         }
-
     }
 
-    public void rotateLgFile(File file){
+    public void rotateLogFile(File file){
         // TODO Rotate the log file
         System.out.println("Rotating log file: "+file.getName());
     }

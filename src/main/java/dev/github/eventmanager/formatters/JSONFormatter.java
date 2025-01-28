@@ -1,9 +1,8 @@
 package dev.github.eventmanager.formatters;
 
-public class JSONFormatter implements Formatter{
+public class JSONFormatter extends Formatter{
     // TODO Create a JSON Format
-    @Override
-    public String format(String message) {
+    public static String format(String message) {
         return "";
     }
 }

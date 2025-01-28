@@ -1,8 +1,7 @@
 package dev.github.eventmanager.formatters;
 
-public class KeyValueFormatter implements Formatter{
-    @Override
-    public String format(String message) {
+public class KeyValueFormatter extends Formatter{
+    public static String format(String message) {
         return "";
     }
 }
