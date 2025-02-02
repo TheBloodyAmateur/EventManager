@@ -1,6 +1,7 @@
 package dev.github.eventmanager.filehandlers;
 
 import dev.github.eventmanager.EventManager;
+import dev.github.eventmanager.formatters.Formatter;
 import dev.github.eventmanager.formatters.TimeStampFormatter;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -38,6 +39,9 @@ public class ConfigHandler {
 
     @Getter
     String timeFormat;
+
+    @Getter
+    String compressionFormat;
 
     public ConfigHandler() {
         readConfigFile();
@@ -78,24 +82,11 @@ public class ConfigHandler {
             JSONObject logRotate = config.getJSONObject("logRotate");
             maxSizeInKB = logRotate.getInt("maxSizeInKB");
             rotationPeriodInSeconds = logRotate.getInt("rotationPeriodInSeconds");
+            compressionFormat = logRotate.getString("compressionFormat");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
         this.availableTimeFormats = formats;
-    }
-
-    public String printConfig() {
-        return "ConfigHandler{" +
-                "debugModeOn=" + debugModeOn +
-                ", informationalModeOn=" + informationalModeOn +
-                ", filePath='" + filePath + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", fileExtension='" + fileExtension + '\'' +
-                ", maxSizeInKB=" + maxSizeInKB +
-                ", rotationPeriodInSeconds=" + rotationPeriodInSeconds +
-                ", availableTimeFormats=" + availableTimeFormats +
-                ", timeFormat='" + timeFormat + '\'' +
-                '}';
     }
 }

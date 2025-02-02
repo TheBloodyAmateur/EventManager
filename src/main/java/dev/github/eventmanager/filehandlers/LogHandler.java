@@ -1,5 +1,8 @@
 package dev.github.eventmanager.filehandlers;
 
+import dev.github.eventmanager.compressors.Gzip;
+import dev.github.eventmanager.compressors.Zip;
+import dev.github.eventmanager.formatters.Formatter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +37,7 @@ public class LogHandler {
     private int rotationSize;
     private int rotationPeriodInSeconds;
     private long lastRotationTime;
+    private String formatter;
 
     public LogHandler(ConfigHandler configHandler) {
         this.filePath = configHandler.filePath;
@@ -43,14 +49,16 @@ public class LogHandler {
         this.debugModeOn = configHandler.debugModeOn;
         this.informationalModeOn = configHandler.informationalModeOn;
         this.timeFormat = configHandler.timeFormat;
+        this.formatter = configHandler.compressionFormat;
     }
 
     private String createNewFileName(String fileName, String fileExtension) {
-        long lastRotationTime = System.currentTimeMillis()/1000;
-        return fileName + "-" + lastRotationTime + fileExtension;
+        // Create a new file name based on the current time with the format ddMMyyyy
+        String creationTime = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss").format(new Date());
+        return fileName + "-" + creationTime + fileExtension;
     }
 
-    public void checkIfLogFileNeedsRotation(){
+    public void checkIfLogFileNeedsRotation() {
         // TODO Check if the log file needs rotation
 
         // Get all log files in the current directory
@@ -58,47 +66,56 @@ public class LogHandler {
         File[] files = directory.listFiles();
 
         // Create a pattern to match the log file names and extract the timestamp
-        Pattern pattern = Pattern.compile(this.getConfigHandlerFileName()+"-(?<fileTimeStamp>[0-9]+).log");
+        Pattern pattern = Pattern.compile(this.getConfigHandlerFileName() + "-(?<fileTimeStamp>[0-9\\-]+).log");
 
-        try{
+        try {
             for (File file : files) {
                 Matcher matcher = pattern.matcher(file.getName());
-                if (matcher.matches()){
+                if (matcher.matches()) {
                     // Get the creation time of the log file and the current time
                     FileTime fileTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
                     long size = new File(this.getFilePath()).length();
-                    long creationTime = fileTime.toMillis()/1000L;
-                    long currentTime = System.currentTimeMillis()/1000L;
+                    long creationTime = fileTime.toMillis() / 1000L;
+                    long currentTime = System.currentTimeMillis() / 1000L;
+
+                    //System.out.println("File: " + file.getName() + " " + (currentTime - creationTime));
 
                     // Check if the log file needs rotation based on the rotation period
-                    if((currentTime - creationTime) > this.rotationPeriodInSeconds){
+                    if ((currentTime - creationTime) > this.rotationPeriodInSeconds) {
                         this.rotateLogFile(file);
                     }
                     // Check if the log file size needs rotation based on the rotation size
-                    else if (size > this.rotationSize){
+                    else if (size > this.rotationSize) {
                         this.rotateLogFile(file);
                     }
                 }
             }
-        } catch (Exception e){
-            System.out.println("An error occurred: "+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
         }
     }
 
-    public void rotateLogFile(File file){
+    public void rotateLogFile(File file) {
         // TODO Rotate the log file
-        System.out.println("Rotating log file: "+file.getName());
+        System.out.println("Rotating log file: " + file.getName());
+        if(this.formatter.equals("gzip")) {
+            // Compress the log file using Gzip
+            Gzip.compress(file.getAbsolutePath());
+        } else if(this.formatter.equals("zip")) {
+            // Compress the log file using Zip
+            Zip.compress(file.getAbsolutePath());
+        }
     }
 
-    public boolean checkIfLogFileExists(){
+    public boolean checkIfLogFileExists() {
         return new File(this.filePath).exists();
     }
 
-    public void createLogFile(){
+    public void createLogFile() {
         try {
             this.setCurrentFileName(String.valueOf(new File(this.getCurrentFileName()).createNewFile()));
         } catch (IOException e) {
-            System.out.println("An error occurred: "+e.getMessage());
+            System.out.println("An error occurred: " + e.getMessage());
         }
     }
 
@@ -108,14 +125,14 @@ public class LogHandler {
      * @return The content of the log file as a list of strings.
      * @throws IOException On input error.
      */
-    public List<String> readLogFile(){
+    public List<String> readLogFile() {
         BufferedReader reader;
         try {
             // Read the file and return its content as a list of strings
             reader = new BufferedReader(new FileReader(this.filePath));
             return reader.lines().toList();
         } catch (IOException e) {
-            System.out.println("An error occurred:"+e.getMessage());
+            System.out.println("An error occurred:" + e.getMessage());
         }
         return null;
     }

@@ -9,10 +9,4 @@ class ConfigHandlerTest {
         ConfigHandler configHandler = new ConfigHandler();
         assertNotNull(configHandler);
     }
-
-    @Test
-    void readConfig() {
-        ConfigHandler configHandler = new ConfigHandler();
-        assertNotNull(configHandler.printConfig());
-    }
 }
