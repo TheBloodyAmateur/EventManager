@@ -1,9 +1,9 @@
-package dev.github.eventmanager.filehandlers;
+package dev.github.eventmanager.filehandlers.config;
 
 import lombok.Getter;
 
 @Getter
-class ConfigLogRotate {
+public class ConfigLogRotate {
     private int maxSizeInKB;
     private int rotationPeriodInSeconds;
     private String compressionFormat;

@@ -1,4 +1,4 @@
-package dev.github.eventmanager.filehandlers;
+package dev.github.eventmanager.filehandlers.config;
 
 import lombok.Getter;
 

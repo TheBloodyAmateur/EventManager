@@ -2,6 +2,7 @@ package dev.github.eventmanager.filehandlers;
 
 import dev.github.eventmanager.compressors.Gzip;
 import dev.github.eventmanager.compressors.Zip;
+import dev.github.eventmanager.filehandlers.config.Config;
 import lombok.Getter;
 import lombok.Setter;
 
