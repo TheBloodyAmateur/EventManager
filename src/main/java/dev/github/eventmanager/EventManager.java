@@ -58,6 +58,15 @@ public class EventManager {
         // Get the current time as a string in the specified format
         String time = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(this.timeFormat));
 
+        String event = String.format("[%s] %s %s %s %d: %s\n", time, level, callerClassName, callerMethodName, lineNumber, message);
+
+        if(this.logHandler.getConfig().isPrintToConsole()){
+            System.out.print(event);
+            return;
+        } else if (this.logHandler.getConfig().isPrintAndSaveToFile()){
+            System.out.print(event);
+        }
+
         try {
             // Check if the file exists and create it if it doesn't
             if(!this.logHandler.checkIfLogFileExists()){
@@ -66,7 +75,7 @@ public class EventManager {
             // Write the event to the file
             String filePath = this.logHandler.getConfig().getLogFile().getFilePath();
             FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentFileName(), true);
-            myWriter.write(String.format("[%s] %s %s %s %d: %s\n", time, level, callerClassName, callerMethodName, lineNumber, message));
+            myWriter.write(event);
             myWriter.close();
         } catch (IOException e) {
             System.out.println("An error occurred:"+e.getMessage());

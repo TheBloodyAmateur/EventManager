@@ -1,4 +1,6 @@
 {
+  "printToConsole": true,
+  "printAndSaveToFile": false,
   "debuggingMode": false,
   "informationalMode": false,
   "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z",
