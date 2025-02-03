@@ -1,9 +1,11 @@
 {
-  "printToConsole": true,
-  "printAndSaveToFile": false,
-  "debuggingMode": false,
-  "informationalMode": false,
-  "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z",
+  "event": {
+    "debuggingMode": false,
+    "informationalMode": false,
+    "printAndSaveToFile": false,
+    "printToConsole": true,
+    "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z"
+  },
   "logFile": {
     "filePath": "/tmp/",
     "fileName": "application",

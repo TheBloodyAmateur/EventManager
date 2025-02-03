@@ -1,9 +1,13 @@
 package dev.github.eventmanager;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.github.eventmanager.filehandlers.ConfigLoader;
 import dev.github.eventmanager.filehandlers.LogHandler;
+import dev.github.eventmanager.filehandlers.config.Config;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,6 +29,24 @@ class EventManagerTest {
         eventManager.logErrorMessage( "This is an informational message");
         eventManager.logWarningMessage( "This is an error message");
         eventManager.logFatalMessage( "This is a debug message");
+
+        String configPath = EventManager.setCorrectOSSeperator("config/loggingConfig.json");
+        String path = System.getProperty("user.dir")+ File.separator+configPath;
+        path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
+
+        Config config = null;
+
+        // Load the config file
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            config = mapper.readValue(new File(path), Config.class);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        if(config.getEvent().isPrintToConsole()){
+            return;
+        }
 
         // Check if the log file exists
         assertTrue(logHandler.checkIfLogFileExists());

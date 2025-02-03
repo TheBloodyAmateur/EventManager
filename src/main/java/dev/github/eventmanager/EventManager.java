@@ -18,12 +18,12 @@ public class EventManager {
 
     public EventManager(LogHandler logHandler) {
         this.logHandler = logHandler;
-        this.timeFormat = this.logHandler.getConfig().getTimeFormat();
+        this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 
     public EventManager() {
         this.logHandler = new LogHandler(new ConfigLoader());
-        this.timeFormat = this.logHandler.getConfig().getTimeFormat();
+        this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 
     public static String setCorrectOSSeperator(String path){
@@ -60,10 +60,10 @@ public class EventManager {
 
         String event = String.format("[%s] %s %s %s %d: %s\n", time, level, callerClassName, callerMethodName, lineNumber, message);
 
-        if(this.logHandler.getConfig().isPrintToConsole()){
+        if(this.logHandler.getConfig().getEvent().isPrintToConsole()){
             System.out.print(event);
             return;
-        } else if (this.logHandler.getConfig().isPrintAndSaveToFile()){
+        } else if (this.logHandler.getConfig().getEvent().isPrintAndSaveToFile()){
             System.out.print(event);
         }
 
@@ -95,13 +95,15 @@ public class EventManager {
     }
 
     public void logInfoMessage(Object exception) {
-        if(this.logHandler.getConfig().isInformationalMode() || this.logHandler.getConfig().isDebuggingMode()){
+        boolean informationalMode = this.logHandler.getConfig().getEvent().isInformationalMode();
+        boolean debuggingMode = this.logHandler.getConfig().getEvent().isDebuggingMode();
+        if(informationalMode || debuggingMode){
             logMessage("INFO", exception);
         }
     }
 
     public void logDebugMessage(Object exception) {
-        if(this.logHandler.getConfig().isDebuggingMode()){
+        if(this.logHandler.getConfig().getEvent().isDebuggingMode()){
             logMessage("DEBUG", exception);
         }
     }
