@@ -77,12 +77,13 @@ public class LogHandler {
     }
 
     public void rotateLogFile(File file) {
-        if(this.config.getLogRotateConfig().getCompressionFormat().equals("gzip")) {
-            // Compress the log file using Gzip
-            Gzip.compress(file.getAbsolutePath());
-        } else if(this.config.getLogRotateConfig().getCompressionFormat().equals("zip")) {
-            // Compress the log file using Zip
-            Zip.compress(file.getAbsolutePath());
+        switch (this.config.getLogRotateConfig().getCompressionFormat()){
+            case "gzip":
+                Gzip.compress(file.getAbsolutePath());
+                break;
+            case "zip":
+                Zip.compress(file.getAbsolutePath());
+                break;
         }
     }
 
