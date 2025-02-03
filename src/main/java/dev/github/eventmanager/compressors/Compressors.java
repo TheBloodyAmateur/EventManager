@@ -1,6 +1,6 @@
 package dev.github.eventmanager.compressors;
 
-abstract public class Compressors {
+abstract class Compressors {
     static void compress(String filePath) {
 
     }

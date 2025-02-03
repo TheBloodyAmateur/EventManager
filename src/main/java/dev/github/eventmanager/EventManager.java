@@ -1,5 +1,6 @@
 package dev.github.eventmanager;
 
+import dev.github.eventmanager.filehandlers.ConfigLoader;
 import dev.github.eventmanager.filehandlers.LogHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,12 @@ public class EventManager {
 
     public EventManager(LogHandler logHandler) {
         this.logHandler = logHandler;
-        this.timeFormat = logHandler.getTimeFormat();
+        this.timeFormat = this.logHandler.getConfig().getTimeFormat();
+    }
+
+    public EventManager() {
+        this.logHandler = new LogHandler(new ConfigLoader());
+        this.timeFormat = this.logHandler.getConfig().getTimeFormat();
     }
 
     public static String setCorrectOSSeperator(String path){
@@ -39,10 +45,8 @@ public class EventManager {
     private void logMessage(String level, Object message) {
         if (message instanceof Exception) {
             message = ((Exception) message).getMessage();
-        } else if (message instanceof String) {
-            message = message.toString();
         } else {
-            message = "Unknown error";
+            message = message.toString();
         }
 
         // Get the class name and method of the caller
@@ -60,7 +64,8 @@ public class EventManager {
                 this.logHandler.createLogFile();
             }
             // Write the event to the file
-            FileWriter myWriter = new FileWriter(this.logHandler.getFilePath() + this.logHandler.getCurrentFileName(), true);
+            String filePath = this.logHandler.getConfig().getLogFile().getFilePath();
+            FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentFileName(), true);
             myWriter.write(String.format("[%s] %s %s %s %d: %s\n", time, level, callerClassName, callerMethodName, lineNumber, message));
             myWriter.close();
         } catch (IOException e) {
@@ -81,13 +86,13 @@ public class EventManager {
     }
 
     public void logInfoMessage(Object exception) {
-        if(this.logHandler.isInformationalModeOn() || this.logHandler.isDebugModeOn()){
+        if(this.logHandler.getConfig().isInformationalMode() || this.logHandler.getConfig().isDebuggingMode()){
             logMessage("INFO", exception);
         }
     }
 
     public void logDebugMessage(Object exception) {
-        if(this.logHandler.isDebugModeOn()){
+        if(this.logHandler.getConfig().isDebuggingMode()){
             logMessage("DEBUG", exception);
         }
     }

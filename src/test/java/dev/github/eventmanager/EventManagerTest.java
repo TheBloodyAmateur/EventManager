@@ -1,6 +1,6 @@
 package dev.github.eventmanager;
 
-import dev.github.eventmanager.filehandlers.ConfigHandler;
+import dev.github.eventmanager.filehandlers.ConfigLoader;
 import dev.github.eventmanager.filehandlers.LogHandler;
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 class EventManagerTest {
     @Test
     void createInstance() {
-        LogHandler logHandler = new LogHandler(new ConfigHandler());
+        LogHandler logHandler = new LogHandler(new ConfigLoader());
         EventManager eventManager = new EventManager(logHandler);
     }
 
     @Test
     void createDefaultEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigHandler());
+        LogHandler logHandler = new LogHandler(new ConfigLoader());
         EventManager eventManager = new EventManager(logHandler);
         eventManager.logErrorMessage( "This is an informational message");
         eventManager.logWarningMessage( "This is an error message");
@@ -31,7 +31,8 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
-            List<String> logLines = Files.readAllLines(Paths.get(logHandler.getFilePath() + logHandler.getCurrentFileName()));
+            String filePath = logHandler.getConfig().getLogFile().getFilePath();
+            List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is an informational message")));
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is an error message")));

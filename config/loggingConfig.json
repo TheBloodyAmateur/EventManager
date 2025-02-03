@@ -2,12 +2,12 @@
   "debuggingMode": false,
   "informationalMode": false,
   "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z",
-  "file": {
+  "logFile": {
     "filePath": "/tmp/",
     "fileName": "application",
     "fileExtension": ".log"
   },
-  "logRotate": {
+  "logRotateConfig": {
     "maxSizeInKB": 131072,
     "rotationPeriodInSeconds": 10,
     "compressionFormat": "gzip"

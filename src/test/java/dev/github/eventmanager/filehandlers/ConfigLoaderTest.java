@@ -3,10 +3,10 @@ package dev.github.eventmanager.filehandlers;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-class ConfigHandlerTest {
+class ConfigLoaderTest {
     @Test
     void createInstance() {
-        ConfigHandler configHandler = new ConfigHandler();
-        assertNotNull(configHandler);
+        ConfigLoader configLoader = new ConfigLoader();
+        assertNotNull(configLoader);
     }
 }
