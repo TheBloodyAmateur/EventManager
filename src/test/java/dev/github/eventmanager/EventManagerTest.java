@@ -34,18 +34,15 @@ class EventManagerTest {
         String path = System.getProperty("user.dir")+ File.separator+configPath;
         path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
 
-        Config config = null;
-
         // Load the config file
         try{
             ObjectMapper mapper = new ObjectMapper();
-            config = mapper.readValue(new File(path), Config.class);
+            Config config = mapper.readValue(new File(path), Config.class);
+            if(config.getEvent().isPrintToConsole()){
+                return;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        }
-
-        if(config.getEvent().isPrintToConsole()){
-            return;
         }
 
         // Check if the log file exists

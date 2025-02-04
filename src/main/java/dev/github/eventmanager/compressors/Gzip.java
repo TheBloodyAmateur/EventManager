@@ -6,7 +6,6 @@ import java.util.zip.GZIPOutputStream;
 
 public class Gzip extends Compressors {
     public static void compress(String filePath) {
-        // TODO Compress the file using Gzip
         try {
             FileInputStream fileInputStream = new FileInputStream(filePath);
             FileOutputStream fileOutputStream = new FileOutputStream(filePath + ".gz");
@@ -23,9 +22,5 @@ public class Gzip extends Compressors {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void decompress(String filePath) {
-        // TODO Decompress the file using Gzip
     }
 }

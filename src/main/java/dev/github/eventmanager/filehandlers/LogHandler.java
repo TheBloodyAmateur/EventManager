@@ -23,7 +23,7 @@ public class LogHandler {
     private Config config;
     @Getter
     @Setter
-    public String currentFileName;
+    private String currentFileName;
 
     public LogHandler(ConfigLoader configLoader) {
         this.config = configLoader.getConfig();
@@ -33,24 +33,23 @@ public class LogHandler {
     }
 
     private String createNewFileName(String fileName, String fileExtension) {
-        // Create a new file name based on the current time with the format ddMMyyyy
+        // Create a new file name based on the current time with the format dd-MM-yyyy-HH-mm-ss
         String creationTime = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss").format(new Date());
         return fileName + "-" + creationTime + fileExtension;
     }
 
     public void checkIfLogFileNeedsRotation() {
-        // TODO Check if the log file needs rotation
-
         // Get all log files in the current directory
         File directory = new File(this.config.getLogFile().getFilePath());
         File[] files = directory.listFiles();
 
         // Create a pattern to match the log file names and extract the timestamp
         String fileName = this.config.getLogFile().getFileName();
-        Pattern pattern = Pattern.compile(fileName + "-(?<fileTimeStamp>[0-9\\-]+).log");
+        Pattern pattern = Pattern.compile(fileName + "-(?<fileTimeStamp>[0-9\\-]+).log$");
 
         try {
             for (File file : files) {
+                System.out.println(file.getName());
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.matches()) {
                     // Get the creation time of the log file and the current time
@@ -85,6 +84,7 @@ public class LogHandler {
                 Zip.compress(file.getAbsolutePath());
                 break;
         }
+        file.delete();
     }
 
     public boolean checkIfLogFileExists() {
@@ -93,7 +93,9 @@ public class LogHandler {
 
     public void createLogFile() {
         try {
-            this.setCurrentFileName(String.valueOf(new File(this.getCurrentFileName()).createNewFile()));
+            File newFile = new File(this.getCurrentFileName());
+            newFile.createNewFile();
+            this.setCurrentFileName(String.valueOf(newFile));
         } catch (IOException e) {
             System.out.println("An error occurred: " + e.getMessage());
         }

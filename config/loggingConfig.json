@@ -3,17 +3,17 @@
     "debuggingMode": false,
     "informationalMode": false,
     "printAndSaveToFile": false,
-    "printToConsole": true,
+    "printToConsole": false,
     "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z"
   },
   "logFile": {
-    "filePath": "/tmp/",
+    "filePath": "/tmp/test/",
     "fileName": "application",
     "fileExtension": ".log"
   },
   "logRotateConfig": {
     "maxSizeInKB": 131072,
     "rotationPeriodInSeconds": 10,
-    "compressionFormat": "gzip"
+    "compressionFormat": "zip"
   }
 }
