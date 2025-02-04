@@ -3,8 +3,6 @@ package dev.github.eventmanager;
 import dev.github.eventmanager.filehandlers.ConfigLoader;
 import dev.github.eventmanager.filehandlers.LogHandler;
 import dev.github.eventmanager.formatters.EventFormatter;
-import dev.github.eventmanager.formatters.KeyValueWrapper;
-import jdk.jfr.Event;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,9 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EventManager {
@@ -45,7 +41,7 @@ public class EventManager {
      * Log a message to the destination file.
      *
      * @param level   The log level of the message.
-     * @param message The message to log.
+     * @param message The object to log.
      * @throws IOException On input error.
      */
     private void logMessage(String level, Object message) {
@@ -55,17 +51,22 @@ public class EventManager {
             message = message.toString();
         }
 
+        // Set the metadata fields and get the event format
         Map<String, String> metaData = setMetaDataFields(level);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
-        System.out.println("eventFormat: " + eventFormat);
-
         String event = switch (eventFormat) {
             case "kv" ->
-                    EventFormatter.KEY_VALUE.format(metaData, new KeyValueWrapper("exception", message.toString()));
-            default -> EventFormatter.DEFAULT.format(metaData, new KeyValueWrapper("exception", message.toString()));
+                    EventFormatter.KEY_VALUE.format(metaData, message.toString());
+            default ->
+                    EventFormatter.DEFAULT.format(metaData, message.toString());
+
         };
 
+        writeEventToLogFile(event);
+    }
+
+    private void writeEventToLogFile(String event) {
         if (this.logHandler.getConfig().getEvent().isPrintToConsole()) {
             System.out.print(event);
             return;
@@ -73,10 +74,6 @@ public class EventManager {
             System.out.print(event);
         }
 
-        writeEventToLogFile(event);
-    }
-
-    private void writeEventToLogFile(String event) {
         try {
             // Check if the file exists and create it if it doesn't
             if (!this.logHandler.checkIfLogFileExists()) {
