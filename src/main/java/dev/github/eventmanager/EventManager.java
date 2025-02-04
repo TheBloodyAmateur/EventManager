@@ -3,6 +3,7 @@ package dev.github.eventmanager;
 import dev.github.eventmanager.filehandlers.ConfigLoader;
 import dev.github.eventmanager.filehandlers.LogHandler;
 import dev.github.eventmanager.formatters.EventFormatter;
+import dev.github.eventmanager.formatters.KeyValueWrapper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -66,6 +67,29 @@ public class EventManager {
         writeEventToLogFile(event);
     }
 
+    /**
+     * Log a message to the destination file.
+     *
+     * @param level   The log level of the message.
+     * @param messages An object array ot be appended to the message.
+     * @throws IOException On input error.
+     */
+    private void logMessage(String level, KeyValueWrapper ...messages) {
+        // Set the metadata fields and get the event format
+        Map<String, String> metaData = setMetaDataFields(level);
+        String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
+
+        String event = switch (eventFormat) {
+            case "kv" ->
+                    EventFormatter.KEY_VALUE.format(metaData, messages);
+            default ->
+                    EventFormatter.DEFAULT.format(metaData, messages);
+
+        };
+
+        writeEventToLogFile(event);
+    }
+
     private void writeEventToLogFile(String event) {
         if (this.logHandler.getConfig().getEvent().isPrintToConsole()) {
             System.out.print(event);
@@ -113,25 +137,53 @@ public class EventManager {
         logMessage("FATAL", exception);
     }
 
+    public void logFatalMessage(KeyValueWrapper ...args) {
+        logMessage("FATAL", args);
+    }
+
     public void logErrorMessage(Object exception) {
         logMessage("ERROR", exception);
+    }
+
+    public void logErrorMessage(KeyValueWrapper ...args) {
+        logMessage("ERROR", args);
     }
 
     public void logWarningMessage(Object exception) {
         logMessage("WARNING", exception);
     }
 
-    public void logInfoMessage(Object exception) {
+    public void logWarningMessage(KeyValueWrapper ...args) {
+        logMessage("WARNING", args);
+    }
+
+    public boolean areInfoLogsEnabled(){
         boolean informationalMode = this.logHandler.getConfig().getEvent().isInformationalMode();
         boolean debuggingMode = this.logHandler.getConfig().getEvent().isDebuggingMode();
-        if (informationalMode || debuggingMode) {
+        return informationalMode || debuggingMode;
+    }
+
+    public void logInfoMessage(Object exception) {
+        if (areInfoLogsEnabled()) {
             logMessage("INFO", exception);
+        }
+    }
+
+    public void logInfoMessage(KeyValueWrapper ...args) {
+        if (areInfoLogsEnabled()) {
+            logMessage("INFO", args);
         }
     }
 
     public void logDebugMessage(Object exception) {
         if (this.logHandler.getConfig().getEvent().isDebuggingMode()) {
             logMessage("DEBUG", exception);
+        }
+    }
+
+    public void logDebugMessage(KeyValueWrapper ...args) {
+        if (this.logHandler.getConfig().getEvent().isDebuggingMode()) {
+            logMessage("DEBUG", args);
         }
     }
 }
