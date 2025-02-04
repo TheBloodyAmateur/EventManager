@@ -28,7 +28,7 @@ class EventManagerTest {
         EventManager eventManager = new EventManager(logHandler);
         eventManager.logErrorMessage( "This is an informational message");
         eventManager.logWarningMessage( "This is an error message");
-        eventManager.logFatalMessage( "This is a debug message");
+        eventManager.logFatalMessage( "This is a fatal message");
 
         String configPath = EventManager.setCorrectOSSeperator("config/loggingConfig.json");
         String path = System.getProperty("user.dir")+ File.separator+configPath;
@@ -55,7 +55,7 @@ class EventManagerTest {
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is an informational message")));
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is an error message")));
-            assertTrue(logLines.stream().anyMatch(line -> line.contains("This is a debug message")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("This is a fatal message")));
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }

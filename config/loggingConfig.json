@@ -4,7 +4,8 @@
     "informationalMode": false,
     "printAndSaveToFile": false,
     "printToConsole": false,
-    "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z"
+    "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z",
+    "eventFormat": "default"
   },
   "logFile": {
     "filePath": "/tmp/test/",
@@ -14,6 +15,6 @@
   "logRotateConfig": {
     "maxSizeInKB": 131072,
     "rotationPeriodInSeconds": 10,
-    "compressionFormat": "zip"
+    "compressionFormat": "gzip"
   }
 }
