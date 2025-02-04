@@ -7,14 +7,13 @@ import java.util.zip.ZipOutputStream;
 
 public class Zip extends Compressors {
     public static void compress(String filePath) {
-        // TODO Compress the file using Zip
         try {
             FileInputStream fileInputStream = new FileInputStream(filePath);
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath + ".zip");
+            FileOutputStream fileOutputStream = new FileOutputStream(setNewFileExtension(filePath, "zip"));
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
             byte[] buffer = new byte[1024];
             int len;
-            ZipEntry zipEntry = new ZipEntry(filePath);
+            ZipEntry zipEntry = new ZipEntry(setNewFileExtension(filePath, "zip"));
             zipOutputStream.putNextEntry(zipEntry);
 
             while((len=fileInputStream.read(buffer)) != -1){

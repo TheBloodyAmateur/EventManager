@@ -8,7 +8,7 @@ public class Gzip extends Compressors {
     public static void compress(String filePath) {
         try {
             FileInputStream fileInputStream = new FileInputStream(filePath);
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath + ".gz");
+            FileOutputStream fileOutputStream = new FileOutputStream(setNewFileExtension(filePath, "gz"));
             GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
             byte[] buffer = new byte[1024];
             int len;

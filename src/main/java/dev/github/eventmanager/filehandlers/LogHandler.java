@@ -49,7 +49,6 @@ public class LogHandler {
 
         try {
             for (File file : files) {
-                System.out.println(file.getName());
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.matches()) {
                     // Get the creation time of the log file and the current time
