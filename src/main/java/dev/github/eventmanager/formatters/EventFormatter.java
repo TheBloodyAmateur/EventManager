@@ -36,6 +36,38 @@ public enum EventFormatter {
             return builder.toString();
         }
     },
+    CSV {
+        @Override
+        public String format(Map<String, String> metadata, KeyValueWrapper ...args) {
+            StringBuilder builder = new StringBuilder();
+            for(Map.Entry<String, String> entry : metadata.entrySet()) {
+                builder.append(entry.getKey()).append(",").append(entry.getValue());
+                builder.append(",");
+            }
+            for (KeyValueWrapper arg : args) {
+                builder.append(arg.toString());
+                builder.append(",");
+            }
+
+            builder.append("\n");
+
+            return builder.toString();
+        }
+
+        @Override
+        public String format(Map<String, String> metadata, String message) {
+            StringBuilder builder = new StringBuilder();
+            for(Map.Entry<String, String> entry : metadata.entrySet()) {
+                builder.append(entry.getKey()).append(",").append(entry.getValue());
+                builder.append(",");
+            }
+            builder.append("message").append(",").append(message);
+
+            builder.append("\n");
+
+            return builder.toString();
+        }
+    },
     DEFAULT {
         @Override
         public String format(Map<String, String> metadata, KeyValueWrapper... args) {
