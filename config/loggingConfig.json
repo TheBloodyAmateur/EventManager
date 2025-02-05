@@ -5,7 +5,7 @@
     "printAndSaveToFile": false,
     "printToConsole": false,
     "timeFormat": "dd.MM.yyyy h:mm:ss.SSS a z",
-    "eventFormat": "kv"
+    "eventFormat": "default"
   },
   "logFile": {
     "filePath": "/tmp/test/",
