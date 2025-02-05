@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class ConfigLogRotate {
-    private int maxSizeInKB;
-    private int rotationPeriodInSeconds;
-    private String compressionFormat;
+    private int maxSizeInKB = 1024;
+    private int rotationPeriodInSeconds = 86400;
+    private String compressionFormat = "gzip";
 
 }

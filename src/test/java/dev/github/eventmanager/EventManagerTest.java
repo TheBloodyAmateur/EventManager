@@ -16,15 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class EventManagerTest {
+    String configPath = "confg/loggingConfig.json";
+
     @Test
     void createInstance() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader());
+        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
         EventManager eventManager = new EventManager(logHandler);
     }
 
     @Test
     void createDefaultEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader());
+        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
         EventManager eventManager = new EventManager(logHandler);
         eventManager.logErrorMessage( "This is an informational message");
         eventManager.logWarningMessage( "This is an error message");
@@ -32,8 +34,8 @@ class EventManagerTest {
 
         // Load the config file
         try{
-            String configPath = EventManager.setCorrectOSSeperator("config/loggingConfig.json");
-            String path = System.getProperty("user.dir")+ File.separator+configPath;
+            String path = EventManager.setCorrectOSSeperator(configPath);
+            path = System.getProperty("user.dir")+ File.separator+path;
             path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             Config config = mapper.readValue(new File(path), Config.class);
@@ -62,7 +64,7 @@ class EventManagerTest {
 
     @Test
     void createDefaultEventsWithArguments() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader());
+        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
         EventManager eventManager = new EventManager(logHandler);
         eventManager.logErrorMessage(new KeyValueWrapper("key", "value"), new KeyValueWrapper("value", "key"));
         eventManager.logWarningMessage(new KeyValueWrapper("gisela", "brünhilde"), new KeyValueWrapper("detlef", "herzig"));
@@ -70,8 +72,8 @@ class EventManagerTest {
 
         // Load the config file
         try{
-            String configPath = EventManager.setCorrectOSSeperator("config/loggingConfig.json");
-            String path = System.getProperty("user.dir")+ File.separator+configPath;
+            String path = EventManager.setCorrectOSSeperator(configPath);
+            path = System.getProperty("user.dir")+ File.separator+path;
             path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             Config config = mapper.readValue(new File(path), Config.class);
@@ -88,7 +90,7 @@ class EventManagerTest {
 
     @Test
     void createKVEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader());
+        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
         EventManager eventManager = new EventManager(logHandler);
         eventManager.logErrorMessage(new KeyValueWrapper("key", "value"), new KeyValueWrapper("value", "key"));
         eventManager.logWarningMessage(new KeyValueWrapper("gisela", "brünhilde"), new KeyValueWrapper("detlef", "herzig"));
@@ -96,8 +98,8 @@ class EventManagerTest {
 
         // Load the config file
         try{
-            String configPath = EventManager.setCorrectOSSeperator("config/loggingConfig.json");
-            String path = System.getProperty("user.dir")+ File.separator+configPath;
+            String path = EventManager.setCorrectOSSeperator(configPath);
+            path = System.getProperty("user.dir")+ File.separator+path;
             path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             Config config = mapper.readValue(new File(path), Config.class);

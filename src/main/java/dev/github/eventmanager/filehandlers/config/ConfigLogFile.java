@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class ConfigLogFile {
-    private String filePath;
-    private String fileName;
-    private String fileExtension;
+    private String filePath = "/tmp/";
+    private String fileName = "application";
+    private String fileExtension = ".log";
 
 }

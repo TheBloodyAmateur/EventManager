@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class Config {
-    private ConfigEvent event;
-    private ConfigLogFile logFile;
-    private ConfigLogRotate logRotateConfig;
+    private ConfigEvent event = new ConfigEvent();
+    private ConfigLogFile logFile = new ConfigLogFile();
+    private ConfigLogRotate logRotateConfig = new ConfigLogRotate();
 }

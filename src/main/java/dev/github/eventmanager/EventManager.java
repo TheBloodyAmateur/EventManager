@@ -25,8 +25,8 @@ public class EventManager {
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 
-    public EventManager() {
-        this.logHandler = new LogHandler(new ConfigLoader());
+    public EventManager(String configPath) {
+        this.logHandler = new LogHandler(new ConfigLoader(configPath));
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 
