@@ -1,6 +1,9 @@
 package dev.github.eventmanager.formatters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public enum EventFormatter {
@@ -138,6 +141,32 @@ public enum EventFormatter {
             }
 
             return builder;
+        }
+    },
+    JSON {
+        @Override
+        public String format(Map<String, String> metadata, KeyValueWrapper... args) {
+            Map<String, Object> event = new HashMap<>(metadata);
+            for (KeyValueWrapper arg : args) {
+                event.put(arg.getKey(), arg.getValue());
+            }
+            return convertToJson(event);
+        }
+
+        @Override
+        public String format(Map<String, String> metadata, String message) {
+            Map<String, Object> event = new HashMap<>(metadata);
+            event.put("message", message);
+            return convertToJson(event);
+        }
+
+        private String convertToJson(Map<String, Object> event) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.writeValueAsString(event) + "\n";
+            } catch (Exception e) {
+                return "{\"error\": \"Failed to convert to JSON\"}\n";
+            }
         }
     };
 

@@ -63,6 +63,8 @@ public class EventManager {
                     EventFormatter.CSV.format(metaData, message.toString());
             case "xml" ->
                     EventFormatter.XML.format(metaData, message.toString());
+            case "json" ->
+                    EventFormatter.JSON.format(metaData, message.toString());
             default ->
                     EventFormatter.DEFAULT.format(metaData, message.toString());
 
@@ -90,6 +92,8 @@ public class EventManager {
                     EventFormatter.CSV.format(metaData, messages);
             case "xml" ->
                     EventFormatter.XML.format(metaData, messages);
+            case "json" ->
+                    EventFormatter.JSON.format(metaData, messages);
             default ->
                     EventFormatter.DEFAULT.format(metaData, messages);
 
