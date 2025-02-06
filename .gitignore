@@ -3,6 +3,7 @@ build/
 config/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
+!src/main/java/io/github/eventmanager/filehandlers/config/
 
 TestDB
 
