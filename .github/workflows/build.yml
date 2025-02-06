@@ -1,4 +1,4 @@
-name: Build richAF
+name: Build EventManager
 
 on:
   push:
