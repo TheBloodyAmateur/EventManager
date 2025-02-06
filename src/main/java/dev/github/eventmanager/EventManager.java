@@ -99,10 +99,10 @@ public class EventManager {
     }
 
     private void writeEventToLogFile(String event) {
-        if (this.logHandler.getConfig().getEvent().isPrintToConsole()) {
+        if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
             System.out.print(event);
             return;
-        } else if (this.logHandler.getConfig().getEvent().isPrintAndSaveToFile()) {
+        } else if (this.logHandler.getConfig().getEvent().getPrintAndSaveToFile()) {
             System.out.print(event);
         }
 
@@ -166,8 +166,8 @@ public class EventManager {
     }
 
     public boolean areInfoLogsEnabled(){
-        boolean informationalMode = this.logHandler.getConfig().getEvent().isInformationalMode();
-        boolean debuggingMode = this.logHandler.getConfig().getEvent().isDebuggingMode();
+        boolean informationalMode = this.logHandler.getConfig().getEvent().getInformationalMode();
+        boolean debuggingMode = this.logHandler.getConfig().getEvent().getDebuggingMode();
         return informationalMode || debuggingMode;
     }
 
@@ -184,13 +184,13 @@ public class EventManager {
     }
 
     public void logDebugMessage(Object exception) {
-        if (this.logHandler.getConfig().getEvent().isDebuggingMode()) {
+        if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             logMessage("DEBUG", exception);
         }
     }
 
     public void logDebugMessage(KeyValueWrapper ...args) {
-        if (this.logHandler.getConfig().getEvent().isDebuggingMode()) {
+        if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             logMessage("DEBUG", args);
         }
     }

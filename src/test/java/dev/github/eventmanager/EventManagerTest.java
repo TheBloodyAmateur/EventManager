@@ -247,7 +247,7 @@ class EventManagerTest {
             path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             Config config = mapper.readValue(new File(path), Config.class);
-            if(config.getEvent().isPrintToConsole()){
+            if(config.getEvent().getPrintToConsole()){
                 return true;
             }
         } catch (Exception e) {

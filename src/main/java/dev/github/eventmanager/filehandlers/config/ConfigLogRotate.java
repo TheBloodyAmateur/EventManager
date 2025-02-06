@@ -1,11 +1,35 @@
 package dev.github.eventmanager.filehandlers.config;
 
-import lombok.Getter;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
-@Getter
+
 public class ConfigLogRotate {
-    private int maxSizeInKB = 1024;
-    private int rotationPeriodInSeconds = 86400;
-    private String compressionFormat = "gzip";
+    private AtomicInteger maxSizeInKB = new AtomicInteger(1024);
+    private AtomicInteger rotationPeriodInSeconds = new AtomicInteger(86400);
+    private AtomicReference<String> compressionFormat = new AtomicReference<>("gzip");
 
+    public int getMaxSizeInKB() {
+        return maxSizeInKB.get();
+    }
+
+    public void setMaxSizeInKB(int maxSizeInKB) {
+        this.maxSizeInKB.set(maxSizeInKB);
+    }
+
+    public int getRotationPeriodInSeconds() {
+        return rotationPeriodInSeconds.get();
+    }
+
+    public void setRotationPeriodInSeconds(int rotationPeriodInSeconds) {
+        this.rotationPeriodInSeconds.set(rotationPeriodInSeconds);
+    }
+
+    public String getCompressionFormat() {
+        return compressionFormat.get();
+    }
+
+    public void setCompressionFormat(String compressionFormat) {
+        this.compressionFormat.set(compressionFormat);
+    }
 }
