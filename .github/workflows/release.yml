@@ -7,26 +7,23 @@ on:
 
 jobs:
   publish:
-    name: Publish to OSSRH
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '23'
-          cache: 'gradle'
-
-      - name: Import GPG Key and List Keys
-        run: |
-          echo "$SIGNING_KEY" | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v2
+      - name: Publish package
+        run: ./gradlew publish
         env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
 
       - name: Grant execute permission to Gradle wrapper
@@ -37,6 +34,5 @@ jobs:
         env:
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
