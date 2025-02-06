@@ -8,6 +8,8 @@
 name: Gradle Package Test
 
 on:
+  push:
+    branches: [ "main" ]
   release:
     types: [created]
 
