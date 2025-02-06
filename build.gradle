@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -59,15 +61,6 @@ publishing {
             }
         }
     }
-}
-
-signing {
-    useInMemoryPgpKeys(
-            findProperty("signing.keyId"),
-            System.getenv("SIGNING_KEY"),  // Load key from memory
-            findProperty("signing.password")
-    )
-    sign publishing.publications.mavenJava
 }
 
 dependencies {
