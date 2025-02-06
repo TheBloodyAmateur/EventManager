@@ -62,6 +62,11 @@ publishing {
 }
 
 signing {
+    useInMemoryPgpKeys(
+            findProperty("signing.keyId"),
+            System.getenv("SIGNING_KEY"),  // Load key from memory
+            findProperty("signing.password")
+    )
     sign publishing.publications.mavenJava
 }
 
