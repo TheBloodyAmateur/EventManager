@@ -21,11 +21,13 @@ jobs:
           java-version: '23'
           cache: 'gradle'
 
-      - name: Import GPG Key
+      - name: Import GPG Key and List Keys
         run: |
           echo "$SIGNING_KEY" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+
 
       - name: Grant execute permission to Gradle wrapper
         run: chmod +x gradlew
