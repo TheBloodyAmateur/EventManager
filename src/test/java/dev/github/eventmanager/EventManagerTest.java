@@ -131,6 +131,60 @@ class EventManagerTest {
         }
     }
 
+    @Test
+    void createCSVEvents() {
+        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        logHandler.getConfig().getEvent().setEventFormat("csv");
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logErrorMessage("test1");
+        eventManager.logWarningMessage("test2");
+        eventManager.logFatalMessage("test3");
+
+        if (printToConsoleIsEnabled()) return;
+
+        // Check if the log file exists
+        assertTrue(logHandler.checkIfLogFileExists());
+
+        // Check if the events were logged
+        try {
+            String filePath = logHandler.getConfig().getLogFile().getFilePath();
+            List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
+
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("test1")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("test2")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("test3")));
+        } catch (Exception e) {
+            fail("Exception occurred while reading log file: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void createCSVEventsWithArguments() {
+        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        logHandler.getConfig().getEvent().setEventFormat("csv");
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logErrorMessage(new KeyValueWrapper("key", "value"), new KeyValueWrapper("value", "key"));
+        eventManager.logWarningMessage(new KeyValueWrapper("gisela", "brünhilde"), new KeyValueWrapper("detlef", "herzig"));
+        eventManager.logFatalMessage(new KeyValueWrapper("darth", "vader"), new KeyValueWrapper("luke", "skywalker"));
+
+        if (printToConsoleIsEnabled()) return;
+
+        // Check if the log file exists
+        assertTrue(logHandler.checkIfLogFileExists());
+
+        // Check if the events were logged
+        try {
+            String filePath = logHandler.getConfig().getLogFile().getFilePath();
+            List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
+
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("value,key")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("brünhilde,herzig")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("vader,skywalker")));
+        } catch (Exception e) {
+            fail("Exception occurred while reading log file: " + e.getMessage());
+        }
+    }
+
     private boolean printToConsoleIsEnabled() {
         // Load the config file
         try{

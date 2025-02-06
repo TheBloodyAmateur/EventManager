@@ -59,6 +59,8 @@ public class EventManager {
         String event = switch (eventFormat) {
             case "kv" ->
                     EventFormatter.KEY_VALUE.format(metaData, message.toString());
+            case "csv" ->
+                    EventFormatter.CSV.format(metaData, message.toString());
             default ->
                     EventFormatter.DEFAULT.format(metaData, message.toString());
 
@@ -82,6 +84,8 @@ public class EventManager {
         String event = switch (eventFormat) {
             case "kv" ->
                     EventFormatter.KEY_VALUE.format(metaData, messages);
+            case "csv" ->
+                    EventFormatter.CSV.format(metaData, messages);
             default ->
                     EventFormatter.DEFAULT.format(metaData, messages);
 
