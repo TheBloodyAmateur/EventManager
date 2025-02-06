@@ -61,6 +61,8 @@ public class EventManager {
                     EventFormatter.KEY_VALUE.format(metaData, message.toString());
             case "csv" ->
                     EventFormatter.CSV.format(metaData, message.toString());
+            case "xml" ->
+                    EventFormatter.XML.format(metaData, message.toString());
             default ->
                     EventFormatter.DEFAULT.format(metaData, message.toString());
 
@@ -86,6 +88,8 @@ public class EventManager {
                     EventFormatter.KEY_VALUE.format(metaData, messages);
             case "csv" ->
                     EventFormatter.CSV.format(metaData, messages);
+            case "xml" ->
+                    EventFormatter.XML.format(metaData, messages);
             default ->
                     EventFormatter.DEFAULT.format(metaData, messages);
 
@@ -120,8 +124,8 @@ public class EventManager {
     private Map<String, String> setMetaDataFields(String level) {
         // Get the class name and method of the caller
         StackTraceElement[] stackTraceElement = Thread.currentThread().getStackTrace();
-        String callerClassName = stackTraceElement[4].getClassName();
-        String callerMethodName = stackTraceElement[4].getMethodName();
+        String className = stackTraceElement[4].getClassName();
+        String methodName = stackTraceElement[4].getMethodName();
         int lineNumber = stackTraceElement[4].getLineNumber();
 
         // Get the current time as a string in the specified format
@@ -130,8 +134,8 @@ public class EventManager {
         Map<String, String> metaDataFields = new HashMap<>();
         metaDataFields.put("time", time);
         metaDataFields.put("level", level);
-        metaDataFields.put("callerClassName", callerClassName);
-        metaDataFields.put("callerMethodName", callerMethodName);
+        metaDataFields.put("className", className);
+        metaDataFields.put("methodName", methodName);
         metaDataFields.put("lineNumber", String.valueOf(lineNumber));
 
         return metaDataFields;

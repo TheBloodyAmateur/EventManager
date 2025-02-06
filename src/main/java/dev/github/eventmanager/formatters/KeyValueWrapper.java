@@ -2,9 +2,9 @@ package dev.github.eventmanager.formatters;
 
 import lombok.Getter;
 
+@Getter
 public class KeyValueWrapper {
     private String key;
-    @Getter
     private String value;
 
     public KeyValueWrapper(String key, String value) {

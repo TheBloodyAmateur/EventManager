@@ -35,9 +35,9 @@ public enum EventFormatter {
     },
     KEY_VALUE {
         @Override
-        public String format(Map<String, String> metadata, KeyValueWrapper ...args) {
+        public String format(Map<String, String> metadata, KeyValueWrapper... args) {
             StringBuilder builder = new StringBuilder();
-            for(Map.Entry<String, String> entry : metadata.entrySet()) {
+            for (Map.Entry<String, String> entry : metadata.entrySet()) {
                 builder.append(entry.getKey()).append("=").append("\"").append(entry.getValue()).append("\"");
                 builder.append(" ");
             }
@@ -54,7 +54,7 @@ public enum EventFormatter {
         @Override
         public String format(Map<String, String> metadata, String message) {
             StringBuilder builder = new StringBuilder();
-            for(Map.Entry<String, String> entry : metadata.entrySet()) {
+            for (Map.Entry<String, String> entry : metadata.entrySet()) {
                 builder.append(entry.getKey()).append("=").append("\"").append(entry.getValue()).append("\"");
                 builder.append(" ");
             }
@@ -67,9 +67,9 @@ public enum EventFormatter {
     },
     CSV {
         @Override
-        public String format(Map<String, String> metadata, KeyValueWrapper ...args) {
+        public String format(Map<String, String> metadata, KeyValueWrapper... args) {
             StringBuilder builder = new StringBuilder();
-            for(Map.Entry<String, String> entry : metadata.entrySet()) {
+            for (Map.Entry<String, String> entry : metadata.entrySet()) {
                 builder.append(entry.getValue());
                 builder.append(",");
             }
@@ -103,8 +103,45 @@ public enum EventFormatter {
 
             return builder.toString();
         }
+    },
+    XML {
+        @Override
+        public String format(Map<String, String> metadata, KeyValueWrapper... args) {
+            StringBuilder builder = stringBuilderWithMetaData(metadata);
+
+            for (KeyValueWrapper arg : args) {
+                builder.append("<").append(arg.getKey()).append(">").append(arg.getValue()).append("</").append(arg.getKey()).append(">");
+            }
+
+            builder.append("</event>\n");
+
+            return builder.toString();
+        }
+
+        @Override
+        public String format(Map<String, String> metadata, String message) {
+            StringBuilder builder = stringBuilderWithMetaData(metadata);
+
+            builder.append("<").append("message").append(">").append(message).append("</").append("message").append(">");
+
+            builder.append("</event>\n");
+
+            return builder.toString();
+        }
+
+        private static StringBuilder stringBuilderWithMetaData(Map<String, String> metadata) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("<event>");
+
+            for (Map.Entry<String, String> entry : metadata.entrySet()) {
+                builder.append("<").append(entry.getKey()).append(">").append(entry.getValue()).append("</").append(entry.getKey()).append(">");
+            }
+
+            return builder;
+        }
     };
 
-    public abstract String format(Map<String,String> metadata, KeyValueWrapper ...args);
-    public abstract String format(Map<String,String> metadata, String message);
+    public abstract String format(Map<String, String> metadata, KeyValueWrapper... args);
+
+    public abstract String format(Map<String, String> metadata, String message);
 }
