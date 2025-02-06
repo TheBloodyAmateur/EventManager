@@ -1,4 +1,4 @@
-package dev.github.eventmanager.formatters;
+package io.github.eventmanager.formatters;
 
 import lombok.Getter;
 

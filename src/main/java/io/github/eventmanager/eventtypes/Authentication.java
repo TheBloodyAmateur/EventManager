@@ -1,4 +1,4 @@
-package dev.github.eventmanager.eventtypes;
+package io.github.eventmanager.eventtypes;
 
 public enum Authentication {
     LOGIN_SUCCESS,

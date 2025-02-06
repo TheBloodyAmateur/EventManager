@@ -1,10 +1,11 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
 }
 
-group = 'dev.github.eventmanager'
-version = '1.0-SNAPSHOT'
+group = 'io.github.eventmanager'
+version = '1.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_23
@@ -16,6 +17,38 @@ repositories {
 }
 
 publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'EventManager'
+                description = 'A simple event management library for Groovy applications.'
+                url = 'https://github.com/TheBloodyAmateur/EventManager'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'thebloodyamateur'
+                        name = 'Botan Celik'
+                        email = 'botan.celik@icloud.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/TheBloodyAmateur/EventManager.git'
+                    developerConnection = 'scm:git:ssh://github.com/TheBloodyAmateur/EventManager.git'
+                    url = 'https://github.com/TheBloodyAmateur/EventManager'
+                }
+            }
+        }
+    }
     repositories {
         maven {
             name = "EventManager"
@@ -26,6 +59,10 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 dependencies {

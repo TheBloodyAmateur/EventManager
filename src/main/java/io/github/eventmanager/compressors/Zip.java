@@ -1,4 +1,4 @@
-package dev.github.eventmanager.compressors;
+package io.github.eventmanager.compressors;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

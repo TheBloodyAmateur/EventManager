@@ -1,0 +1,38 @@
+name: Publish to Maven Central
+
+on:
+  push:
+    tags:
+      - 'v*'  # Runs when you push a version tag like v1.0.0
+
+jobs:
+  publish:
+    name: Publish to OSSRH
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '23'
+          cache: 'gradle'
+
+      - name: Import GPG Key
+        run: |
+          echo "$SIGNING_KEY" | gpg --batch --import
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+
+      - name: Grant execute permission to Gradle wrapper
+        run: chmod +x gradlew
+
+      - name: Publish to Maven Central
+        run: ./gradlew publish closeAndReleaseRepository
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
