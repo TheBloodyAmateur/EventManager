@@ -1,12 +1,10 @@
-import java.util.Base64
-
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
 }
 
-group = 'io.github.eventmanager'
+group = 'io.github.thebloodyamateur'
 version = '1.0.0'
 
 java {
@@ -22,31 +20,31 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/thebloodyamateur/EventManager"
+            url = uri("https://maven.pkg.github.com/thebloodyamateur/EventManager")
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("GPR_USERNAME") ?: project.findProperty("gpr.username")
+                password = System.getenv("GPR_TOKEN") ?: project.findProperty("gpr.token")
             }
         }
     }
     publications {
         gpr(MavenPublication) {
-            from(components.java)
+            from components.java
+
+            groupId = 'io.github.thebloodyamateur' // Must be lowercase
+            artifactId = 'eventmanager' // Use lowercase for consistency
+            version = '1.0.0'
         }
     }
 }
 
 dependencies {
-    // COMPILE TIME
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    // RUNTIME
     implementation 'org.json:json:20231013'
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
 
-    // TESTING
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
