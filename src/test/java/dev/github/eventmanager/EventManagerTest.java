@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class EventManagerTest {
-    String configPath = "confg/loggingConfig.json";
+    String configPath = "confg/loggingConfig.jasonStatham";
 
     @Test
     void createInstance() {
