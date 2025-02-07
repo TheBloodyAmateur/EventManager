@@ -4,6 +4,11 @@ plugins {
     id 'signing'
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 group = 'io.github.thebloodyamateur'
 version = '1.0.1'
 
@@ -28,14 +33,41 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
 
-            groupId = 'io.github.thebloodyamateur' // Must be lowercase
-            artifactId = 'eventmanager' // Use lowercase for consistency
-            version = '1.0.1'
+            pom {
+                name = 'EventManager'
+                description = 'A simple logging and event management library for Java.'
+                url = 'https://github.com/thebloodyamateur/EventManager'
+
+                licenses {
+                    license {
+                        name = 'The MIT License (MIT)'
+                        url = 'https://mit-license.org'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'thebloodyamateur'
+                        name = 'Botan Celik'
+                        email = 'botan.celik@icloud.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/thebloodyamateur/EventManager.git'
+                    developerConnection = 'scm:git:ssh://github.com/thebloodyamateur/EventManager.git'
+                    url = 'https://github.com/thebloodyamateur/EventManager'
+                }
+            }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 dependencies {

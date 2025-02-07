@@ -104,7 +104,6 @@ public class LogHandler {
      * Read the log file and return its content as a list of strings.
      *
      * @return The content of the log file as a list of strings.
-     * @throws IOException On input error.
      */
     public List<String> readLogFile() {
         BufferedReader reader;
