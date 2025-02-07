@@ -22,7 +22,7 @@ jobs:
 
       - name: Determine New Version
         id: version
-        uses: PaulHatch/semantic-version@v5
+        uses: PaulHatch/semantic-version@v4
         with:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE"
