@@ -33,7 +33,7 @@ publishing {
 
             groupId = 'io.github.thebloodyamateur' // Must be lowercase
             artifactId = 'eventmanager' // Use lowercase for consistency
-            version = '1.0.0'
+            version = '1.0.1'
         }
     }
 }
