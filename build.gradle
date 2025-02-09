@@ -39,6 +39,12 @@ publishing {
             artifactId = 'eventmanager' // Use lowercase for consistency
             version = '1.0.2'
         }
+        maven(MavenPublication) {
+            from components.java
+            groupId = 'com.github.TheBloodyAmateur'
+            artifactId = 'EventManager'
+            version = '1.0.2'
+        }
     }
 }
 
