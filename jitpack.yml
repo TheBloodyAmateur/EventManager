@@ -1,7 +1,9 @@
 jdk:
   - openjdk17
+
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y openjdk-17-jdk
-  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-  - export PATH=$JAVA_HOME/bin:$PATH
+  - sdk install java 17.0.12-oracle
+  - sdk use java 17.0.12-oracle
+  - echo "Using Java version:"
+  - java -version
+  - ./gradlew --version
