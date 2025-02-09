@@ -12,6 +12,10 @@ java {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(17)  // ✅ Set Java 17 compatibility
+}
+
 group = 'io.github.thebloodyamateur'
 version = '1.0.4'
 
