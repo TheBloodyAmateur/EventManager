@@ -42,7 +42,7 @@ publishing {
         }
         maven(MavenPublication) {
             from components.java
-            groupId = 'com.github.TheBloodyAmateur'
+            groupId = 'io.github.TheBloodyAmateur'
             artifactId = 'EventManager'
             version = '1.0.3'
         }
