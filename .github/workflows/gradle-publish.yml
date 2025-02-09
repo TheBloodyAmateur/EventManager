@@ -58,4 +58,4 @@ jobs:
 
       - name: Publish to JitPack (Trigger Build)
         run: |
-          curl -X POST https://jitpack.io/com/github/TheBloodyAmateur/EventManager/1.0.4/build.log
+          curl -X POST https://jitpack.io/com/github/TheBloodyAmateur/EventManager/1.0.5/build.log
