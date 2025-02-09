@@ -43,7 +43,7 @@ publishing {
 }
 
 signing {
-    if (System.getenv("CI") != "true") { // Disable signing on JitPack (CI environment)
+    if (!System.getenv("JITPACK")) {  // Disable signing on JitPack
         sign publishing.publications.maven
     }
 }
