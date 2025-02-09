@@ -1,8 +1,8 @@
-package io.github.eventmanager.filehandlers;
+package com.github.eventmanager.filehandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.eventmanager.EventManager;
-import io.github.eventmanager.filehandlers.config.Config;
+import com.github.eventmanager.EventManager;
+import com.github.eventmanager.filehandlers.config.Config;
 import lombok.Getter;
 
 import java.io.File;

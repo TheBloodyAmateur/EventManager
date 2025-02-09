@@ -1,8 +1,8 @@
-package io.github.eventmanager.filehandlers;
+package com.github.eventmanager.filehandlers;
 
-import io.github.eventmanager.compressors.Gzip;
-import io.github.eventmanager.compressors.Zip;
-import io.github.eventmanager.filehandlers.config.Config;
+import com.github.eventmanager.compressors.Gzip;
+import com.github.eventmanager.compressors.Zip;
+import com.github.eventmanager.filehandlers.config.Config;
 import lombok.Getter;
 import lombok.Setter;
 

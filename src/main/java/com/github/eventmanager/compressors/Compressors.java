@@ -1,4 +1,4 @@
-package io.github.eventmanager.compressors;
+package com.github.eventmanager.compressors;
 
 import java.util.regex.Pattern;
 

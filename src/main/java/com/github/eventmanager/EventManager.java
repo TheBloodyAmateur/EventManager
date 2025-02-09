@@ -1,9 +1,9 @@
-package io.github.eventmanager;
+package com.github.eventmanager;
 
-import io.github.eventmanager.filehandlers.ConfigLoader;
-import io.github.eventmanager.filehandlers.LogHandler;
-import io.github.eventmanager.formatters.EventFormatter;
-import io.github.eventmanager.formatters.KeyValueWrapper;
+import com.github.eventmanager.filehandlers.ConfigLoader;
+import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.formatters.EventFormatter;
+import com.github.eventmanager.formatters.KeyValueWrapper;
 import lombok.Getter;
 import lombok.Setter;
 

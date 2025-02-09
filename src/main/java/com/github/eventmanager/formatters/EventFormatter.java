@@ -1,4 +1,4 @@
-package io.github.eventmanager.formatters;
+package com.github.eventmanager.formatters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

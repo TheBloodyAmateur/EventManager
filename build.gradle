@@ -17,7 +17,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 group = 'io.github.thebloodyamateur'
-version = '1.0.6'
+version = '1.0.7'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -42,9 +42,9 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            groupId = 'io.github.TheBloodyAmateur'
+            groupId = 'com.github.TheBloodyAmateur'
             artifactId = 'EventManager'
-            version = '1.0.6'
+            version = '1.0.7'
         }
     }
 }
