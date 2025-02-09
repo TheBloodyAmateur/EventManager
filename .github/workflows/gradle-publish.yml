@@ -53,6 +53,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Verify Java Version
+        run: java -version  # ✅ Check if Java 21 is active
+
       - name: Publish to JitPack (Trigger Build)
         run: |
           curl -X POST https://jitpack.io/com/github/TheBloodyAmateur/EventManager/1.0.4/build.log
