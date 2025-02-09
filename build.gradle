@@ -10,7 +10,7 @@ java {
 }
 
 group = 'io.github.thebloodyamateur'
-version = '1.0.2'
+version = '1.0.3'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_23
@@ -38,13 +38,13 @@ publishing {
 
             groupId = 'io.github.thebloodyamateur' // Must be lowercase
             artifactId = 'eventmanager' // Use lowercase for consistency
-            version = '1.0.2'
+            version = '1.0.3'
         }
         maven(MavenPublication) {
             from components.java
             groupId = 'com.github.TheBloodyAmateur'
             artifactId = 'EventManager'
-            version = '1.0.2'
+            version = '1.0.3'
         }
     }
 }
