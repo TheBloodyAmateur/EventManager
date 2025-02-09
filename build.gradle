@@ -10,7 +10,7 @@ java {
 }
 
 group = 'io.github.thebloodyamateur'
-version = '1.0.3'
+version = '1.0.4'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_23
@@ -33,18 +33,11 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
-            from components.java
-
-            groupId = 'io.github.thebloodyamateur' // Must be lowercase
-            artifactId = 'eventmanager' // Use lowercase for consistency
-            version = '1.0.3'
-        }
         maven(MavenPublication) {
             from components.java
             groupId = 'io.github.TheBloodyAmateur'
             artifactId = 'EventManager'
-            version = '1.0.3'
+            version = '1.0.4'
         }
     }
 }
@@ -52,7 +45,6 @@ publishing {
 signing {
     if (System.getenv("CI") != "true") { // Disable signing on JitPack (CI environment)
         sign publishing.publications.maven
-        sign publishing.publications.gpr
     }
 }
 
