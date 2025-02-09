@@ -1,6 +1,7 @@
 .gradle
 build/
 config/
+!src/main/java/com/github/eventmanager/filehandlers/config/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 
