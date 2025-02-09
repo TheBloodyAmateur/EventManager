@@ -29,8 +29,8 @@ public enum EventFormatter {
             return String.format("[%s] %s %s %s %s: %s\n",
                     metadata.get("time"),
                     metadata.get("level"),
-                    metadata.get("callerClassName"),
-                    metadata.get("callerMethodName"),
+                    metadata.get("className"),
+                    metadata.get("methodName"),
                     metadata.get("lineNumber"),
                     message);
         }
