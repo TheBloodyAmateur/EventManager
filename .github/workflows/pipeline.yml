@@ -12,6 +12,15 @@ permissions:
   contents: write  # Required for GitHub Pages deployment
 
 jobs:
+  restrict_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if user is allowed
+        run: |
+          if [[ "${{ github.actor }}" != "TheBloodyAmateur" ]]; then
+            echo "❌ Only TheBloodyAmateur can push to main!"
+            exit 1
+          fi
   build:
     runs-on: ubuntu-latest
     outputs:
