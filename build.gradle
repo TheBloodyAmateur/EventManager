@@ -17,7 +17,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 group = 'com.github.thebloodyamateur'
-version = '1.0.8'
+version = '1.0.9'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -44,9 +44,14 @@ publishing {
             from components.java
             groupId = 'com.github.TheBloodyAmateur'
             artifactId = 'EventManager'
-            version = '1.0.8'
+            version = '1.0.9'
         }
     }
+}
+
+tasks.javadoc {
+    failOnError = false // Avoid build failures due to warnings
+    options.encoding = "UTF-8"
 }
 
 signing {
@@ -59,7 +64,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    implementation 'org.json:json:20231013'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')

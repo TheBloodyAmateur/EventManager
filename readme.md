@@ -17,7 +17,7 @@ You may install the module using the following maven dependency:
     <dependency>
         <groupId>com.github.TheBloodyAmateur</groupId>
         <artifactId>EventManager</artifactId>
-        <version>1.0.7</version>
+        <version>version</version>
     </dependency>
 </dependencies>
 ```
