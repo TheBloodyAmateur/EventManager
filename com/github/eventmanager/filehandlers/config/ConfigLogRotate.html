@@ -77,6 +77,8 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ConfigLogRotate</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">The ConfigLogRotate class holds the configuration settings related to log file rotation for the EventManager application.
+ It includes settings for the maximum size of log files, the rotation period, and the compression format to use when rotating log files.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -106,22 +108,34 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCompressionFormat()" class="member-name-link">getCompressionFormat</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the compression format to use when rotating log files.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMaxSizeInKB()" class="member-name-link">getMaxSizeInKB</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the maximum size of log files in kilobytes before rotation is triggered.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getRotationPeriodInSeconds()" class="member-name-link">getRotationPeriodInSeconds</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the rotation period in seconds after which log files should be rotated.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCompressionFormat(java.lang.String)" class="member-name-link">setCompressionFormat</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;compressionFormat)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the compression format to use when rotating log files.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setMaxSizeInKB(int)" class="member-name-link">setMaxSizeInKB</a><wbr>(int&nbsp;maxSizeInKB)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the maximum size of log files in kilobytes before rotation is triggered.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setRotationPeriodInSeconds(int)" class="member-name-link">setRotationPeriodInSeconds</a><wbr>(int&nbsp;rotationPeriodInSeconds)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the rotation period in seconds after which log files should be rotated.</div>
+</div>
 </div>
 </div>
 </div>
@@ -157,36 +171,66 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getMaxSizeInKB()">
 <h3>getMaxSizeInKB</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getMaxSizeInKB</span>()</div>
+<div class="block">Gets the maximum size of log files in kilobytes before rotation is triggered.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the maximum size of log files in kilobytes.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setMaxSizeInKB(int)">
 <h3>setMaxSizeInKB</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setMaxSizeInKB</span><wbr><span class="parameters">(int&nbsp;maxSizeInKB)</span></div>
+<div class="block">Sets the maximum size of log files in kilobytes before rotation is triggered.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>maxSizeInKB</code> - the maximum size of log files in kilobytes.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getRotationPeriodInSeconds()">
 <h3>getRotationPeriodInSeconds</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">getRotationPeriodInSeconds</span>()</div>
+<div class="block">Gets the rotation period in seconds after which log files should be rotated.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the rotation period in seconds.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setRotationPeriodInSeconds(int)">
 <h3>setRotationPeriodInSeconds</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setRotationPeriodInSeconds</span><wbr><span class="parameters">(int&nbsp;rotationPeriodInSeconds)</span></div>
+<div class="block">Sets the rotation period in seconds after which log files should be rotated.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>rotationPeriodInSeconds</code> - the rotation period in seconds.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getCompressionFormat()">
 <h3>getCompressionFormat</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getCompressionFormat</span>()</div>
+<div class="block">Gets the compression format to use when rotating log files.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the compression format.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="setCompressionFormat(java.lang.String)">
 <h3>setCompressionFormat</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setCompressionFormat</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;compressionFormat)</span></div>
+<div class="block">Sets the compression format to use when rotating log files.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>compressionFormat</code> - the compression format.</dd>
+</dl>
 </section>
 </li>
 </ul>

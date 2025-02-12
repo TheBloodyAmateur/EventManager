@@ -77,6 +77,8 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">LogHandler</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">The LogHandler class is responsible for managing log files for the EventManager application.
+ It handles log file creation, rotation based on size and time, and reading log file content.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -89,7 +91,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(com.github.eventmanager.filehandlers.ConfigLoader)" class="member-name-link">LogHandler</a><wbr>(<a href="ConfigLoader.html" title="class in com.github.eventmanager.filehandlers">ConfigLoader</a>&nbsp;configLoader)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Constructs a LogHandler with the specified ConfigLoader.</div>
+</div>
 </div>
 </section>
 </li>
@@ -106,21 +110,29 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfLogFileExists()" class="member-name-link">checkIfLogFileExists</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Checks if the log file exists.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfLogFileNeedsRotation()" class="member-name-link">checkIfLogFileNeedsRotation</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Checks if the log file needs rotation based on size and time.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createLogFile()" class="member-name-link">createLogFile</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates a new log file.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#readLogFile()" class="member-name-link">readLogFile</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Read the log file and return its content as a list of strings.</div>
+<div class="block">Reads the log file and returns its content as a list of strings.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rotateLogFile(java.io.File)" class="member-name-link">rotateLogFile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;file)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Rotates the log file using the specified compression format.</div>
+</div>
 </div>
 </div>
 </div>
@@ -142,6 +154,11 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;(com.github.eventmanager.filehandlers.ConfigLoader)">
 <h3>LogHandler</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">LogHandler</span><wbr><span class="parameters">(<a href="ConfigLoader.html" title="class in com.github.eventmanager.filehandlers">ConfigLoader</a>&nbsp;configLoader)</span></div>
+<div class="block">Constructs a LogHandler with the specified ConfigLoader.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>configLoader</code> - the ConfigLoader to load configuration settings.</dd>
+</dl>
 </section>
 </li>
 </ul>
@@ -156,34 +173,46 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="checkIfLogFileNeedsRotation()">
 <h3>checkIfLogFileNeedsRotation</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">checkIfLogFileNeedsRotation</span>()</div>
+<div class="block">Checks if the log file needs rotation based on size and time.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="rotateLogFile(java.io.File)">
 <h3>rotateLogFile</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">rotateLogFile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;file)</span></div>
+<div class="block">Rotates the log file using the specified compression format.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>file</code> - the log file to rotate.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="checkIfLogFileExists()">
 <h3>checkIfLogFileExists</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">checkIfLogFileExists</span>()</div>
+<div class="block">Checks if the log file exists.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>true if the log file exists, false otherwise.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="createLogFile()">
 <h3>createLogFile</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createLogFile</span>()</div>
+<div class="block">Creates a new log file.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="readLogFile()">
 <h3>readLogFile</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">readLogFile</span>()</div>
-<div class="block">Read the log file and return its content as a list of strings.</div>
+<div class="block">Reads the log file and returns its content as a list of strings.</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>The content of the log file as a list of strings.</dd>
+<dd>the content of the log file as a list of strings.</dd>
 </dl>
 </section>
 </li>
