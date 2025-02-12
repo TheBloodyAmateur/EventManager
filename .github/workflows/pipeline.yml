@@ -14,6 +14,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      IS_RELEASE: ${{ steps.check_release.outputs.IS_RELEASE }}
+      TAG_VERSION: ${{ steps.check_release.outputs.TAG_VERSION }}
 
     steps:
       - name: Checkout repository
@@ -35,7 +38,7 @@ jobs:
         run: ./gradlew test --stacktrace
 
       - name: Check for release trigger
-        id: check_release
+        id: check_release  # ✅ Assign ID to store outputs
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Last commit message: $COMMIT_MSG"
@@ -45,10 +48,12 @@ jobs:
             echo "New release tag detected: $TAG_VERSION"
             echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
             echo "IS_RELEASE=true" >> $GITHUB_ENV
+            echo "::set-output name=TAG_VERSION::$TAG_VERSION"
+            echo "::set-output name=IS_RELEASE::true"
           else
             echo "No release tag detected."
             echo "IS_RELEASE=false" >> $GITHUB_ENV
-          fi
+            echo "::set-output name=IS_RELEASE::false"
 
   deploy_javadoc:
     needs: build
@@ -76,7 +81,7 @@ jobs:
 
   generate_release_notes:
     needs: build
-    if: ${{ env.IS_RELEASE == 'true' }}
+    if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -103,10 +108,11 @@ jobs:
           fi
 
           echo "release_notes=$NOTES" >> $GITHUB_ENV
+          echo "::set-output name=release_notes::$NOTES"
 
   generate_release_tag:
     needs: [build, generate_release_notes]
-    if: ${{ env.IS_RELEASE == 'true' }}
+    if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -115,25 +121,25 @@ jobs:
 
       - name: Create Git tag for release
         run: |
-          git tag -a "v${{ env.TAG_VERSION }}" -m "Release version ${{ env.TAG_VERSION }}"
-          git push origin "v${{ env.TAG_VERSION }}"
+          git tag -a "v${{ needs.build.outputs.TAG_VERSION }}" -m "Release version ${{ needs.build.outputs.TAG_VERSION }}"
+          git push origin "v${{ needs.build.outputs.TAG_VERSION }}"
 
       - name: Create a GitHub release with release notes
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/*.jar
-          body: ${{ env.release_notes }}
+          body: ${{ steps.generate_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   trigger_jitpack_build:
     needs: generate_release_tag
-    if: ${{ env.IS_RELEASE == 'true' }}
+    if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Trigger JitPack Build
         run: |
-          curl -X POST "https://jitpack.io/api/builds?repo=TheBloodyAmateur/EventManager&branch=${{ env.TAG_VERSION }}"
+          curl -X POST "https://jitpack.io/api/builds?repo=TheBloodyAmateur/EventManager&branch=${{ needs.build.outputs.TAG_VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
