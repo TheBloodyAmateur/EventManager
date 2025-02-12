@@ -7,21 +7,37 @@ import lombok.Getter;
 
 import java.io.File;
 
+/**
+ * The ConfigLoader class is responsible for loading the configuration settings for the EventManager application.
+ * It reads the configuration from a specified file path and deserializes it into a Config object.
+ */
 @Getter
 public class ConfigLoader {
     private Config config;
+
+    /**
+     * Constructs a ConfigLoader with the specified configuration file path.
+     *
+     * @param configPath the path to the configuration file.
+     */
     public ConfigLoader(String configPath) {
         loadConfigFile(configPath);
     }
 
+    /**
+     * Loads the configuration file from the specified path.
+     * If the file cannot be loaded, default configuration values are used.
+     *
+     * @param configPath the path to the configuration file.
+     */
     private void loadConfigFile(String configPath) {
         // Get the path of the file and decode it to UTF-8 to cope with special characters
         configPath = EventManager.setCorrectOSSeperator(configPath);
-        String path = System.getProperty("user.dir")+ File.separator+configPath;
+        String path = System.getProperty("user.dir") + File.separator + configPath;
         path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
 
         // Load the config file
-        try{
+        try {
             ObjectMapper mapper = new ObjectMapper();
             config = mapper.readValue(new File(path), Config.class);
         } catch (Exception e) {

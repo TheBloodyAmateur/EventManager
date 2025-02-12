@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The LogHandler class is responsible for managing log files for the EventManager application.
+ * It handles log file creation, rotation based on size and time, and reading log file content.
+ */
 public class LogHandler {
     @Getter
     private Config config;
@@ -25,6 +29,11 @@ public class LogHandler {
     @Setter
     private String currentFileName;
 
+    /**
+     * Constructs a LogHandler with the specified ConfigLoader.
+     *
+     * @param configLoader the ConfigLoader to load configuration settings.
+     */
     public LogHandler(ConfigLoader configLoader) {
         this.config = configLoader.getConfig();
         String fileName = this.config.getLogFile().getFileName();
@@ -32,18 +41,25 @@ public class LogHandler {
         this.currentFileName = this.createNewFileName(fileName, fileExtension);
     }
 
+    /**
+     * Creates a new file name based on the current time with the format dd-MM-yyyy-HH-mm-ss.
+     *
+     * @param fileName the base file name.
+     * @param fileExtension the file extension.
+     * @return the new file name.
+     */
     private String createNewFileName(String fileName, String fileExtension) {
-        // Create a new file name based on the current time with the format dd-MM-yyyy-HH-mm-ss
         String creationTime = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss").format(new Date());
         return fileName + "-" + creationTime + fileExtension;
     }
 
+    /**
+     * Checks if the log file needs rotation based on size and time.
+     */
     public void checkIfLogFileNeedsRotation() {
-        // Get all log files in the current directory
         File directory = new File(this.config.getLogFile().getFilePath());
         File[] files = directory.listFiles();
 
-        // Create a pattern to match the log file names and extract the timestamp
         String fileName = this.config.getLogFile().getFileName();
         Pattern pattern = Pattern.compile(fileName + "-(?<fileTimeStamp>[0-9\\-]+).log$");
 
@@ -51,20 +67,14 @@ public class LogHandler {
             for (File file : files) {
                 Matcher matcher = pattern.matcher(file.getName());
                 if (matcher.matches()) {
-                    // Get the creation time of the log file and the current time
                     FileTime fileTime = (FileTime) Files.getAttribute(file.toPath(), "creationTime");
                     long size = new File(this.config.getLogFile().getFilePath()).length();
                     long creationTime = fileTime.toMillis() / 1000L;
                     long currentTime = System.currentTimeMillis() / 1000L;
 
-                    //System.out.println("File: " + file.getName() + " " + (currentTime - creationTime));
-
-                    // Check if the log file needs rotation based on the rotation period
                     if ((currentTime - creationTime) > this.config.getLogRotateConfig().getRotationPeriodInSeconds()) {
                         this.rotateLogFile(file);
-                    }
-                    // Check if the log file size needs rotation based on the rotation size
-                    else if (size > this.config.getLogRotateConfig().getMaxSizeInKB()) {
+                    } else if (size > this.config.getLogRotateConfig().getMaxSizeInKB()) {
                         this.rotateLogFile(file);
                     }
                 }
@@ -74,8 +84,13 @@ public class LogHandler {
         }
     }
 
+    /**
+     * Rotates the log file using the specified compression format.
+     *
+     * @param file the log file to rotate.
+     */
     public void rotateLogFile(File file) {
-        switch (this.config.getLogRotateConfig().getCompressionFormat()){
+        switch (this.config.getLogRotateConfig().getCompressionFormat()) {
             case "gzip":
                 Gzip.compress(file.getAbsolutePath());
                 break;
@@ -86,10 +101,18 @@ public class LogHandler {
         file.delete();
     }
 
+    /**
+     * Checks if the log file exists.
+     *
+     * @return true if the log file exists, false otherwise.
+     */
     public boolean checkIfLogFileExists() {
         return new File(this.config.getLogFile().getFilePath()).exists();
     }
 
+    /**
+     * Creates a new log file.
+     */
     public void createLogFile() {
         try {
             File newFile = new File(this.getCurrentFileName());
@@ -101,18 +124,17 @@ public class LogHandler {
     }
 
     /**
-     * Read the log file and return its content as a list of strings.
+     * Reads the log file and returns its content as a list of strings.
      *
-     * @return The content of the log file as a list of strings.
+     * @return the content of the log file as a list of strings.
      */
     public List<String> readLogFile() {
         BufferedReader reader;
         try {
-            // Read the file and return its content as a list of strings
             reader = new BufferedReader(new FileReader(this.config.getLogFile().getFilePath()));
             return reader.lines().toList();
         } catch (IOException e) {
-            System.out.println("An error occurred:" + e.getMessage());
+            System.out.println("An error occurred: " + e.getMessage());
         }
         return null;
     }
