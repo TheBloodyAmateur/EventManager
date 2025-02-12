@@ -38,12 +38,12 @@ jobs:
         run: ./gradlew test --stacktrace
 
       - name: Check for release trigger
-        id: check_release  # ✅ Assign ID to store outputs
+        id: check_release
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Last commit message: $COMMIT_MSG"
-          
-          if [[ "$COMMIT_MSG" =~ ^(release|Release):\ v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+
+          if [[ "$COMMIT_MSG" =~ ^(Release|release):\ v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             TAG_VERSION=${BASH_REMATCH[2]}
             echo "New release tag detected: $TAG_VERSION"
             echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
@@ -54,6 +54,7 @@ jobs:
             echo "No release tag detected."
             echo "IS_RELEASE=false" >> $GITHUB_ENV
             echo "::set-output name=IS_RELEASE::false"
+          fi
 
   deploy_javadoc:
     needs: build
