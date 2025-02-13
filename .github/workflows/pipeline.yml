@@ -22,7 +22,6 @@ jobs:
             exit 1
           fi
   build:
-    needs: restrict_push
     runs-on: ubuntu-latest
     outputs:
       IS_RELEASE: ${{ steps.check_release.outputs.IS_RELEASE }}
@@ -52,14 +51,14 @@ jobs:
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Last commit message: $COMMIT_MSG"
-
+          
           if [[ "$COMMIT_MSG" =~ ^(Release|release):\ v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             TAG_VERSION=${BASH_REMATCH[2]}
             echo "New release tag detected: $TAG_VERSION"
             echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
             echo "IS_RELEASE=true" >> $GITHUB_ENV
-            echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT
-            echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
+            echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT  # ✅ Store output
+            echo "IS_RELEASE=true" >> $GITHUB_OUTPUT  # ✅ Store output
           else
             echo "No release tag detected."
             echo "IS_RELEASE=false" >> $GITHUB_ENV
@@ -101,32 +100,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Generate release notes
+      - name: Find Previous Release Tag
+        id: get_previous_tag
+        run: |
+          PREV_TAG=$(git tag --sort=-v:refname | head -n 1)
+          if [ -z "$PREV_TAG" ]; then
+          echo "No previous tag found, using initial commit."
+          PREV_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+          echo "Previous release tag: $PREV_TAG"
+          echo "PREV_TAG=$PREV_TAG" >> $GITHUB_ENV
+
+      - name: Generate Release Notes
         id: generate_notes
         run: |
-          COMMITS=$(git log --oneline)
+          COMMITS=$(git log $PREV_TAG..HEAD --oneline --no-merges)  # ✅ Get commits since last version
           ALLOWED_LABELS="^(feat|fix|docs|chore|improvement|security):"
           NOTES=""
-
-          for commit in $COMMITS; do
+          
+          echo "🔍 Commits Since Last Release ($PREV_TAG):"
+          echo "$COMMITS"
+          
+          while IFS= read -r commit; do
             if [[ "$commit" =~ $ALLOWED_LABELS ]]; then
               LABEL=$(echo "$commit" | sed -E 's/^(.*?):.*/\1/')
               MESSAGE=$(echo "$commit" | sed -E 's/^(.*?): (.*)/\2/')
               NOTES="${NOTES}\n- **${LABEL}**: ${MESSAGE}"
             fi
-          done
-
+          done <<< "$COMMITS"
+          
           if [ -z "$NOTES" ]; then
             NOTES="No notable changes in this release."
           fi
-
-          echo "Release notes generated:"
+          
+          echo "🔍 Generated Release Notes:"
           echo "$NOTES"
-
+          
           echo "release_notes<<EOF" >> $GITHUB_ENV
           echo "$NOTES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-  
 
   generate_release_tag:
     needs: [ build, generate_release_notes ]
@@ -144,28 +156,11 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Check if tag already exists
-        id: check_tag
-        run: |
-          git fetch --tags
-          if git rev-parse "v${{ needs.build.outputs.TAG_VERSION }}" >/dev/null 2>&1; then
-            echo "Tag v${{ needs.build.outputs.TAG_VERSION }} already exists."
-            echo "TAG_EXISTS=true" >> $GITHUB_ENV
-          else
-            echo "Tag v${{ needs.build.outputs.TAG_VERSION }} does not exist. Creating it now."
-            echo "TAG_EXISTS=false" >> $GITHUB_ENV
-          fi
-
       - name: Create Git tag for release
-        if: ${{ env.TAG_EXISTS == 'false' }}
         run: |
-          git tag -a "v${{ needs.build.outputs.TAG_VERSION }}" -m "Release version ${{ needs.build.outputs.TAG_VERSION }}"
-          git push origin "v${{ needs.build.outputs.TAG_VERSION }}"
-
-      - name: Debug Received Release Notes
-        run: |
-          echo "Received Release Notes in generate_release_tag:"
-          echo "${{ needs.generate_release_notes.outputs.release_notes }}"
+          TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
+          git tag -a "v$TAG_VERSION" -m "Release version $TAG_VERSION"
+          git push origin "v$TAG_VERSION"
 
       - name: Create a GitHub release with release notes
         uses: softprops/action-gh-release@v1
@@ -176,6 +171,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+
   trigger_jitpack_build:
     needs: generate_release_tag
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
@@ -185,6 +181,11 @@ jobs:
       - name: Fetch JitPack Build Log
         run: |
           TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
+          if [[ -z "$TAG_VERSION" ]]; then
+            echo "❌ TAG_VERSION is empty! Exiting..."
+            exit 1
+          fi
+
           echo "Checking JitPack build for version: v$TAG_VERSION"
           echo "Build Log URL: https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log"
 
