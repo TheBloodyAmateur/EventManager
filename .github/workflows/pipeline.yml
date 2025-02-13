@@ -54,17 +54,21 @@ jobs:
           echo "Last commit message: $COMMIT_MSG"
           
           if [[ "$COMMIT_MSG" =~ ^(Release|release):\ v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
-            TAG_VERSION=${BASH_REMATCH[2]}
-            echo "New release tag detected: $TAG_VERSION"
-            echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
-            echo "IS_RELEASE=true" >> $GITHUB_ENV
-            echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT  # ✅ Store output
-            echo "IS_RELEASE=true" >> $GITHUB_OUTPUT  # ✅ Store output
+          TAG_VERSION=${BASH_REMATCH[2]}
+          echo "🔍 Detected Release Version: $TAG_VERSION"
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+          echo "IS_RELEASE=true" >> $GITHUB_ENV
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT  # ✅ Store output
+          echo "IS_RELEASE=true" >> $GITHUB_OUTPUT  # ✅ Store output
           else
-            echo "No release tag detected."
-            echo "IS_RELEASE=false" >> $GITHUB_ENV
-            echo "IS_RELEASE=false" >> $GITHUB_OUTPUT
+          echo "❌ No release tag detected."
+          echo "IS_RELEASE=false" >> $GITHUB_ENV
+          echo "IS_RELEASE=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Debug `TAG_VERSION` from build.outputs
+        run: |
+          echo "🔍 build.outputs.TAG_VERSION: ${{ steps.check_release.outputs.TAG_VERSION }}"
 
   deploy_javadoc:
     needs: build
@@ -160,6 +164,10 @@ jobs:
       - name: Create Git tag for release
         run: |
           TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
+          if [[ -z "$TAG_VERSION" ]]; then
+            echo "❌ TAG_VERSION is empty! Cannot create a tag."
+            exit 1
+          fi
           git tag -a "v$TAG_VERSION" -m "Release version $TAG_VERSION"
           git push origin "v$TAG_VERSION"
 
