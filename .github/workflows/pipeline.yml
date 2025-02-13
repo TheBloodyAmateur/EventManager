@@ -87,12 +87,32 @@ jobs:
       - name: Generate Javadoc
         run: ./gradlew javadoc
 
-      - name: Deploy Javadoc to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: build/docs/javadoc
-          clean: true
+      - name: Get Version from Tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "🔍 Detected version: $VERSION"
+
+          - name: Deploy Javadoc to GitHub Pages
+            uses: JamesIves/github-pages-deploy-action@v4
+            with:
+              branch: gh-pages
+              folder: build/docs/javadoc
+              target-folder: docs/${{ env.VERSION }}
+              clean: false
+
+      - name: Update `latest` Javadoc
+        run: |
+          git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
+          rm -rf gh-pages/docs/latest
+          cp -r build/docs/javadoc gh-pages/docs/latest
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update latest Javadoc to v${{ env.VERSION }}"
+          git push
 
   generate_release_notes:
     needs: build
