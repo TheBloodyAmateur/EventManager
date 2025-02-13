@@ -146,38 +146,40 @@ jobs:
           cd gh-pages/docs
           for dir in v*/ latest/; do
             cp versions.js "$dir"
+
             echo '
             <script src="../versions.js"></script>
             <script>
-              function switchVersion() {
-                var selectedVersion = document.getElementById("version-selector").value;
-                if (selectedVersion === "latest") {
-                  window.location.href = "../latest/index.html";
-                } else {
-                  window.location.href = "../" + selectedVersion + "/index.html";
-                }
-              }
-              window.onload = function () {
+              document.addEventListener("DOMContentLoaded", function() {
                 var dropdown = document.createElement("select");
                 dropdown.id = "version-selector";
-                dropdown.onchange = switchVersion;
+                dropdown.onchange = function() {
+                  var selectedVersion = dropdown.value;
+                  if (selectedVersion === "latest") {
+                    window.location.href = "../latest/index.html";
+                  } else {
+                    window.location.href = "../" + selectedVersion + "/index.html";
+                  }
+                };
+
                 for (var i = 0; i < versions.length; i++) {
                   var option = document.createElement("option");
                   option.value = versions[i];
                   option.textContent = versions[i];
                   dropdown.appendChild(option);
                 }
+
                 document.body.insertBefore(dropdown, document.body.firstChild);
-              };
+              });
             </script>
-            ' >> "$dir/index.html"
+            ' >> "$dir/script.js"
           done
-          git add v*/index.html latest/index.html
+          git add v*/script.js latest/script.js
           if git diff --staged --quiet; then
             echo "⚠️ No changes to commit. Skipping push."
             exit 0
           fi
-          git commit -m "Add Javadoc version selector"
+          git commit -m "Add dynamic Javadoc version selector"
           git push origin gh-pages
 
       - name: Push Changes to GitHub Pages
@@ -330,7 +332,7 @@ jobs:
             echo "⚠️ JitPack does not recognize the version yet. Retrying..."
           fi
 
-          MAX_RETRIES=5
+          MAX_RETRIES=20
           RETRY_DELAY=30
           RETRY_COUNT=0
 
