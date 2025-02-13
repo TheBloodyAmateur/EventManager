@@ -112,19 +112,25 @@ jobs:
       - name: Find Previous Release Tag
         id: get_previous_tag
         run: |
-          PREV_TAG=$(git tag --sort=-v:refname | head -n 1)
+          echo "🔍 Fetching all tags..."
+          git fetch --tags
+          git tag -l --sort=-v:refname
+          
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+          
           if [ -z "$PREV_TAG" ]; then
-          echo "No previous tag found, using initial commit."
-          PREV_TAG=$(git rev-list --max-parents=0 HEAD)
+            echo "⚠️ No previous version tag found, using the first commit."
+            PREV_TAG=$(git rev-list --max-parents=0 HEAD)
           fi
-          echo "Previous release tag: $PREV_TAG"
+          
+          echo "🔍 Previous release tag: $PREV_TAG"
           echo "PREV_TAG=$PREV_TAG" >> $GITHUB_ENV
 
 
       - name: Generate Release Notes
         id: generate_notes
         run: |
-          COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges)  # ✅ Get commit messages only
+          COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges)
           ALLOWED_LABELS="^(feat|fix|docs|chore|improvement|security):"
           NOTES=""
           
