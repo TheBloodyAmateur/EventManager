@@ -58,8 +58,8 @@ jobs:
           echo "🔍 Detected Release Version: $TAG_VERSION"
           echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
           echo "IS_RELEASE=true" >> $GITHUB_ENV
-          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT  # ✅ Store output
-          echo "IS_RELEASE=true" >> $GITHUB_OUTPUT  # ✅ Store output
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT
+          echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           else
           echo "❌ No release tag detected."
           echo "IS_RELEASE=false" >> $GITHUB_ENV
@@ -104,6 +104,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Debug `TAG_VERSION` from build
         run: |
@@ -130,7 +132,12 @@ jobs:
       - name: Generate Release Notes
         id: generate_notes
         run: |
-          COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges)
+          echo "🔍 Fetching commits from $PREV_TAG to HEAD..."
+          
+          git log $PREV_TAG..HEAD --oneline --no-merges  
+          
+          COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges | grep -Ev '^release: v[0-9]+\.[0-9]+\.[0-9]+$')
+          
           ALLOWED_LABELS="^(feat|fix|docs|chore|improvement|security):"
           NOTES=""
           
@@ -152,7 +159,6 @@ jobs:
           echo "🔍 Generated Release Notes:"
           echo "$NOTES"
           
-          # ✅ Fix: Store multiline value correctly using safe EOF handling
           {
             echo "release_notes<<EOF"
             echo "$NOTES"
