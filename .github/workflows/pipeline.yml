@@ -58,12 +58,12 @@ jobs:
             echo "New release tag detected: $TAG_VERSION"
             echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
             echo "IS_RELEASE=true" >> $GITHUB_ENV
-            echo "::set-output name=TAG_VERSION::$TAG_VERSION"
-            echo "::set-output name=IS_RELEASE::true"
+            echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT
+            echo "IS_RELEASE=true" >> $GITHUB_OUTPUT
           else
             echo "No release tag detected."
             echo "IS_RELEASE=false" >> $GITHUB_ENV
-            echo "::set-output name=IS_RELEASE::false"
+            echo "IS_RELEASE=false" >> $GITHUB_OUTPUT
           fi
 
   deploy_javadoc:
@@ -182,13 +182,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wait for JitPack build to start
+      - name: Fetch JitPack Build Log
         run: |
-          echo "Waiting for JitPack to build the release..."
-          echo "Check build logs at:"
-          echo "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v${{ needs.build.outputs.TAG_VERSION }}/build.log"
+          TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
+          echo "Checking JitPack build for version: v$TAG_VERSION"
+          echo "Build Log URL: https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log"
 
-      - name: Verify JitPack Build URL
-        run: |
-          echo "Checking JitPack build logs..."
-          curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v${{ needs.build.outputs.TAG_VERSION }}/build.log"
+          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
+
+          if [[ "$RESPONSE_CODE" -ne 200 ]]; then
+            echo "❌ JitPack build log not found. The version might not be available yet."
+            exit 1
+          else
+            echo "✅ JitPack build log available!"
+          fi
