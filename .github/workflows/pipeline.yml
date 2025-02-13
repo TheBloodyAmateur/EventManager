@@ -224,19 +224,12 @@ jobs:
           fi
 
           echo "🔍 Triggering JitPack build for version: v$TAG_VERSION"
-          RESPONSE_CODE=$(curl -X GET "https://jitpack.io/api/builds/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log" -s -o /dev/null -w "%{http_code}")
 
-          if [[ "$RESPONSE_CODE" -ne 201 && "$RESPONSE_CODE" -ne 200 ]]; then
-            echo "❌ JitPack build request failed! Response: $RESPONSE_CODE"
-            exit 1
+          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
+
+          if [[ "$RESPONSE_CODE" -eq 404 ]]; then
+            echo "⚠️ JitPack does not recognize the version yet. Retrying..."
           fi
-
-          echo "✅ JitPack build successfully triggered!"
-
-      - name: Wait for JitPack Build
-        run: |
-          TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
-          echo "⏳ Waiting for JitPack to process the build..."
 
           MAX_RETRIES=5
           RETRY_DELAY=30
@@ -246,11 +239,11 @@ jobs:
             RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
 
             if [[ "$RESPONSE_CODE" -eq 200 ]]; then
-              echo "✅ JitPack build log found!"
+              echo "✅ JitPack build found!"
               exit 0
             fi
 
-            echo "⚠️ JitPack build not available yet. Retrying in $RETRY_DELAY seconds..."
+            echo "⚠️ JitPack build still not available. Retrying in $RETRY_DELAY seconds..."
             sleep $RETRY_DELAY
             ((RETRY_COUNT++))
           done
