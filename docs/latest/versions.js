@@ -1,0 +1,3 @@
+var versions = [
+'vrefs',
+'latest'];
