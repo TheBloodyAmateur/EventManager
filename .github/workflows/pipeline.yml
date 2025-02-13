@@ -133,9 +133,8 @@ jobs:
         id: generate_notes
         run: |
           echo "🔍 Fetching commits from $PREV_TAG to HEAD..."
-          git log $PREV_TAG..HEAD --oneline --no-merges  # ✅ Show commits for debugging
+          git log $PREV_TAG..HEAD --oneline --no-merges
           
-          # ✅ Get commit messages and exclude "release: vX.Y.Z" commits
           COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges | grep -Ev '^release: v[0-9]+\.[0-9]+\.[0-9]+$' || true)
           
           ALLOWED_LABELS="^(feat|fix|docs|chore|improvement|security):"
@@ -144,7 +143,6 @@ jobs:
           echo "🔍 Commits Since Last Release ($PREV_TAG):"
           echo "$COMMITS"
           
-          # ✅ Check if `COMMITS` is empty and handle gracefully
           if [[ -z "$COMMITS" ]]; then
             echo "⚠️ No valid commits found since last release!"
             NOTES="No notable changes in this release."
@@ -160,8 +158,7 @@ jobs:
           
           echo "🔍 Generated Release Notes:"
           echo "$NOTES"
-          
-          # ✅ Store release notes safely
+
           {
             echo "release_notes<<EOF"
             echo "$NOTES"
