@@ -94,6 +94,8 @@ jobs:
     needs: build
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
+    outputs:
+      release_notes: ${{ env.release_notes }}
 
     steps:
       - name: Checkout repository
@@ -118,8 +120,13 @@ jobs:
             NOTES="No notable changes in this release."
           fi
 
-          echo "release_notes=$NOTES" >> $GITHUB_ENV
-          echo "::set-output name=release_notes::$NOTES"
+          echo "Release notes generated:"
+          echo "$NOTES"
+
+          echo "release_notes<<EOF" >> $GITHUB_ENV
+          echo "$NOTES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+  
 
   generate_release_tag:
     needs: [ build, generate_release_notes ]
@@ -154,6 +161,11 @@ jobs:
         run: |
           git tag -a "v${{ needs.build.outputs.TAG_VERSION }}" -m "Release version ${{ needs.build.outputs.TAG_VERSION }}"
           git push origin "v${{ needs.build.outputs.TAG_VERSION }}"
+
+      - name: Debug Received Release Notes
+        run: |
+          echo "Received Release Notes in generate_release_tag:"
+          echo "${{ needs.generate_release_notes.outputs.release_notes }}"
 
       - name: Create a GitHub release with release notes
         uses: softprops/action-gh-release@v1
