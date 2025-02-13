@@ -182,8 +182,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger JitPack Build
+      - name: Wait for JitPack build to start
         run: |
-          curl -X POST "https://jitpack.io/api/builds?repo=TheBloodyAmateur/EventManager&branch=${{ needs.build.outputs.TAG_VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Waiting for JitPack to build the release..."
+          echo "Check build logs at:"
+          echo "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v${{ needs.build.outputs.TAG_VERSION }}/build.log"
+
+      - name: Verify JitPack Build URL
+        run: |
+          echo "Checking JitPack build logs..."
+          curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v${{ needs.build.outputs.TAG_VERSION }}/build.log"
