@@ -179,6 +179,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug `TAG_VERSION` from build
+        run: |
+          echo "🔍 Retrieved TAG_VERSION: ${{ needs.build.outputs.TAG_VERSION }}"
+
       - name: Fetch JitPack Build Log
         run: |
           TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
