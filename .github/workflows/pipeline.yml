@@ -111,6 +111,10 @@ jobs:
 
       - name: Generate Javadoc Version List (`versions.js`)
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          
           cd gh-pages/docs
           
           echo "var versions = [" > versions.js
@@ -180,10 +184,6 @@ jobs:
       - name: Push Changes to GitHub Pages
         run: |
           cd gh-pages
-          
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           
           git add .
           
