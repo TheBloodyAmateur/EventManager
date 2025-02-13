@@ -129,8 +129,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # ✅ Ensures all tags are fetched
 
-      - name: Configure Git User
+      - name: Configure Git User  # ✅ Fix for unknown identity issue
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
@@ -140,14 +142,25 @@ jobs:
           git tag -a "v${{ needs.build.outputs.TAG_VERSION }}" -m "Release version ${{ needs.build.outputs.TAG_VERSION }}"
           git push origin "v${{ needs.build.outputs.TAG_VERSION }}"
 
+      - name: Verify that the tag exists  # ✅ Ensure the tag was created
+        run: |
+          git fetch --tags
+          TAG_EXISTS=$(git tag -l "v${{ needs.build.outputs.TAG_VERSION }}")
+          if [[ -z "$TAG_EXISTS" ]]; then
+            echo "❌ Tag was not created. Failing the job."
+            exit 1
+          else
+            echo "✅ Tag v${{ needs.build.outputs.TAG_VERSION }} exists."
+          fi
+
       - name: Create a GitHub release with release notes
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: "v${{ needs.build.outputs.TAG_VERSION }}"  # ✅ Explicitly specify the tag
           files: build/libs/*.jar
           body: ${{ steps.generate_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   trigger_jitpack_build:
     needs: generate_release_tag
