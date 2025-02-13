@@ -94,13 +94,13 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "🔍 Detected version: $VERSION"
 
-          - name: Deploy Javadoc to GitHub Pages
-            uses: JamesIves/github-pages-deploy-action@v4
-            with:
-              branch: gh-pages
-              folder: build/docs/javadoc
-              target-folder: docs/${{ env.VERSION }}
-              clean: false
+      - name: Deploy Javadoc to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build/docs/javadoc
+          target-folder: docs/${{ env.VERSION }}
+          clean: false
 
       - name: Update `latest` Javadoc
         run: |
