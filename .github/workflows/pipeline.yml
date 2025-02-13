@@ -75,10 +75,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Set up JDK 17
+      - name: Set Up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -98,6 +100,15 @@ jobs:
         run: |
           git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
 
+      - name: Configure Git User & Authentication
+        run: |
+          cd gh-pages
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy Javadoc to Versioned Directory
         run: |
           rm -rf gh-pages/docs/v${{ env.VERSION }}
@@ -111,36 +122,30 @@ jobs:
 
       - name: Generate Javadoc Version List (`versions.js`)
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          
           cd gh-pages/docs
-          
+          echo "🔍 Generating versions.js..."
+
           echo "var versions = [" > versions.js
           for dir in v*/; do
             version=${dir%/}
             echo "'$version'," >> versions.js
           done
           echo "'latest'];" >> versions.js
-          
+
           git add versions.js
-          
           if git diff --staged --quiet; then
             echo "⚠️ No changes to commit. Skipping push."
             exit 0
           fi
-          
+
           git commit -m "Update Javadoc versions list"
           git push origin gh-pages
 
       - name: Inject Version Selector into Each Javadoc Version
         run: |
           cd gh-pages/docs
-          
           for dir in v*/ latest/; do
             cp versions.js "$dir"
-          
             echo '
             <script src="../versions.js"></script>
             <script>
@@ -152,51 +157,41 @@ jobs:
                   window.location.href = "../" + selectedVersion + "/index.html";
                 }
               }
-          
               window.onload = function () {
                 var dropdown = document.createElement("select");
                 dropdown.id = "version-selector";
                 dropdown.onchange = switchVersion;
-          
                 for (var i = 0; i < versions.length; i++) {
                   var option = document.createElement("option");
                   option.value = versions[i];
                   option.textContent = versions[i];
                   dropdown.appendChild(option);
                 }
-          
                 document.body.insertBefore(dropdown, document.body.firstChild);
               };
             </script>
             ' >> "$dir/index.html"
           done
-          
           git add v*/index.html latest/index.html
-          
           if git diff --staged --quiet; then
             echo "⚠️ No changes to commit. Skipping push."
             exit 0
           fi
-          
           git commit -m "Add Javadoc version selector"
           git push origin gh-pages
 
       - name: Push Changes to GitHub Pages
         run: |
           cd gh-pages
-          
           git add .
-          
           if git diff --staged --quiet; then
             echo "⚠️ No changes to commit. Skipping push."
             exit 0
           fi
-          
           git commit -m "Deploy Javadoc v${{ env.VERSION }}"
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   generate_release_notes:
     needs: build
