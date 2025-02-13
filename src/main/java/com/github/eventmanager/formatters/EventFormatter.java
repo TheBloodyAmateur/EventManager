@@ -5,7 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The EventFormatter enum provides different formatting strategies for event logs.
+ * Each formatter formats the event metadata and arguments in a specific way.
+ */
 public enum EventFormatter {
+    /**
+     * The DEFAULT formatter formats the event metadata and arguments in a default format.
+     */
     DEFAULT {
         @Override
         public String format(Map<String, String> metadata, KeyValueWrapper... args) {
@@ -35,6 +42,9 @@ public enum EventFormatter {
                     message);
         }
     },
+    /**
+     * The KEY_VALUE formatter formats the event metadata and arguments in a key-value format.
+     */
     KEY_VALUE {
         @Override
         public String format(Map<String, String> metadata, KeyValueWrapper... args) {
@@ -67,6 +77,9 @@ public enum EventFormatter {
             return builder.toString();
         }
     },
+    /**
+     * The CSV formatter formats the event metadata and arguments in a CSV format.
+     */
     CSV {
         @Override
         public String format(Map<String, String> metadata, KeyValueWrapper... args) {
@@ -93,7 +106,7 @@ public enum EventFormatter {
 
             for (Map.Entry<String, String> entry : metadata.entrySet()) {
                 builder.append(entry.getValue());
-                //Check if the entry is the last one
+                // Check if the entry is the last one
                 if (!entry.equals(metadata.entrySet().toArray()[metadata.size() - 1])) {
                     builder.append(",");
                 }
@@ -106,6 +119,9 @@ public enum EventFormatter {
             return builder.toString();
         }
     },
+    /**
+     * The XML formatter formats the event metadata and arguments in an XML format.
+     */
     XML {
         @Override
         public String format(Map<String, String> metadata, KeyValueWrapper... args) {
@@ -142,6 +158,9 @@ public enum EventFormatter {
             return builder;
         }
     },
+    /**
+     * The JSON formatter formats the event metadata and arguments in a JSON format.
+     */
     JSON {
         @Override
         public String format(Map<String, String> metadata, KeyValueWrapper... args) {
@@ -169,7 +188,21 @@ public enum EventFormatter {
         }
     };
 
+    /**
+     * Formats the event metadata and arguments.
+     *
+     * @param metadata the event metadata.
+     * @param args the event arguments.
+     * @return the formatted event as a string.
+     */
     public abstract String format(Map<String, String> metadata, KeyValueWrapper... args);
 
+    /**
+     * Formats the event metadata and message.
+     *
+     * @param metadata the event metadata.
+     * @param message the event message.
+     * @return the formatted event as a string.
+     */
     public abstract String format(Map<String, String> metadata, String message);
 }

@@ -14,22 +14,42 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The EventManager class is responsible for managing and logging events.
+ * It provides methods to log messages with different log levels and formats.
+ */
 public class EventManager {
     @Setter
     @Getter
     private String timeFormat;
     private LogHandler logHandler;
 
+    /**
+     * Constructs an EventManager with the specified LogHandler.
+     *
+     * @param logHandler the LogHandler to use for logging events.
+     */
     public EventManager(LogHandler logHandler) {
         this.logHandler = logHandler;
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 
+    /**
+     * Constructs an EventManager with the specified configuration file path.
+     *
+     * @param configPath the path to the configuration file.
+     */
     public EventManager(String configPath) {
         this.logHandler = new LogHandler(new ConfigLoader(configPath));
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 
+    /**
+     * Sets the correct OS-specific file separator in the given path.
+     *
+     * @param path the file path to adjust.
+     * @return the adjusted file path with the correct OS-specific separator.
+     */
     public static String setCorrectOSSeperator(String path) {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -39,11 +59,11 @@ public class EventManager {
     }
 
     /**
-     * Log a message to the destination file.
+     * Logs a message to the destination file.
      *
-     * @param level   The log level of the message.
-     * @param message The object to log.
-     * @throws IOException On input error.
+     * @param level   the log level of the message.
+     * @param message the object to log.
+     * @throws IOException on input error.
      */
     private void logMessage(String level, Object message) {
         if (message instanceof Exception) {
@@ -52,56 +72,47 @@ public class EventManager {
             message = message.toString();
         }
 
-        // Set the metadata fields and get the event format
         Map<String, String> metaData = setMetaDataFields(level);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
         String event = switch (eventFormat) {
-            case "kv" ->
-                    EventFormatter.KEY_VALUE.format(metaData, message.toString());
-            case "csv" ->
-                    EventFormatter.CSV.format(metaData, message.toString());
-            case "xml" ->
-                    EventFormatter.XML.format(metaData, message.toString());
-            case "json" ->
-                    EventFormatter.JSON.format(metaData, message.toString());
-            default ->
-                    EventFormatter.DEFAULT.format(metaData, message.toString());
-
+            case "kv" -> EventFormatter.KEY_VALUE.format(metaData, message.toString());
+            case "csv" -> EventFormatter.CSV.format(metaData, message.toString());
+            case "xml" -> EventFormatter.XML.format(metaData, message.toString());
+            case "json" -> EventFormatter.JSON.format(metaData, message.toString());
+            default -> EventFormatter.DEFAULT.format(metaData, message.toString());
         };
 
         writeEventToLogFile(event);
     }
 
     /**
-     * Log a message to the destination file.
+     * Logs a message to the destination file.
      *
-     * @param level   The log level of the message.
-     * @param messages An object array ot be appended to the message.
-     * @throws IOException On input error.
+     * @param level    the log level of the message.
+     * @param messages an object array to be appended to the message.
+     * @throws IOException on input error.
      */
-    private void logMessage(String level, KeyValueWrapper ...messages) {
-        // Set the metadata fields and get the event format
+    private void logMessage(String level, KeyValueWrapper... messages) {
         Map<String, String> metaData = setMetaDataFields(level);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
         String event = switch (eventFormat) {
-            case "kv" ->
-                    EventFormatter.KEY_VALUE.format(metaData, messages);
-            case "csv" ->
-                    EventFormatter.CSV.format(metaData, messages);
-            case "xml" ->
-                    EventFormatter.XML.format(metaData, messages);
-            case "json" ->
-                    EventFormatter.JSON.format(metaData, messages);
-            default ->
-                    EventFormatter.DEFAULT.format(metaData, messages);
-
+            case "kv" -> EventFormatter.KEY_VALUE.format(metaData, messages);
+            case "csv" -> EventFormatter.CSV.format(metaData, messages);
+            case "xml" -> EventFormatter.XML.format(metaData, messages);
+            case "json" -> EventFormatter.JSON.format(metaData, messages);
+            default -> EventFormatter.DEFAULT.format(metaData, messages);
         };
 
         writeEventToLogFile(event);
     }
 
+    /**
+     * Writes the event to the log file.
+     *
+     * @param event the event to write.
+     */
     private void writeEventToLogFile(String event) {
         if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
             System.out.print(event);
@@ -111,11 +122,9 @@ public class EventManager {
         }
 
         try {
-            // Check if the file exists and create it if it doesn't
             if (!this.logHandler.checkIfLogFileExists()) {
                 this.logHandler.createLogFile();
             }
-            // Write the event to the file
             String filePath = this.logHandler.getConfig().getLogFile().getFilePath();
             FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentFileName(), true);
             myWriter.write(event);
@@ -125,14 +134,18 @@ public class EventManager {
         }
     }
 
+    /**
+     * Sets the metadata fields for the event.
+     *
+     * @param level the log level of the event.
+     * @return a map containing the metadata fields.
+     */
     private Map<String, String> setMetaDataFields(String level) {
-        // Get the class name and method of the caller
         StackTraceElement[] stackTraceElement = Thread.currentThread().getStackTrace();
         String className = stackTraceElement[4].getClassName();
         String methodName = stackTraceElement[4].getMethodName();
         int lineNumber = stackTraceElement[4].getLineNumber();
 
-        // Get the current time as a string in the specified format
         String time = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(this.timeFormat));
 
         Map<String, String> metaDataFields = new HashMap<>();
@@ -145,55 +158,110 @@ public class EventManager {
         return metaDataFields;
     }
 
+    /**
+     * Logs a fatal message.
+     *
+     * @param exception the exception to log.
+     */
     public void logFatalMessage(Object exception) {
         logMessage("FATAL", exception);
     }
 
-    public void logFatalMessage(KeyValueWrapper ...args) {
+    /**
+     * Logs a fatal message with key-value pairs.
+     *
+     * @param args the key-value pairs to log.
+     */
+    public void logFatalMessage(KeyValueWrapper... args) {
         logMessage("FATAL", args);
     }
 
+    /**
+     * Logs an error message.
+     *
+     * @param exception the exception to log.
+     */
     public void logErrorMessage(Object exception) {
         logMessage("ERROR", exception);
     }
 
-    public void logErrorMessage(KeyValueWrapper ...args) {
+    /**
+     * Logs an error message with key-value pairs.
+     *
+     * @param args the key-value pairs to log.
+     */
+    public void logErrorMessage(KeyValueWrapper... args) {
         logMessage("ERROR", args);
     }
 
+    /**
+     * Logs a warning message.
+     *
+     * @param exception the exception to log.
+     */
     public void logWarningMessage(Object exception) {
         logMessage("WARNING", exception);
     }
 
-    public void logWarningMessage(KeyValueWrapper ...args) {
+    /**
+     * Logs a warning message with key-value pairs.
+     *
+     * @param args the key-value pairs to log.
+     */
+    public void logWarningMessage(KeyValueWrapper... args) {
         logMessage("WARNING", args);
     }
 
-    public boolean areInfoLogsEnabled(){
+    /**
+     * Checks if informational logs are enabled.
+     *
+     * @return true if informational logs are enabled, false otherwise.
+     */
+    public boolean areInfoLogsEnabled() {
         boolean informationalMode = this.logHandler.getConfig().getEvent().getInformationalMode();
         boolean debuggingMode = this.logHandler.getConfig().getEvent().getDebuggingMode();
         return informationalMode || debuggingMode;
     }
 
+    /**
+     * Logs an informational message.
+     *
+     * @param exception the exception to log.
+     */
     public void logInfoMessage(Object exception) {
         if (areInfoLogsEnabled()) {
             logMessage("INFO", exception);
         }
     }
 
-    public void logInfoMessage(KeyValueWrapper ...args) {
+    /**
+     * Logs an informational message with key-value pairs.
+     *
+     * @param args the key-value pairs to log.
+     */
+    public void logInfoMessage(KeyValueWrapper... args) {
         if (areInfoLogsEnabled()) {
             logMessage("INFO", args);
         }
     }
 
+    /**
+     * Logs a debug message.
+     *
+     * @param exception the exception to log.
+     */
     public void logDebugMessage(Object exception) {
         if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             logMessage("DEBUG", exception);
         }
     }
 
-    public void logDebugMessage(KeyValueWrapper ...args) {
+    /**
+     * Logs a debug message with key-value pairs.
+     *
+     * @param args the key-value pairs to log.
+     */
+    public void logDebugMessage(KeyValueWrapper... args) {
         if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             logMessage("DEBUG", args);
         }
