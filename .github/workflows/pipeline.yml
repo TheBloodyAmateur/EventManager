@@ -94,59 +94,105 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "🔍 Detected version: $VERSION"
 
-      - name: Deploy Javadoc to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: build/docs/javadoc
-          target-folder: docs/${{ env.VERSION }}
-          clean: false
+      - name: Clone `gh-pages` Branch
+        run: |
+          git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
+
+      - name: Deploy Javadoc to Versioned Directory
+        run: |
+          rm -rf gh-pages/docs/v${{ env.VERSION }}
+          mkdir -p gh-pages/docs/v${{ env.VERSION }}
+          cp -r build/docs/javadoc/* gh-pages/docs/v${{ env.VERSION }}
 
       - name: Update `latest` Javadoc
         run: |
-          git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
           rm -rf gh-pages/docs/latest
-          cp -r build/docs/javadoc gh-pages/docs/latest
-          cd gh-pages
+          cp -r gh-pages/docs/v${{ env.VERSION }} gh-pages/docs/latest
 
+      - name: Generate Javadoc Version List (`versions.js`)
+        run: |
+          cd gh-pages/docs
+          
+          echo "var versions = [" > versions.js
+          for dir in v*/; do
+            version=${dir%/}
+            echo "'$version'," >> versions.js
+          done
+          echo "'latest'];" >> versions.js
+          
+          git add versions.js
+          
+          if git diff --staged --quiet; then
+            echo "⚠️ No changes to commit. Skipping push."
+            exit 0
+          fi
+          
+          git commit -m "Update Javadoc versions list"
+          git push origin gh-pages
+
+      - name: Inject Version Selector into Each Javadoc Version
+        run: |
+          cd gh-pages/docs
+          
+          for dir in v*/ latest/; do
+            cp versions.js "$dir"
+          
+            echo '
+            <script src="../versions.js"></script>
+            <script>
+              function switchVersion() {
+                var selectedVersion = document.getElementById("version-selector").value;
+                if (selectedVersion === "latest") {
+                  window.location.href = "../latest/index.html";
+                } else {
+                  window.location.href = "../" + selectedVersion + "/index.html";
+                }
+              }
+          
+              window.onload = function () {
+                var dropdown = document.createElement("select");
+                dropdown.id = "version-selector";
+                dropdown.onchange = switchVersion;
+          
+                for (var i = 0; i < versions.length; i++) {
+                  var option = document.createElement("option");
+                  option.value = versions[i];
+                  option.textContent = versions[i];
+                  dropdown.appendChild(option);
+                }
+          
+                document.body.insertBefore(dropdown, document.body.firstChild);
+              };
+            </script>
+            ' >> "$dir/index.html"
+          done
+          
+          git add v*/index.html latest/index.html
+          
+          if git diff --staged --quiet; then
+            echo "⚠️ No changes to commit. Skipping push."
+            exit 0
+          fi
+          
+          git commit -m "Add Javadoc version selector"
+          git push origin gh-pages
+
+      - name: Push Changes to GitHub Pages
+        run: |
+          cd gh-pages
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
+          
           git add .
-
+          
           if git diff --staged --quiet; then
             echo "⚠️ No changes to commit. Skipping push."
             exit 0
           fi
-
-          git commit -m "Update latest Javadoc to v${{ env.VERSION }}"
-          git push origin gh-pages
-
-      - name: Update Javadoc Version Index
-        run: |
-          cd gh-pages/docs
-
-          echo "<html><head><title>Javadoc Versions</title></head><body>" > index.html
-          echo "<h1>Javadoc Versions</h1>" >> index.html
-          echo "<ul>" >> index.html
-
-          for dir in v*/; do
-            version=${dir%/}
-            echo "<li><a href='$version/index.html'>$version</a></li>" >> index.html
-          done
-
-          echo "</ul>" >> index.html
-          echo "</body></html>" >> index.html
-
-          git add index.html
-
-          if git diff --staged --quiet; then
-            echo "⚠️ No changes to commit. Skipping push."
-            exit 0
-          fi
-
-          git commit -m "Update Javadoc version index"
+          
+          git commit -m "Deploy Javadoc v${{ env.VERSION }}"
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
