@@ -105,6 +105,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Debug `TAG_VERSION` from build
+        run: |
+          echo "🔍 Retrieved TAG_VERSION in generate_release_tag: ${{ needs.build.outputs.TAG_VERSION }}"
+
       - name: Find Previous Release Tag
         id: get_previous_tag
         run: |
@@ -155,6 +159,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Debug `TAG_VERSION` from build
+        run: |
+          echo "🔍 Retrieved TAG_VERSION in generate_release_tag: ${{ needs.build.outputs.TAG_VERSION }}"
 
       - name: Configure Git User
         run: |
