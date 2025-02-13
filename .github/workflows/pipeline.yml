@@ -122,13 +122,18 @@ jobs:
           echo "::set-output name=release_notes::$NOTES"
 
   generate_release_tag:
-    needs: [build, generate_release_notes]
+    needs: [ build, generate_release_notes ]
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Configure Git User
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Create Git tag for release
         run: |
@@ -142,6 +147,7 @@ jobs:
           body: ${{ steps.generate_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
   trigger_jitpack_build:
     needs: generate_release_tag
