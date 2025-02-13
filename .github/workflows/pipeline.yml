@@ -206,16 +206,16 @@ jobs:
 
 
   trigger_jitpack_build:
-    needs: [build, generate_release_tag]
+    needs: [ build, generate_release_tag ]
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Debug `TAG_VERSION` from build
         run: |
-          echo "🔍 Retrieved TAG_VERSION: ${{ needs.build.outputs.TAG_VERSION }}"
+          echo "🔍 Retrieved TAG_VERSION in trigger_jitpack_build: ${{ needs.build.outputs.TAG_VERSION }}"
 
-      - name: Fetch JitPack Build Log
+      - name: Trigger JitPack Build
         run: |
           TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
           if [[ -z "$TAG_VERSION" ]]; then
@@ -223,14 +223,37 @@ jobs:
             exit 1
           fi
 
-          echo "Checking JitPack build for version: v$TAG_VERSION"
-          echo "Build Log URL: https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log"
+          echo "🔍 Triggering JitPack build for version: v$TAG_VERSION"
+          RESPONSE_CODE=$(curl -X POST "https://jitpack.io/api/builds/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION" -s -o /dev/null -w "%{http_code}")
 
-          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
-
-          if [[ "$RESPONSE_CODE" -ne 200 ]]; then
-            echo "❌ JitPack build log not found. The version might not be available yet."
+          if [[ "$RESPONSE_CODE" -ne 201 && "$RESPONSE_CODE" -ne 200 ]]; then
+            echo "❌ JitPack build request failed! Response: $RESPONSE_CODE"
             exit 1
-          else
-            echo "✅ JitPack build log available!"
           fi
+
+          echo "✅ JitPack build successfully triggered!"
+
+      - name: Wait for JitPack Build
+        run: |
+          TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
+          echo "⏳ Waiting for JitPack to process the build..."
+
+          MAX_RETRIES=5
+          RETRY_DELAY=30
+          RETRY_COUNT=0
+
+          while [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; do
+            RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
+
+            if [[ "$RESPONSE_CODE" -eq 200 ]]; then
+              echo "✅ JitPack build log found!"
+              exit 0
+            fi
+
+            echo "⚠️ JitPack build not available yet. Retrying in $RETRY_DELAY seconds..."
+            sleep $RETRY_DELAY
+            ((RETRY_COUNT++))
+          done
+
+          echo "❌ JitPack build log not found after multiple attempts."
+          exit 1
