@@ -71,3 +71,28 @@ loadScripts(document, 'script');</script>
 </div>
 </body>
 </html>
+
+  <script src="../versions.js"></script>
+  <script>
+    function switchVersion() {
+      var selectedVersion = document.getElementById("version-selector").value;
+      if (selectedVersion === "latest") {
+        window.location.href = "../latest/index.html";
+      } else {
+        window.location.href = "../" + selectedVersion + "/index.html";
+      }
+    }
+    window.onload = function () {
+      var dropdown = document.createElement("select");
+      dropdown.id = "version-selector";
+      dropdown.onchange = switchVersion;
+      for (var i = 0; i < versions.length; i++) {
+        var option = document.createElement("option");
+        option.value = versions[i];
+        option.textContent = versions[i];
+        dropdown.appendChild(option);
+      }
+      document.body.insertBefore(dropdown, document.body.firstChild);
+    };
+  </script>
+  
