@@ -124,13 +124,13 @@ jobs:
       - name: Generate Release Notes
         id: generate_notes
         run: |
-          COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges)
+          COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"%s" --no-merges)  # ✅ Get commit messages only
           ALLOWED_LABELS="^(feat|fix|docs|chore|improvement|security):"
           NOTES=""
-
+          
           echo "🔍 Commits Since Last Release ($PREV_TAG):"
           echo "$COMMITS"
-
+          
           while IFS= read -r commit; do
             if [[ "$commit" =~ $ALLOWED_LABELS ]]; then
               LABEL=$(echo "$commit" | sed -E 's/^(.*?):.*/\1/')
@@ -138,17 +138,20 @@ jobs:
               NOTES="${NOTES}\n- **${LABEL}**: ${MESSAGE}"
             fi
           done <<< "$COMMITS"
-
+          
           if [ -z "$NOTES" ]; then
             NOTES="No notable changes in this release."
           fi
-
+          
           echo "🔍 Generated Release Notes:"
           echo "$NOTES"
-
-          echo "release_notes<<EOF" >> $GITHUB_ENV
-          echo "$NOTES" >> $GITHUB_ENV
-          echo "EOF" >> 
+          
+          # ✅ Fix: Store multiline value correctly using safe EOF handling
+          {
+            echo "release_notes<<EOF"
+            echo "$NOTES"
+            echo "EOF"
+          } >> $GITHUB_ENV
 
   generate_release_tag:
     needs: [ build, generate_release_notes ]
