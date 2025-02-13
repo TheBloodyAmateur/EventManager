@@ -190,7 +190,7 @@ jobs:
 
 
   trigger_jitpack_build:
-    needs: generate_release_tag
+    needs: [build, generate_release_tag]
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
 
