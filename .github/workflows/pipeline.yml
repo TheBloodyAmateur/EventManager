@@ -130,7 +130,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # ✅ Ensures all tags are fetched
+          fetch-depth: 0
 
       - name: Configure Git User
         run: |
@@ -150,7 +150,7 @@ jobs:
           fi
 
       - name: Create Git tag for release
-        if: ${{ env.TAG_EXISTS == 'false' }}  # ✅ Only create the tag if it doesn't exist
+        if: ${{ env.TAG_EXISTS == 'false' }}
         run: |
           git tag -a "v${{ needs.build.outputs.TAG_VERSION }}" -m "Release version ${{ needs.build.outputs.TAG_VERSION }}"
           git push origin "v${{ needs.build.outputs.TAG_VERSION }}"
@@ -158,12 +158,11 @@ jobs:
       - name: Create a GitHub release with release notes
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "v${{ needs.build.outputs.TAG_VERSION }}"  # ✅ Explicitly specify the tag
+          tag_name: "v${{ needs.build.outputs.TAG_VERSION }}"
           files: build/libs/*.jar
-          body: ${{ steps.generate_notes.outputs.release_notes }}
+          body: ${{ needs.generate_release_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   trigger_jitpack_build:
     needs: generate_release_tag
