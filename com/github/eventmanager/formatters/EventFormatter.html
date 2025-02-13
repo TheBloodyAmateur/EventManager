@@ -83,6 +83,8 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public enum </span><span class="element-name type-name-label">EventFormatter</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" title="class or interface in java.lang" class="external-link">Enum</a>&lt;<a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a>&gt;</span></div>
+<div class="block">The EventFormatter enum provides different formatting strategies for event logs.
+ Each formatter formats the event metadata and arguments in a specific way.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -104,15 +106,25 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Enum Constant</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code><a href="#CSV" class="member-name-link">CSV</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">The CSV formatter formats the event metadata and arguments in a CSV format.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="#DEFAULT" class="member-name-link">DEFAULT</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">The DEFAULT formatter formats the event metadata and arguments in a default format.</div>
+</div>
 <div class="col-first even-row-color"><code><a href="#JSON" class="member-name-link">JSON</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">The JSON formatter formats the event metadata and arguments in a JSON format.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="#KEY_VALUE" class="member-name-link">KEY_VALUE</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">The KEY_VALUE formatter formats the event metadata and arguments in a key-value format.</div>
+</div>
 <div class="col-first even-row-color"><code><a href="#XML" class="member-name-link">XML</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">The XML formatter formats the event metadata and arguments in an XML format.</div>
+</div>
 </div>
 </section>
 </li>
@@ -130,11 +142,15 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#format(java.util.Map,com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;metadata,
  <a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Formats the event metadata and arguments.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#format(java.util.Map,java.lang.String)" class="member-name-link">format</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;metadata,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Formats the event metadata and message.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#valueOf(java.lang.String)" class="member-name-link">valueOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -170,30 +186,35 @@ the order they are declared.</div>
 <section class="detail" id="DEFAULT">
 <h3>DEFAULT</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></span>&nbsp;<span class="element-name">DEFAULT</span></div>
+<div class="block">The DEFAULT formatter formats the event metadata and arguments in a default format.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="KEY_VALUE">
 <h3>KEY_VALUE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></span>&nbsp;<span class="element-name">KEY_VALUE</span></div>
+<div class="block">The KEY_VALUE formatter formats the event metadata and arguments in a key-value format.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="CSV">
 <h3>CSV</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></span>&nbsp;<span class="element-name">CSV</span></div>
+<div class="block">The CSV formatter formats the event metadata and arguments in a CSV format.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="XML">
 <h3>XML</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></span>&nbsp;<span class="element-name">XML</span></div>
+<div class="block">The XML formatter formats the event metadata and arguments in an XML format.</div>
 </section>
 </li>
 <li>
 <section class="detail" id="JSON">
 <h3>JSON</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></span>&nbsp;<span class="element-name">JSON</span></div>
+<div class="block">The JSON formatter formats the event metadata and arguments in a JSON format.</div>
 </section>
 </li>
 </ul>
@@ -240,6 +261,14 @@ not permitted.)</div>
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;metadata,
  <a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</span></div>
+<div class="block">Formats the event metadata and arguments.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>metadata</code> - the event metadata.</dd>
+<dd><code>args</code> - the event arguments.</dd>
+<dt>Returns:</dt>
+<dd>the formatted event as a string.</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -247,6 +276,14 @@ not permitted.)</div>
 <h3>format</h3>
 <div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">format</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;metadata,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+<div class="block">Formats the event metadata and message.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>metadata</code> - the event metadata.</dd>
+<dd><code>message</code> - the event message.</dd>
+<dt>Returns:</dt>
+<dd>the formatted event as a string.</dd>
+</dl>
 </section>
 </li>
 </ul>
