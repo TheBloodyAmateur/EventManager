@@ -1,1 +1,1 @@
-moduleSearchIndex = [];updateSearchResults();
+moduleSearchIndex = [{"l":"com.github.thebloodyamateur.eventmanager"}];updateSearchResults();
