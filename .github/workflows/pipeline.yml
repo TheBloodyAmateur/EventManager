@@ -238,13 +238,7 @@ jobs:
         with:
           tag-name: ${{ needs.build.outputs.TAG_VERSION }}
           from-tag-name: ${{ env.PREV_TAG }}
-          chapters: |
-            - {"title": "New Features", "label": "feat:"}
-            - {"title": "Bugfixes", "label": "fix:"}
-            - {"title": "Documentation", "label": "docs:"}
-            - {"title": "Chore", "label": "chore:"}
-            - {"title": "Improvements", "label": "improvement:"}
-            - {"title": "Security Fixes", "label": "security:"}
+          chapters: '[{"title": "New Features", "label": "feat:"}, {"title": "Bugfixes", "label": "fix:"}, {"title": "Documentation", "label": "docs:"}, {"title": "Chore", "label": "chore:"}, {"title": "Improvements", "label": "improvement:"}, {"title": "Security Fixes", "label": "security:"}]'
 
   generate_release_tag:
     needs: [ build, generate_release_notes ]
