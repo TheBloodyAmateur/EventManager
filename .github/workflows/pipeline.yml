@@ -232,13 +232,35 @@ jobs:
 
       - name: Generate Release Notes
         id: generate_notes
-        uses: AbsaOSS/generate-release-notes@v0.2.0
+        uses: mikepenz/release-changelog-builder-action@v5
+        with:
+          mode: "COMMIT"
+          configurationJson: |
+            {
+              "template": "#{{CHANGELOG}}",
+              "categories": [
+                {
+                    "title": "## Feature",
+                    "labels": ["feat", "feature"]
+                },
+                {
+                    "title": "## Fix",
+                    "labels": ["fix", "bug"]
+                },
+                {
+                    "title": "## Other",
+                    "labels": []
+                }
+              ],
+              "label_extractor": [
+                {
+                  "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}",
+                  "target": "$1"
+                }
+              ]
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag-name: ${{ needs.build.outputs.TAG_VERSION }}
-          from-tag-name: ${{ env.PREV_TAG }}
-          chapters: '[{"title": "New Features", "label": "feat:"}, {"title": "Bugfixes", "label": "fix:"}, {"title": "Documentation", "label": "docs:"}, {"title": "Chore", "label": "chore:"}, {"title": "Improvements", "label": "improvement:"}, {"title": "Security Fixes", "label": "security:"}]'
 
   generate_release_tag:
     needs: [ build, generate_release_notes ]
