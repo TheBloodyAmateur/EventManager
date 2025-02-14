@@ -52,8 +52,6 @@ publishing {
 tasks.javadoc {
     failOnError = false // Avoid build failures due to warnings
     options.encoding = "UTF-8"
-    options.addStringOption('module', 'com.github.thebloodyamateur.eventmanager')
-    options.addStringOption('packages', 'com.github.eventmanager,com.github.eventmanager.filehandlers,com.github.eventmanager.formatters')
 }
 
 signing {
