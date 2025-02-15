@@ -263,7 +263,7 @@ jobs:
 
       - name: Debug Generated Changelog Before Storing Output
         run:
-          echo "Generated Changelog: ${{ steps.generate_notes.outputs.changelog }}"
+          echo "${{ steps.generate_notes.outputs.changelog }}"
 
       - name: Store Release Notes as Output
         id: store_notes
