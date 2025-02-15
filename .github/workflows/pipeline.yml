@@ -235,7 +235,7 @@ jobs:
 
       - name: Generate Release Notes
         id: generate_notes
-        uses: mikepenz/release-changelog-builder-action@v5
+        uses: mikepenz/release-changelog-builder-action@v6
         with:
           mode: "COMMIT"
           fetchViaCommits: true
@@ -294,97 +294,3 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  generate_release_tag:
-    needs: [ build, generate_release_notes ]
-    if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Debug Received Release Notes
-        run:
-          echo "${{ needs.generate_release_notes.outputs.release_notes }}"
-
-      - name: Debug `TAG_VERSION` from build
-        run: |
-          echo "🔍 Retrieved TAG_VERSION in generate_release_tag: ${{ needs.build.outputs.TAG_VERSION }}"
-
-      - name: Configure Git User
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-
-      - name: Create Git tag for release
-        run: |
-          TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
-          if [[ -z "$TAG_VERSION" ]]; then
-            echo "❌ TAG_VERSION is empty! Cannot create a tag."
-            exit 1
-          fi
-          git tag -a "v$TAG_VERSION" -m "Release version $TAG_VERSION"
-          git push origin "v$TAG_VERSION"
-
-      - name: Create a GitHub release with release notes
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: "v${{ needs.build.outputs.TAG_VERSION }}"
-          files: build/libs/*.jar
-          body: "${{ needs.generate_release_notes.outputs.release_notes }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  trigger_jitpack_build:
-    needs: [ build, generate_release_tag ]
-    if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Debug `TAG_VERSION` from build
-        run: |
-          echo "🔍 Retrieved TAG_VERSION in trigger_jitpack_build: ${{ needs.build.outputs.TAG_VERSION }}"
-
-      - name: Wait Before Checking JitPack
-        run: |
-          echo "⏳ Waiting 120 seconds before checking JitPack to allow indexing..."
-          sleep 120
-
-      - name: Trigger JitPack Build
-        run: |
-          TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
-          if [[ -z "$TAG_VERSION" ]]; then
-            echo "❌ TAG_VERSION is empty! Exiting..."
-            exit 1
-          fi
-
-          echo "🔍 Triggering JitPack build for version: v$TAG_VERSION"
-
-          RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
-
-          if [[ "$RESPONSE_CODE" -eq 404 ]]; then
-            echo "⚠️ JitPack does not recognize the version yet. Retrying..."
-          fi
-
-          MAX_RETRIES=20
-          RETRY_DELAY=30
-          RETRY_COUNT=0
-
-          while [[ $RETRY_COUNT -lt $MAX_RETRIES ]]; do
-            RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jitpack.io/com/github/TheBloodyAmateur/EventManager/v$TAG_VERSION/build.log")
-
-            if [[ "$RESPONSE_CODE" -eq 200 ]]; then
-              echo "✅ JitPack build found!"
-              exit 0
-            fi
-
-            echo "⚠️ JitPack build still not available. Retrying in $RETRY_DELAY seconds..."
-            sleep $RETRY_DELAY
-            ((RETRY_COUNT++))
-          done
-
-          echo "❌ JitPack build log not found after multiple attempts."
-          exit 1
