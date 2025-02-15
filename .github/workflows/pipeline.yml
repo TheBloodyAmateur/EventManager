@@ -237,7 +237,7 @@ jobs:
         id: generate_notes
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          commitMode: true
+          mode: "COMMIT"
           fetchViaCommits: true
           configurationJson: |
             {
@@ -283,7 +283,6 @@ jobs:
         run:
           echo "${{ steps.generate_notes.outputs.changelog }}"
 
-
       - name: Store Release Notes as Output
         id: store_notes
         run: |
@@ -291,7 +290,7 @@ jobs:
             echo "release_notes<<EOF"
             echo "${{ steps.generate_notes.outputs.changelog }}"
             echo "EOF"
-          } >> "$GITHUB_ENV"  
+          } >> "$GITHUB_OUTPUT"
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
