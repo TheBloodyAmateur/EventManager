@@ -15,19 +15,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Release Notes
-        id: generate_notes
-        uses: AbsaOSS/generate-release-notes@v0.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "✏️ Generate release changelog"
+        uses: janheinrichmerker/action-github-changelog-generator@v2.3
         with:
-          tag-name: "v${{ github.run_number }}"
-          chapters: '[{"title": "🚀 Features", "label": "feat"}, {"title": "🐛 Bug Fixes", "label": "fix"}, {"title": "📖 Docs", "label": "docs"}, {"title": "🛠️ Chores", "label": "chore"}, {"title": "🔄 Refactors", "label": "refactor"}]'
-          warnings: true
-          published-at: false
-          skip-release-notes-label: "skip-release-notes"
-          print-empty-chapters: true
-          chapters-to-pr-without-issue: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo Generated Changelog
-        run: echo "${{ steps.generate_notes.outputs.release_notes }}"
+        run: echo "${{ steps.generate_notes.outputs.changelog }}"
