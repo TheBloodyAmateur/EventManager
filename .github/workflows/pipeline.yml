@@ -23,11 +23,16 @@ jobs:
         with:
           tag-name: "v${{ github.run_number }}"
           chapters: |
-            - {"title": "🚀 Features", "label": "feat"}
-            - {"title": "🐛 Bug Fixes", "label": "fix"}
-            - {"title": "📖 Docs", "label": "docs"}
-            - {"title": "🛠️ Chores", "label": "chore"}
-            - {"title": "🔄 Refactors", "label": "refactor"}
+            - title: "🚀 Features"
+              label: "feat"
+            - title: "🐛 Bug Fixes"
+              label: "fix"
+            - title: "📖 Docs"
+              label: "docs"
+            - title: "🛠️ Chores"
+              label: "chore"
+            - title: "🔄 Refactors"
+              label: "refactor"
           warnings: true
           published-at: false
           skip-release-notes-label: "skip-release-notes"
@@ -35,4 +40,4 @@ jobs:
           chapters-to-pr-without-issue: true
 
       - name: Echo Generated Changelog
-        run: echo "Generated Changelog:\n${{ steps.generate_notes.outputs.release_notes }}"
+        run: echo "${{ steps.generate_notes.outputs.release_notes }}"
