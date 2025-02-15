@@ -13,7 +13,6 @@ permissions:
 
 jobs:
   generate_release_notes:
-    if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
     outputs:
       release_notes: ${{ env.release_notes }}
