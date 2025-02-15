@@ -1,21 +1,13 @@
-name: CI/CD Pipeline
+name: Generate Release Notes with Release Drafter
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    types:
-      - closed  # Runs when a PR is merged
-
-permissions:
-  contents: write  # Required for GitHub Pages deployment
 
 jobs:
   generate_release_notes:
     runs-on: ubuntu-latest
-    outputs:
-      release_notes: ${{ env.release_notes }}
 
     steps:
       - name: Checkout repository
@@ -23,92 +15,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug Git Commit Messages
-        run: git log --oneline --no-decorate -n 20
-
-      - name: Debug `TAG_VERSION` from build
-        run: |
-          echo "🔍 Retrieved TAG_VERSION in generate_release_tag: ${{ needs.build.outputs.TAG_VERSION }}"
-
-      - name: Find Previous Release Tag
-        id: get_previous_tag
-        run: |
-          echo "🔍 Fetching all tags..."
-          git fetch --tags
-          git tag -l --sort=-v:refname
-          
-          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-          
-          if [ -z "$PREV_TAG" ]; then
-            echo "⚠️ No previous version tag found, using the first commit."
-            PREV_TAG=$(git rev-list --max-parents=0 HEAD)
-          fi
-          
-          echo "🔍 Previous release tag: $PREV_TAG"
-          echo "PREV_TAG=$PREV_TAG" >> $GITHUB_ENV
-
-
       - name: Generate Release Notes
         id: generate_notes
-        uses: mikepenz/release-changelog-builder-action@v5
+        uses: release-drafter/release-drafter@v5
         with:
-          commitMode: true
-          fetchViaCommits: true
-          configurationJson: |
-            {
-              "template": "# Extracted Commits Debugging\n\n{{COMMITS}}\n\n---\n\n# Changelog\n\n{{CHANGELOG}}",
-              "categories": [
-                {
-                    "title": "## Feature",
-                    "labels": ["feat", "feature"]
-                },
-                {
-                    "title": "## Fix",
-                    "labels": ["fix", "bug"]
-                },
-                {
-                    "title": "## Docs",
-                    "labels": ["docs", "doc"]
-                },
-                {
-                    "title": "## Refactor",
-                    "labels": ["refactor"]
-                },
-                {
-                    "title": "## Chore",
-                    "labels": ["chore"]
-                },
-                {
-                    "title": "## Other",
-                    "labels": []
-                }
-              ],
-              "label_extractor": [
-                {
-                  "exclude_labels": ["release", "Release"],
-                  "pattern": "^(feat|fix|docs|chore|refactor|test|build|ci|perf|style|revert)[:\\s-]",
-                  "target": "$1"
-                }
-              ],
-              "includeOpen": true,
-              "fetchReleaseInformation": true
-            }
+          config-name: release-drafter.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Debug Extracted Labels
-        run:
-          echo "${{ steps.generate_notes.outputs.changelog }}"
-
-
-      - name: Store Release Notes as Output
-        id: store_notes
-        run: |
-          {
-            echo "release_notes<<EOF"
-            echo "${{ steps.generate_notes.outputs.changelog }}"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Echo Generated Changelog
+        run: echo "Generated Changelog:\n${{ steps.generate_notes.outputs.changelog }}"
