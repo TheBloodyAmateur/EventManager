@@ -1,5 +1,6 @@
 name-template: 'Release $NEXT_PATCH_VERSION'
 tag-template: 'v$NEXT_PATCH_VERSION'
+
 categories:
   - title: '🚀 Features'
     labels: [ 'feat' ]
@@ -11,5 +12,14 @@ categories:
     labels: [ 'refactor' ]
   - title: '🧹 Chores'
     labels: [ 'chore' ]
-change-template: '- $TITLE (#$NUMBER)'
-no-changes-template: 'No changes in this release.'
+
+exclude-labels: []
+include-labels: []
+include-paths: []
+exclude-contributors: []
+no-contributors-template: 'No contributors'
+
+template: |
+  ## 🚀 Changes in v$NEXT_PATCH_VERSION
+  
+  $CHANGES
