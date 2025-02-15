@@ -22,17 +22,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag-name: "v${{ github.run_number }}"
-          chapters: |
-            - title: "🚀 Features"
-              label: "feat"
-            - title: "🐛 Bug Fixes"
-              label: "fix"
-            - title: "📖 Docs"
-              label: "docs"
-            - title: "🛠️ Chores"
-              label: "chore"
-            - title: "🔄 Refactors"
-              label: "refactor"
+          chapters: '[{"title": "🚀 Features", "label": "feat"}, {"title": "🐛 Bug Fixes", "label": "fix"}, {"title": "📖 Docs", "label": "docs"}, {"title": "🛠️ Chores", "label": "chore"}, {"title": "🔄 Refactors", "label": "refactor"}]'
           warnings: true
           published-at: false
           skip-release-notes-label: "skip-release-notes"
