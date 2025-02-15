@@ -19,7 +19,6 @@ tasks.withType(JavaCompile).configureEach {
 group = 'com.github.thebloodyamateur'
 version = '1.0.38'
 
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
