@@ -13,11 +13,11 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.release.set(17)  // ✅ Set Java 17 compatibility
+    options.release.set(17)
 }
 
 group = 'com.github.thebloodyamateur'
-version = '1.0.29'
+version = '1.0.30'
 
 
 java {
@@ -45,7 +45,7 @@ publishing {
             from components.java
             groupId = 'com.github.TheBloodyAmateur'
             artifactId = 'EventManager'
-            version = '1.0.29'
+            version = '1.0.30'
         }
     }
 }
