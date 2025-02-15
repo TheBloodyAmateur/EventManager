@@ -236,7 +236,6 @@ jobs:
         with:
           commitMode: true  # Use commit-based changelog instead of PR-based
           fetchViaCommits: true
-          exclude-labels: ["release"]  # Ignore release commits
           configurationJson: |
             {
               "template": "#{{CHANGELOG}}",
