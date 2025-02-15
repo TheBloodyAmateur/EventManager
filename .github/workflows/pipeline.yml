@@ -226,7 +226,7 @@ jobs:
         run: cat release_notes.md
 
       - name: Store Release Notes as Output
-        id: store_notes
+        id: release_notes
         run: |
           {
             echo "release_notes<<EOF"
