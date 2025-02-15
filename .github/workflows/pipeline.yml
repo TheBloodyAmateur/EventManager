@@ -28,6 +28,11 @@ jobs:
             - {"title": "📖 Docs", "label": "docs"}
             - {"title": "🛠️ Chores", "label": "chore"}
             - {"title": "🔄 Refactors", "label": "refactor"}
+          warnings: true
+          published-at: false
+          skip-release-notes-label: "skip-release-notes"
+          print-empty-chapters: true
+          chapters-to-pr-without-issue: true
 
       - name: Echo Generated Changelog
         run: echo "Generated Changelog:\n${{ steps.generate_notes.outputs.release_notes }}"
