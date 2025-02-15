@@ -96,7 +96,7 @@ jobs:
 
       - name: Debug Extracted Labels
         run:
-          echo "Extracted Labels: ${{ steps.generate_notes.outputs.changelog }}"
+          echo "${{ steps.generate_notes.outputs.changelog }}"
 
 
       - name: Store Release Notes as Output
