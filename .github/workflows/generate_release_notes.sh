@@ -2,7 +2,6 @@
 
 # Get the latest tag
 LATEST_TAG=$(git describe --tags --abbrev=0)
-
 # Get commit messages since the latest tag with specific prefixes
 COMMITS=$(git log "$LATEST_TAG"..HEAD --pretty=format:"%s" | grep -E "^(feat|fix|docs|chore|refactor):")
 
