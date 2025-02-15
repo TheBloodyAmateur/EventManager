@@ -262,6 +262,7 @@ jobs:
                 },
                 {
                     "title": "## Other",
+                    "exclude_labels": ["feat", "feature", "fix", "bug", "docs", "doc", "chore", "refactor"],
                     "labels": []
                 }
               ],
