@@ -236,6 +236,7 @@ jobs:
         with:
           commitMode: true  # Use commit-based changelog instead of PR-based
           fetchViaCommits: true
+          exclude-labels: ["release"]  # Ignore release commits
           configurationJson: |
             {
               "template": "#{{CHANGELOG}}",
@@ -264,6 +265,10 @@ jobs:
       - name: Debug Generated Changelog
         run: echo "${{ steps.generate_notes.outputs.changelog }}"
 
+      - name: Store Release Notes as Output
+        run: echo "release_notes=${{ steps.generate_notes.outputs.changelog }}" >> $GITHUB_OUTPUT
+        id: store_notes
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -279,7 +284,7 @@ jobs:
           fetch-depth: 0
 
       - name: Debug Generated Changelog
-        run: echo ""${{ steps.generate_notes.outputs.changelog }}""
+        run: echo "${{ needs.generate_release_notes.outputs.release_notes }}"
 
       - name: Debug `TAG_VERSION` from build
         run: |
@@ -305,7 +310,7 @@ jobs:
         with:
           tag_name: "v${{ needs.build.outputs.TAG_VERSION }}"
           files: build/libs/*.jar
-          body: ${{ steps.generate_release_notes.outputs.release_notes }}
+          body: "${{ needs.generate_release_notes.outputs.release_notes }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
