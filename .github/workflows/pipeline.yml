@@ -249,12 +249,25 @@ jobs:
                     "labels": ["fix", "bug"]
                 },
                 {
+                    "title": "## Docs",
+                    "labels": ["docs", "doc"]
+                },
+                {
+                    "title": "## Refactor",
+                    "labels": ["refactor"]
+                },
+                {
+                    "title": "## Chore",
+                    "labels": ["chore"]
+                },
+                {
                     "title": "## Other",
                     "labels": []
                 }
               ],
               "label_extractor": [
                 {
+                  "exclude_labels": ["release","Release"],
                   "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test):",
                   "target": "$1"
                 }
