@@ -1,4 +1,4 @@
-name: Generate Release Notes with Changelog Action
+name: Generate Release Notes with AbsaOSS
 
 on:
   push:
@@ -15,22 +15,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Changelog
+      - name: Generate Release Notes
         id: generate_notes
-        uses: requarks/changelog-action@v1
+        uses: AbsaOSS/generate-release-notes@v0.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fromTag: "v${{ env.PREV_TAG }}"
-          toTag: "v${{ github.run_number }}"
-          categories: |
-            feat: 🚀 Features
-            fix: 🐛 Bug Fixes
-            docs: 📖 Documentation
-            chore: 🛠️ Chores
-            refactor: 🔄 Refactors
-          template: |
-            ## Changes in v${{ github.run_number }}
-            {{CATEGORIES}}
+          tag-name: "v${{ github.run_number }}"
+          chapters: |
+            - {"title": "🚀 Features", "label": "feat"}
+            - {"title": "🐛 Bug Fixes", "label": "fix"}
+            - {"title": "📖 Docs", "label": "docs"}
+            - {"title": "🛠️ Chores", "label": "chore"}
+            - {"title": "🔄 Refactors", "label": "refactor"}
 
       - name: Echo Generated Changelog
-        run: echo "Generated Changelog:\n${{ steps.generate_notes.outputs.changelog }}"
+        run: echo "Generated Changelog:\n${{ steps.generate_notes.outputs.release_notes }}"
