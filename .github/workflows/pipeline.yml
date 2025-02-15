@@ -234,7 +234,7 @@ jobs:
         id: generate_notes
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          mode: "COMMIT"
+          commitMode: true  # Use commit-based changelog instead of PR-based
           configurationJson: |
             {
               "template": "#{{CHANGELOG}}",
@@ -254,7 +254,7 @@ jobs:
               ],
               "label_extractor": [
                 {
-                  "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}",
+                  "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test):",
                   "target": "$1"
                 }
               ]
@@ -300,7 +300,6 @@ jobs:
           body: ${{ needs.generate_release_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   trigger_jitpack_build:
     needs: [ build, generate_release_tag ]
