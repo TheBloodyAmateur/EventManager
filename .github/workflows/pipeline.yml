@@ -235,6 +235,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v5
         with:
           commitMode: true  # Use commit-based changelog instead of PR-based
+          fetchViaCommits: true
           configurationJson: |
             {
               "template": "#{{CHANGELOG}}",
@@ -259,6 +260,10 @@ jobs:
                 }
               ]
             }
+
+      - name: Debug Generated Changelog
+        run: echo "${{ steps.generate_notes.outputs.changelog }}"
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -272,6 +277,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Debug Generated Changelog
+        run: echo ""${{ steps.generate_notes.outputs.changelog }}""
 
       - name: Debug `TAG_VERSION` from build
         run: |
@@ -297,7 +305,7 @@ jobs:
         with:
           tag_name: "v${{ needs.build.outputs.TAG_VERSION }}"
           files: build/libs/*.jar
-          body: ${{ needs.generate_release_notes.outputs.release_notes }}
+          body: ${{ steps.generate_release_notes.outputs.release_notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
