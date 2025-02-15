@@ -259,10 +259,6 @@ jobs:
                 {
                     "title": "## Chore",
                     "labels": ["chore"]
-                },
-                {
-                    "title": "## Other",
-                    "labels": []
                 }
               ],
               "label_extractor": [
