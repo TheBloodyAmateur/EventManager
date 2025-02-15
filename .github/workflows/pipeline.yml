@@ -208,6 +208,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug Git Commit Messages
+        run: git log --oneline --no-decorate -n 20
+
       - name: Debug `TAG_VERSION` from build
         run: |
           echo "🔍 Retrieved TAG_VERSION in generate_release_tag: ${{ needs.build.outputs.TAG_VERSION }}"
@@ -349,8 +352,8 @@ jobs:
 
       - name: Wait Before Checking JitPack
         run: |
-          echo "⏳ Waiting 90 seconds before checking JitPack to allow indexing..."
-          sleep 120  # Wait for 1.5 minutes
+          echo "⏳ Waiting 120 seconds before checking JitPack to allow indexing..."
+          sleep 120
 
       - name: Trigger JitPack Build
         run: |
