@@ -269,7 +269,7 @@ jobs:
               "label_extractor": [
                 {
                   "exclude_labels": ["release", "Release"],
-                  "pattern": "^(feat|feature|fix|bug|docs|doc|chore|refactor|test|build|ci|perf|style|revert):",
+                  "pattern": "^(feat|fix|docs|chore|refactor|test|build|ci|perf|style|revert):\\s",
                   "target": "$1"
                 }
               ]
@@ -350,7 +350,7 @@ jobs:
       - name: Wait Before Checking JitPack
         run: |
           echo "⏳ Waiting 90 seconds before checking JitPack to allow indexing..."
-          sleep 90  # Wait for 1.5 minutes
+          sleep 120  # Wait for 1.5 minutes
 
       - name: Trigger JitPack Build
         run: |
