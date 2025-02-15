@@ -265,7 +265,12 @@ jobs:
         run: echo "${{ steps.generate_notes.outputs.changelog }}"
 
       - name: Store Release Notes as Output
-        run: echo "release_notes=${{ steps.generate_notes.outputs.changelog }}" >> $GITHUB_OUTPUT
+        run: |
+          {
+            echo "release_notes<<EOF"
+            echo "${{ steps.generate_notes.outputs.changelog }}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
         id: store_notes
 
         env:
