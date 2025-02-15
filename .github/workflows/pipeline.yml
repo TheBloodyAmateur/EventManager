@@ -235,7 +235,7 @@ jobs:
 
       - name: Generate Release Notes
         id: generate_notes
-        uses: mikepenz/release-changelog-builder-action@v6
+        uses: mikepenz/release-changelog-builder-action@v5
         with:
           mode: "COMMIT"
           fetchViaCommits: true
