@@ -89,7 +89,9 @@ jobs:
                   "pattern": "^(feat|fix|docs|chore|refactor|test|build|ci|perf|style|revert)[:\\s-]",
                   "target": "$1"
                 }
-              ]
+              ],
+              "includeOpen": true,
+              "fetchReleaseInformation": true
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
