@@ -52,7 +52,7 @@ jobs:
         id: generate_notes
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          mode: "COMMIT"
+          commitMode: 'true'
           fetchViaCommits: true
           configurationJson: |
             {
