@@ -268,7 +268,7 @@ jobs:
               "label_extractor": [
                 {
                   "exclude_labels": ["release","Release"],
-                  "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test):",
+                  "pattern": "^(build|ci|fix|perf|refactor|revert|style|test):",
                   "target": "$1"
                 }
               ]
