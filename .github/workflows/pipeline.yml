@@ -234,7 +234,7 @@ jobs:
         id: generate_notes
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          commitMode: true  # Use commit-based changelog instead of PR-based
+          commitMode: true
           fetchViaCommits: true
           configurationJson: |
             {
@@ -259,20 +259,27 @@ jobs:
                 {
                     "title": "## Chore",
                     "labels": ["chore"]
+                },
+                {
+                    "title": "## Other",
+                    "labels": []
                 }
               ],
               "label_extractor": [
                 {
-                  "exclude_labels": ["release","Release"],
-                  "pattern": "^(build|ci|fix|perf|refactor|revert|style|test):",
+                  "exclude_labels": ["release", "Release"],
+                  "pattern": "^(feat|feature|fix|bug|docs|doc|chore|refactor|test|build|ci|perf|style|revert):",
                   "target": "$1"
                 }
               ]
             }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Debug Generated Changelog Before Storing Output
+      - name: Debug Extracted Labels
         run:
-          echo "${{ steps.generate_notes.outputs.changelog }}"
+          echo "Extracted Labels: ${{ steps.generate_notes.outputs.changelog }}"
+
 
       - name: Store Release Notes as Output
         id: store_notes
