@@ -240,6 +240,8 @@ jobs:
     needs: [ build, generate_release_notes ]
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
     runs-on: ubuntu-latest
+    outputs:
+      release_notes: ${{ steps.store_notes.outputs.release_notes
 
     steps:
       - name: Checkout repository
