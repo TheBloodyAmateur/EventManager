@@ -17,7 +17,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 group = 'com.github.thebloodyamateur'
-version = '1.0.45'
+version = '1.0.46'
 
 
 java {
@@ -45,7 +45,7 @@ publishing {
             from components.java
             groupId = 'com.github.TheBloodyAmateur'
             artifactId = 'EventManager'
-            version = '1.0.45'
+            version = '1.0.46'
         }
     }
 }
