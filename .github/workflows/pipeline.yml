@@ -14,12 +14,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Git
+      - name: Verify Script Exists
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          ls -la
+          if [ ! -f ./generate_release_notes.sh ]; then
+            echo "❌ ERROR: generate_release_notes.sh is missing!"
+            exit 1
+          fi
 
-      - name: Generate Release Notes
-        run: |
-          ./generate_release_notes.sh > release_notes.md
-          cat release_notes.md
+      - name: Make Script Executable
+        run: chmod +x ./generate_release_notes.sh
+
+      - name: Run Release Notes Script
+        run: ./generate_release_notes.sh > release_notes.md
+
+      - name: Display Release Notes
+        run: cat release_notes.md
