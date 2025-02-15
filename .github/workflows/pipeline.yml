@@ -290,7 +290,7 @@ jobs:
 
       - name: Debug Received Release Notes
         run:
-          echo "Received Release Notes: ${{ needs.generate_release_notes.outputs.release_notes }}"
+          echo "${{ needs.generate_release_notes.outputs.release_notes }}"
 
       - name: Debug `TAG_VERSION` from build
         run: |
