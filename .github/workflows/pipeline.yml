@@ -52,11 +52,11 @@ jobs:
         id: generate_notes
         uses: mikepenz/release-changelog-builder-action@v5
         with:
-          commitMode: 'true'
+          commitMode: true
           fetchViaCommits: true
           configurationJson: |
             {
-              "template": "#{{CHANGELOG}}",
+              "template": "# Debugging Extracted Commits\n\n{{COMMITS}}\n\n# Changelog\n\n{{CHANGELOG}}",
               "categories": [
                 {
                     "title": "## Feature",
@@ -86,7 +86,7 @@ jobs:
               "label_extractor": [
                 {
                   "exclude_labels": ["release", "Release"],
-                  "pattern": "^(feat|fix|docs|chore|refactor|test|build|ci|perf|style|revert):\\s",
+                  "pattern": "^(feat|fix|docs|chore|refactor|test|build|ci|perf|style|revert)[:\\s-]",
                   "target": "$1"
                 }
               ]
@@ -96,7 +96,8 @@ jobs:
 
       - name: Debug Extracted Labels
         run:
-          echo "${{ steps.generate_notes.outputs.changelog }}"
+          echo "Extracted Labels: ${{ steps.generate_notes.outputs.changelog }}"
+
 
       - name: Store Release Notes as Output
         id: store_notes
