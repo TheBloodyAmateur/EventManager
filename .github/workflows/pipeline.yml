@@ -241,7 +241,7 @@ jobs:
           fetchViaCommits: true
           configurationJson: |
             {
-              "template": "#{{CHANGELOG}}",
+              "template": "# Debugging Extracted Commits\n\n{{COMMITS}}\n\n# Changelog\n\n{{CHANGELOG}}",
               "categories": [
                 {
                     "title": "## Feature",
@@ -265,7 +265,6 @@ jobs:
                 },
                 {
                     "title": "## Other",
-                    "exclude_labels": ["feat", "feature", "fix", "bug", "docs", "doc", "chore", "refactor"],
                     "labels": []
                 }
               ],
