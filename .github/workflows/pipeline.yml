@@ -347,6 +347,11 @@ jobs:
         run: |
           echo "🔍 Retrieved TAG_VERSION in trigger_jitpack_build: ${{ needs.build.outputs.TAG_VERSION }}"
 
+      - name: Wait Before Checking JitPack
+        run: |
+          echo "⏳ Waiting 90 seconds before checking JitPack to allow indexing..."
+          sleep 90  # Wait for 1.5 minutes
+
       - name: Trigger JitPack Build
         run: |
           TAG_VERSION="${{ needs.build.outputs.TAG_VERSION }}"
