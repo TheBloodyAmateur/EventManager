@@ -1,4 +1,4 @@
-name: Generate Release Notes with Release Drafter
+name: Generate Release Notes with Changelog Action
 
 on:
   push:
@@ -15,13 +15,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Release Notes
+      - name: Generate Changelog
         id: generate_notes
-        uses: release-drafter/release-drafter@v5
+        uses: requarks/changelog-action@v1
         with:
-          config-name: release-drafter.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fromTag: "v${{ env.PREV_TAG }}"
+          toTag: "v${{ github.run_number }}"
+          categories: |
+            feat: 🚀 Features
+            fix: 🐛 Bug Fixes
+            docs: 📖 Documentation
+            chore: 🛠️ Chores
+            refactor: 🔄 Refactors
+          template: |
+            ## Changes in v${{ github.run_number }}
+            {{CATEGORIES}}
 
       - name: Echo Generated Changelog
         run: echo "Generated Changelog:\n${{ steps.generate_notes.outputs.changelog }}"
