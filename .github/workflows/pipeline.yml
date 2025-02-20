@@ -86,6 +86,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Configure Git User & Authentication
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Generate Javadoc
         run: ./gradlew javadoc --info
 
@@ -100,16 +108,24 @@ jobs:
         run: |
           git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
 
-      - name: Configure Git User & Authentication
+      - name: Generate modified javadoc for gh-branch
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          mkdir -p docs/javadoc/${{ env.VERSION }}
+          cp -r build/docs/javadoc/* docs/javadoc/${{ env.VERSION }}/
+          rm -rf docs/javadoc/latest
+          cp -r docs/javadoc/${{ env.VERSION }} docs/javadoc/latest
 
       - name: List content of the directory
         run: ls -la
+
+      - name: Commit javadoc to `gh-pages` branch
+        run: |
+          cd docs/javadoc/
+          git add -A
+          git commit -m "Deploy Javadoc for version ${{ env.VERSION }}"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   generate_release_notes:
     needs: build
