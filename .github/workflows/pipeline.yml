@@ -163,7 +163,11 @@ jobs:
             exit 0
           fi
           
-          git commit -m "Deploy Javadoc v${{ env.VERSION }}"
+          git commit -m "Deploy Javadoc ${{ env.VERSION }}"
+          
+          # Set GitHub remote URL with token authentication
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
