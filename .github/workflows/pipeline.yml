@@ -109,32 +109,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Store Javadoc with Versioning
-        run: |
-          cp -r build/docs/javadoc gh-pages/javadoc/${{ env.VERSION }}/
-          
-          # Ensure "latest" always points to the newest version
-          rm -rf gh-pages/javadoc/latest
-          cp -r gh-pages/javadoc/${{ env.VERSION }} gh-pages/javadoc/latest
-
-      - name: Grant execute permission for Gradle
-        run: chmod +x scripts/generate_index.sh
-
-      - name: Generate Javadoc Index
-        run: ./scripts/generate_index.sh
-
-      - name: Push Changes to GitHub Pages
-        run: |
-          cd gh-pages
-          git add .
-          if git diff --staged --quiet; then
-            echo "⚠️ No changes to commit. Skipping push."
-            exit 0
-          fi
-          git commit -m "Deploy Javadoc v${{ env.VERSION }}"
-          git push origin gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: List content of the directory
+        run: ls -la
 
   generate_release_notes:
     needs: build

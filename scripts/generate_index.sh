@@ -1,6 +1,5 @@
-#!/bin/bash
 
-# Create index.html dynamically with improved styling
+# Create index.html at the root of gh-pages
 echo '<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,6 +68,7 @@ echo '<!DOCTYPE html>
         <p>Select a version to view:</p>
         <ul>' > gh-pages/index.html
 
+# Loop through all versioned Javadoc folders inside gh-pages/javadoc/
 for dir in gh-pages/javadoc/*; do
   if [[ -d "$dir" ]]; then
     version=$(basename "$dir")
