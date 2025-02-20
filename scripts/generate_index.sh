@@ -73,7 +73,8 @@ for dir in gh-pages/javadoc/*; do
   if [[ -d "$dir" ]]; then
     version=$(basename "$dir")
     echo "Generating index for version $version"
-    echo "<li><a href='$version/index.html'>Version $version</a></li>" >> gh-pages/index.html
+    echo "<li><a href='javadoc/$version/index.html'>Version $version</a></li>"
+    echo "<li><a href='javadoc/$version/index.html'>Version $version</a></li>" >> gh-pages/index.html
   fi
 done
 
