@@ -114,9 +114,12 @@ jobs:
           rm -rf docs/javadoc/latest
           cp -r docs/javadoc/${{ env.VERSION }} docs/javadoc/latest
 
+      - name: Chmod +x for scripts
+        run: chmod +x ./scripts/generate_index.sh
+
       - name: Generate Javadoc Index at gh-pages Root
         run: |
-          ./scripts/generate_javadoc_index.sh
+          ./scripts/generate_index.sh
 
       - name: List content of the directory
         run: ls -la
