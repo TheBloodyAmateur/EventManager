@@ -86,13 +86,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Generate Javadoc with Sidebar
+      - name: Generate Javadoc
         run: ./gradlew javadoc --info
 
       - name: Get Version from Tag
         id: get_version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "🔍 Detected version: $VERSION"
 
@@ -111,11 +111,11 @@ jobs:
 
       - name: Store Javadoc with Versioning
         run: |
-          cp -r build/docs/javadoc gh-pages/javadoc/$VERSION/
+          cp -r build/docs/javadoc gh-pages/javadoc/${{ env.VERSION }}/
           
           # Ensure "latest" always points to the newest version
           rm -rf gh-pages/javadoc/latest
-          cp -r gh-pages/javadoc/$VERSION gh-pages/javadoc/latest
+          cp -r gh-pages/javadoc/${{ env.VERSION }} gh-pages/javadoc/latest
 
       - name: Grant execute permission for Gradle
         run: chmod +x scripts/generate_index.sh
