@@ -109,8 +109,7 @@ jobs:
 
       - name: List content of the directory
         run: |
-          mkdir -p javadoc/${{ env.VERSION }}
-          ls -la javadoc/${{ env.VERSION }}
+          ls -la ..
 
       - name: Clone or Create `gh-pages` Branch
         run: |
@@ -118,6 +117,7 @@ jobs:
           cd gh-pages
           
           # Copy new Javadoc files
+          mkdir -p javadoc/${{ env.VERSION }}
           cp -r javadoc/${{ env.VERSION }}/* javadoc/${{ env.VERSION }}/
 
           # Ensure "latest" always points to the most recent Javadoc
