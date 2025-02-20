@@ -109,8 +109,8 @@ jobs:
 
       - name: List content of the directory
         run: |
-          ls -la
           mkdir -p javadoc/${{ env.VERSION }}
+          ls -la
 
       - name: Clone or Create `gh-pages` Branch
         run: |
