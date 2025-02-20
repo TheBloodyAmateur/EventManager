@@ -111,6 +111,41 @@ jobs:
         run: |
           ls -la 
 
+      - name: Clone or Create `gh-pages` Branch
+        run: |
+          git clone --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
+          cd gh-pages
+          
+          # Copy new Javadoc files
+          mkdir -p javadoc/${{ env.VERSION }}
+          cp -r ../build/docs/javadoc/${{ env.VERSION }}/* javadoc/${{ env.VERSION }}/
+
+          # Ensure "latest" always points to the most recent Javadoc
+          rm -rf javadoc/latest
+          cp -r javadoc/${{ env.VERSION }} javadoc/latest
+
+      - name: Generate Javadoc Index at gh-pages Root
+        run: |
+          chmod +x ./scripts/generate_index.sh
+          ./scripts/generate_index.sh
+          
+          # Move generated index.html to gh-pages root
+          cp ../docs/index.html .
+
+
+      - name: Commit and Push to `gh-pages`
+        run: |
+          cd gh-pages
+          git add .
+          
+          git commit -m "Deploy Javadoc ${{ env.VERSION }}"
+          
+          # Ensure authentication before pushing
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push origin gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   generate_release_notes:
     needs: build
     if: ${{ needs.build.outputs.IS_RELEASE == 'true' }}
