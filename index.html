@@ -5,69 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventManager Javadoc</title>
     <style>
+        /* Dark Mode Theme */
+        :root {
+            --background-color: #121212;
+            --container-bg: #1E1E1E;
+            --text-color: #FFFFFF;
+            --primary-color: #5A5A5A;  /* Replaced Blue with Grey */
+            --secondary-color: #333333;
+            --hover-bg: #5A5A5A;
+            --hover-text: white;
+            --border-radius: 8px;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: "Arial", sans-serif;
+            background-color: var(--background-color);
             margin: 0;
             padding: 0;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-color);
         }
         header {
-            background: #007BFF;
+            width: 100%;
+            background: var(--primary-color);
             color: white;
             padding: 20px;
-            font-size: 24px;
+            text-align: center;
+            font-size: 26px;
             font-weight: bold;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
         }
         .container {
             max-width: 800px;
             margin: 40px auto;
-            background: white;
+            background: var(--container-bg);
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
         }
         h1 {
-            color: #333;
-            font-size: 26px;
+            color: var(--text-color);
+            font-size: 28px;
+            margin-bottom: 10px;
         }
         p {
             font-size: 18px;
-            color: #666;
+            color: #b0b0b0;
         }
         ul {
             list-style-type: none;
             padding: 0;
+            margin-top: 20px;
         }
         li {
+            background: var(--secondary-color);
             margin: 10px 0;
+            padding: 15px;
+            border-radius: var(--border-radius);
             font-size: 18px;
+            transition: all 0.3s ease-in-out;
+        }
+        li:hover {
+            background: var(--hover-bg);
+            color: var(--hover-text);
+            transform: scale(1.05);
         }
         a {
             text-decoration: none;
-            color: #007BFF;
+            color: inherit;
             font-weight: bold;
-            transition: color 0.3s ease-in-out;
-        }
-        a:hover {
-            color: #0056b3;
         }
         .footer {
             margin-top: 20px;
             font-size: 14px;
             color: #888;
         }
+        #version-selector {
+            margin-top: 20px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: var(--border-radius);
+            border: 1px solid #555;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            cursor: pointer;
+        }
+        option {
+            background: var(--background-color);
+            color: var(--text-color);
+        }
     </style>
+    <script>
+        function switchVersion() {
+            var selectedVersion = document.getElementById("version-select").value;
+            window.location.href = "/EventManager/javadoc/" + selectedVersion + "/index.html";
+        }
+    </script>
 </head>
 <body>
     <header>EventManager Javadoc</header>
     <div class="container">
         <h1>Javadoc Versions</h1>
         <p>Select a version to view:</p>
+
+        <div id="version-selector">
+            <label for="version-select"><strong>Choose Version:</strong></label>
+            <select id="version-select" onchange="switchVersion()">
+
+<option value='latest'>latest</option>
+<option value='v1.0.48'>v1.0.48</option>
+</select>
+        </div>
+
         <ul>
-<li><a href='javadoc/latest/index.html'>Version latest</a></li>
-<li><a href='javadoc/v1.0.48/index.html'>Version v1.0.48</a></li>
+<li><a href='javadoc/latest/'>Version latest</a></li>
+<li><a href='javadoc/v1.0.48/'>Version v1.0.48</a></li>
 </ul>
+    <div class="footer">🚀 Created by <a href="https://github.com/TheBloodyAmateur" style="color: #5A5A5A;">TheBloodyAmateur</a></div>
     </div>
 </body>
 </html>
