@@ -69,7 +69,7 @@ echo '<!DOCTYPE html>
         <ul>' > gh-pages/javadoc/index.html
 
 # Loop through all versioned Javadoc folders inside docs/javadoc/javadoc/
-for dir in docs/javadoc/*; do
+for dir in gh-pages/javadoc/*; do
   if [[ -d "$dir" ]]; then
     version=$(basename "$dir")
     echo "Generating index for version $version"
