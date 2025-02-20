@@ -108,7 +108,9 @@ jobs:
           echo "🔍 Detected version: $VERSION"
 
       - name: List content of the directory
-        run: ls -la
+        run: |
+          ls -la
+          mkdir -p javadoc/${{ env.VERSION }}
 
       - name: Clone or Create `gh-pages` Branch
         run: |
@@ -116,8 +118,7 @@ jobs:
           cd gh-pages
           
           # Copy new Javadoc files
-          mkdir -p javadoc/${{ env.VERSION }}
-          cp -r ../javadoc/${{ env.VERSION }}/* javadoc/${{ env.VERSION }}/
+          cp -r javadoc/${{ env.VERSION }}/* javadoc/${{ env.VERSION }}/
 
           # Ensure "latest" always points to the most recent Javadoc
           rm -rf javadoc/latest
