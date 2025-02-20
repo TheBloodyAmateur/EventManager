@@ -41,6 +41,22 @@ public enum EventFormatter {
                     metadata.get("lineNumber"),
                     message);
         }
+
+        @Override
+        public String formatElement(KeyValueWrapper arg) {
+            return arg.toString();
+        }
+
+        @Override
+        public String formatArguments(KeyValueWrapper... args) {
+            StringBuilder builder = new StringBuilder();
+
+            for (KeyValueWrapper arg : args) {
+                builder.append(arg.toString()).append(" ");
+            }
+
+            return builder.toString();
+        }
     },
     /**
      * The KEY_VALUE formatter formats the event metadata and arguments in a key-value format.
@@ -73,6 +89,22 @@ public enum EventFormatter {
             builder.append("message").append("=").append(message);
 
             builder.append("\n");
+
+            return builder.toString();
+        }
+
+        @Override
+        public String formatElement(KeyValueWrapper arg) {
+            return arg.toString();
+        }
+
+        @Override
+        public String formatArguments(KeyValueWrapper... args) {
+            StringBuilder builder = new StringBuilder();
+
+            for (KeyValueWrapper arg : args) {
+                builder.append(arg.toString()).append(" ");
+            }
 
             return builder.toString();
         }
@@ -118,6 +150,25 @@ public enum EventFormatter {
 
             return builder.toString();
         }
+
+        @Override
+        public String formatElement(KeyValueWrapper arg) {
+            return arg.getValue();
+        }
+
+        @Override
+        public String formatArguments(KeyValueWrapper... args) {
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = 0; i < args.length; i++) {
+                builder.append(args[i].getValue());
+                if (i < args.length - 1) {
+                    builder.append(",");
+                }
+            }
+
+            return builder.toString();
+        }
     },
     /**
      * The XML formatter formats the event metadata and arguments in an XML format.
@@ -143,6 +194,27 @@ public enum EventFormatter {
             builder.append("<").append("message").append(">").append(message).append("</").append("message").append(">");
 
             builder.append("</event>\n");
+
+            return builder.toString();
+        }
+
+        @Override
+        public String formatElement(KeyValueWrapper arg) {
+            String end = "</" + arg.getKey() + ">";
+            return "<" + arg.getKey() + ">" + arg.getValue() + end;
+        }
+
+        @Override
+        public String formatArguments(KeyValueWrapper... args) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append("<args>");
+
+            for (KeyValueWrapper arg : args) {
+                builder.append("<").append(arg.getKey()).append(">").append(arg.getValue()).append("</").append(arg.getKey()).append(">");
+            }
+
+            builder.append("</args>");
 
             return builder.toString();
         }
@@ -178,6 +250,20 @@ public enum EventFormatter {
             return convertToJson(event);
         }
 
+        @Override
+        public String formatElement(KeyValueWrapper arg) {
+            return "\"" + arg.getKey() + "\": \"" + arg.getValue() + "\"";
+        }
+
+        @Override
+        public String formatArguments(KeyValueWrapper... args) {
+            Map<String, Object> event = new HashMap<>();
+            for (KeyValueWrapper arg : args) {
+                event.put(arg.getKey(), arg.getValue());
+            }
+            return "\"args\": {" + convertToJson(event).substring(1, convertToJson(event).length() - 2) + "}";
+        }
+
         private String convertToJson(Map<String, Object> event) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
@@ -205,4 +291,20 @@ public enum EventFormatter {
      * @return the formatted event as a string.
      */
     public abstract String format(Map<String, String> metadata, String message);
+
+    /**
+     * Formats the event element.
+     *
+     * @param arg the event element.
+     * @return the formatted event element as a string.
+     */
+    public abstract String formatElement(KeyValueWrapper arg);
+
+    /**
+     * Formats the event arguments.
+     *
+     * @param args the event arguments.
+     * @return the formatted event arguments as a string.
+     */
+    public abstract String formatArguments(KeyValueWrapper... args);
 }
