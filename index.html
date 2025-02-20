@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Ensure we are inside the correct directory
+if [ ! -d "gh-pages" ]; then
+echo "Error: gh-pages branch directory not found!"
+exit 1
+fi
+
 # Create index.html at the root of gh-pages
 echo '<!DOCTYPE html>
 <html lang="en">
@@ -111,38 +117,38 @@ echo '<!DOCTYPE html>
     </script>
 </head>
 <body>
-    <header>EventManager Javadoc</header>
-    <div class="container">
-        <h1>Javadoc Versions</h1>
-        <p>Select a version to view:</p>
+<header>EventManager Javadoc</header>
+<div class="container">
+    <h1>Javadoc Versions</h1>
+    <p>Select a version to view:</p>
 
-        <div id="version-selector">
-            <label for="version-select"><strong>Choose Version:</strong></label>
-            <select id="version-select" onchange="switchVersion()">
-' > gh-pages/index.html
+    <div id="version-selector">
+        <label for="version-select"><strong>Choose Version:</strong></label>
+        <select id="version-select" onchange="switchVersion()">
+            ' > gh-pages/index.html
 
-# Loop through all versioned Javadoc folders inside gh-pages/javadoc/
-for dir in gh-pages/javadoc/*; do
-  if [[ -d "$dir" ]]; then
-    version=$(basename "$dir")
-    echo "<option value='$version'>$version</option>" >> gh-pages/index.html
-  fi
-done
+            # Loop through all versioned Javadoc folders inside gh-pages/javadoc/
+            for dir in gh-pages/javadoc/*; do
+            if [[ -d "$dir" ]]; then
+            version=$(basename "$dir")
+            echo "<option value='$version'>$version</option>" >> gh-pages/index.html
+            fi
+            done
 
-echo '</select>
-        </div>
-
-        <ul>' >> gh-pages/index.html
-
-for dir in gh-pages/javadoc/*; do
-  if [[ -d "$dir" ]]; then
-    version=$(basename "$dir")
-    echo "<li><a href='javadoc/$version/'>Version $version</a></li>" >> gh-pages/index.html
-  fi
-done
-
-echo '</ul>
-    <div class="footer">🚀 Created by <a href="https://github.com/TheBloodyAmateur" style="color: #5A5A5A;">TheBloodyAmateur</a></div>
+            echo '</select>
     </div>
+
+    <ul>' >> gh-pages/index.html
+
+        for dir in gh-pages/javadoc/*; do
+        if [[ -d "$dir" ]]; then
+        version=$(basename "$dir")
+        echo "<li><a href='javadoc/$version/'>Version $version</a></li>" >> gh-pages/index.html
+        fi
+        done
+
+        echo '</ul>
+    <div class="footer">🚀 Created by <a href="https://github.com/TheBloodyAmateur" style="color: #5A5A5A;">TheBloodyAmateur</a></div>
+</div>
 </body>
 </html>' >> gh-pages/index.html

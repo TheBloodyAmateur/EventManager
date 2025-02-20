@@ -39,6 +39,11 @@ public class EventCreator {
         }
     }
 
+    /**
+     * Appends a key-value pair to the event log.
+     * @param key The key.
+     * @param value The value .
+     * */
     private void appendElement(String key, String value) {
         this.event.append(this.formatter.formatElement(new KeyValueWrapper(key, value)));
     }
