@@ -115,6 +115,7 @@ jobs:
         run: |
           git clone --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
           cd gh-pages
+          ls -la
           
           # Copy new Javadoc files
           mkdir -p javadoc/${{ env.VERSION }}
@@ -136,7 +137,7 @@ jobs:
       - name: Commit and Push to `gh-pages`
         run: |
           cd gh-pages
-          git add .
+          git add javadoc
           
           git commit -m "Deploy Javadoc ${{ env.VERSION }}"
           
