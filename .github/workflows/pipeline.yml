@@ -117,7 +117,7 @@ jobs:
           
           # Copy new Javadoc files
           mkdir -p javadoc/${{ env.VERSION }}
-          cp -r ../docs/javadoc/${{ env.VERSION }}/* javadoc/${{ env.VERSION }}/
+          cp -r ../javadoc/${{ env.VERSION }}/* javadoc/${{ env.VERSION }}/
 
           # Ensure "latest" always points to the most recent Javadoc
           rm -rf javadoc/latest
