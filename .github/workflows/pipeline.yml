@@ -108,7 +108,7 @@ jobs:
           echo "🔍 Detected version: $VERSION"
 
       - name: List content of the directory
-        run: ls -la docs/javadoc
+        run: ls -la
 
       - name: Clone or Create `gh-pages` Branch
         run: |
