@@ -20,7 +20,7 @@ class EventCreatorTest {
 
     @Test
     void testJSONEventThree() {
-        String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args(new KeyValueWrapper("args", "arg1")).create();
+        String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).create();
         assertEquals("{\"lineNumber\": \"23\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"}}", eventCreator);
     }
 
@@ -38,7 +38,7 @@ class EventCreatorTest {
 
     @Test
     void testXMLEventThree() {
-        String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args(new KeyValueWrapper("args", "arg1")).create();
+        String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).create();
         assertEquals("<event><lineNumber>41</lineNumber><message>Hello, World!</message><args><args>arg1</args></args></event>", eventCreator);
     }
 
@@ -50,13 +50,13 @@ class EventCreatorTest {
 
     @Test
     void testCSVEventTwo() {
-        String eventCreator = new EventCreator("csv").lineNumber().message("Hello, World!").create();
-        assertEquals("53,Hello, World!", eventCreator);
+        String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").create();
+        assertEquals("53,Hello World!", eventCreator);
     }
 
     @Test
     void testCSVEventThree() {
-        String eventCreator = new EventCreator("csv").lineNumber().message("Hello, World!").args(new KeyValueWrapper("args", "arg1")).create();
-        assertEquals("59,Hello, World!,arg1", eventCreator);
+        String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").args("args",new KeyValueWrapper("args", "arg1")).create();
+        assertEquals("59,Hello World!,arg1", eventCreator);
     }
 }

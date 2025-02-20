@@ -14,6 +14,9 @@ public class TimeStampFormatter {
      * @return true if the time format is valid, false otherwise.
      */
     public static boolean isValidTimeFormat(String timeFormat) {
+        if (timeFormat == null || timeFormat.isEmpty()) {
+            return false;
+        }
         try {
             DateTimeFormatter.ofPattern(timeFormat);
             return true;

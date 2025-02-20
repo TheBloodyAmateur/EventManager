@@ -1,5 +1,7 @@
 package com.github.eventmanager.formatters;
 
+import java.text.SimpleDateFormat;
+
 /**
  * The EventCreator class is a builder class that creates event logs.
  * Contrary to the EventFormatter class, it can create event logs with a custom format. The format can be specified by
@@ -16,6 +18,11 @@ public class EventCreator {
     private final EventFormatter formatter;
     private String formatSeperator = null;
 
+    /**
+     * The constructor of the EventCreator class.
+     * @param format The format of the event log. The format can be one of the following: "json", "xml", "csv", or
+     *               "key-value". If the format is not one of the specified formats, the default format is "key-value".
+     * */
     public EventCreator(String format) {
         this.eventFormat = format;
         switch (format) {
@@ -48,76 +55,143 @@ public class EventCreator {
         this.event.append(this.formatter.formatElement(new KeyValueWrapper(key, value)));
     }
 
-    private void appendArguments(KeyValueWrapper ... args) {
-        this.event.append(this.formatter.formatArguments(args));
+    /**
+     * Appends a list of key-value pairs to the event log.
+     * @param args The list of key-value pairs.
+     * */
+    private void appendArguments(String body, KeyValueWrapper ... args) {
+        this.event.append(this.formatter.formatArguments(body, args));
     }
 
+    /**
+     * Appends a separator to the event log.
+     * */
     private void appendSeperator() {
         if(this.formatSeperator != null) {
             this.event.append(this.formatSeperator);
         }
     }
 
+    /**
+     * Appends the line number of the log to the event log.
+     * @return The EventCreator object.
+     * */
     public EventCreator lineNumber() {
         appendElement("lineNumber", String.valueOf(this.lineNumber));
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the timestamp of the log to the event log.
+     * @param timestampFormat The format of the timestamp. If the format is not valid, the current timestamp is used.
+     *                        The format should be in the form of a pattern that can be used by the DateTimeFormatter
+     * @return The EventCreator object.
+     * */
     public EventCreator timestamp(String timestampFormat) {
-        appendElement("timestamp", timestampFormat);
+        if(TimeStampFormatter.isValidTimeFormat(timestampFormat)) {
+            String timestamp = (new SimpleDateFormat(timestampFormat)).format(System.currentTimeMillis() / 1000);
+            appendElement("timestamp", timestamp);
+        } else {
+            String timestamp = (new SimpleDateFormat("dd.MM.yyyy h:mm:ss.SSS a z")).format(System.currentTimeMillis() / 1000);
+            appendElement("timestamp", timestamp);
+        }
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the level of the log to the event log.
+     * @param level The level of the log.
+     * @return The EventCreator object.
+     * */
     public EventCreator level(String level) {
         appendElement("level", level);
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the class name of the log to the event log.
+     * @return The EventCreator object.
+     * */
     public EventCreator className() {
         appendElement("className", this.className);
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the method name of the log to the event log.
+     * @return The EventCreator object.
+     * */
     public EventCreator methodName() {
         appendElement("methodName", this.methodName);
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the exception of the log to the event log.
+     * @param exception The exception of the log.
+     * @return The EventCreator object.
+     * */
     public EventCreator exception(String exception) {
         appendElement("exception", exception);
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the message of the log to the event log.
+     * @param message The message of the log.
+     * @return The EventCreator object.
+     * */
     public EventCreator message(String message) {
         appendElement("message", message);
         appendSeperator();
         return this;
     }
 
+    /**
+     * Appends the arguments of the log to the event log.
+     * @param args The arguments of the log.
+     * @return The EventCreator object.
+     * */
     public EventCreator args(String args) {
         appendElement("args", args);
         appendSeperator();
         return this;
     }
 
-    public EventCreator args(KeyValueWrapper args) {
-        appendArguments(args);
+    /**
+     * Appends the key-value pairs of the log to the event log.
+     * @param body The body of the log.
+     * @param args The key-value pairs of the log.
+     * @return The EventCreator object.
+     * */
+    public EventCreator args(String body, KeyValueWrapper args) {
+        appendArguments(body, args);
         appendSeperator();
         return this;
     }
 
-    public EventCreator args(KeyValueWrapper ... args) {
-        appendArguments(args);
+    /**
+     * Appends the key-value pairs of the log to the event log.
+     * @param body The body of the log.
+     * @param args The key-value pairs of the log.
+     * @return The EventCreator object.
+     * */
+    public EventCreator args(String body, KeyValueWrapper ... args) {
+        appendArguments(body, args);
         appendSeperator();
         return this;
     }
 
+    /**
+     * Finalizes the event log and returns it as a string.
+     * @return The event log as a string.
+     * */
     public String create() {
         switch (eventFormat) {
             case "json":

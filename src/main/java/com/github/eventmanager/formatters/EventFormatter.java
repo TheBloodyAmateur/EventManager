@@ -48,7 +48,7 @@ public enum EventFormatter {
         }
 
         @Override
-        public String formatArguments(KeyValueWrapper... args) {
+        public String formatArguments(String body, KeyValueWrapper... args) {
             StringBuilder builder = new StringBuilder();
 
             for (KeyValueWrapper arg : args) {
@@ -99,7 +99,7 @@ public enum EventFormatter {
         }
 
         @Override
-        public String formatArguments(KeyValueWrapper... args) {
+        public String formatArguments(String body, KeyValueWrapper... args) {
             StringBuilder builder = new StringBuilder();
 
             for (KeyValueWrapper arg : args) {
@@ -157,7 +157,7 @@ public enum EventFormatter {
         }
 
         @Override
-        public String formatArguments(KeyValueWrapper... args) {
+        public String formatArguments(String body, KeyValueWrapper... args) {
             StringBuilder builder = new StringBuilder();
 
             for (int i = 0; i < args.length; i++) {
@@ -205,16 +205,16 @@ public enum EventFormatter {
         }
 
         @Override
-        public String formatArguments(KeyValueWrapper... args) {
+        public String formatArguments(String body, KeyValueWrapper... args) {
             StringBuilder builder = new StringBuilder();
 
-            builder.append("<args>");
+            builder.append("<").append(body).append(">");
 
             for (KeyValueWrapper arg : args) {
                 builder.append("<").append(arg.getKey()).append(">").append(arg.getValue()).append("</").append(arg.getKey()).append(">");
             }
 
-            builder.append("</args>");
+            builder.append("</").append(body).append(">");
 
             return builder.toString();
         }
@@ -256,7 +256,7 @@ public enum EventFormatter {
         }
 
         @Override
-        public String formatArguments(KeyValueWrapper... args) {
+        public String formatArguments(String body, KeyValueWrapper... args) {
             Map<String, Object> event = new HashMap<>();
             for (KeyValueWrapper arg : args) {
                 event.put(arg.getKey(), arg.getValue());
@@ -303,8 +303,9 @@ public enum EventFormatter {
     /**
      * Formats the event arguments.
      *
+     * @param body the argument keyword.
      * @param args the event arguments.
      * @return the formatted event arguments as a string.
      */
-    public abstract String formatArguments(KeyValueWrapper... args);
+    public abstract String formatArguments(String body, KeyValueWrapper... args);
 }
