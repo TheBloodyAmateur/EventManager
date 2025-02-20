@@ -66,14 +66,14 @@ echo '<!DOCTYPE html>
     <div class="container">
         <h1>Javadoc Versions</h1>
         <p>Select a version to view:</p>
-        <ul>' > docs/javadoc/index.html
+        <ul>' > gh-pages/javadoc/index.html
 
 # Loop through all versioned Javadoc folders inside docs/javadoc/javadoc/
 for dir in docs/javadoc/*; do
   if [[ -d "$dir" ]]; then
     version=$(basename "$dir")
     echo "Generating index for version $version"
-    echo "<li><a href='$version/index.html'>Version $version</a></li>" >> docs/javadoc/index.html
+    echo "<li><a href='$version/index.html'>Version $version</a></li>" >> gh-pages/javadoc/index.html
   fi
 done
 
@@ -81,4 +81,4 @@ echo '</ul>
     <div class="footer">Documentation hosted on GitHub Pages</div>
     </div>
 </body>
-</html>' >> docs/javadoc/index.html
+</html>' >> gh-pages/javadoc/index.html
