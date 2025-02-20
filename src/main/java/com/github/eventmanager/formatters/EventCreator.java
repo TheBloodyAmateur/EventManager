@@ -2,7 +2,9 @@ package com.github.eventmanager.formatters;
 
 /**
  * The EventCreator class is a builder class that creates event logs.
- * Contrary to the EventFormatter class, it can create event logs with a custom format.
+ * Contrary to the EventFormatter class, it can create event logs with a custom format. The format can be specified by
+ * the user when creating an instance of the EventCreator class. The format can be one of the following: "json", "xml",
+ * "csv", or "key-value".
  * */
 public class EventCreator {
     private final StackTraceElement[] stackTraceElement = Thread.currentThread().getStackTrace();

@@ -98,7 +98,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Javadoc
-        run: ./gradlew javadoc --info
+        run: ./gradlew javadoc
 
       - name: Get Version from Tag
         id: get_version
