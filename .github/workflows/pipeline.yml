@@ -137,6 +137,10 @@ jobs:
           rm -rf gh-pages/javadoc/latest/*
           cp -r gh-pages/javadoc/$VERSION/* gh-pages/javadoc/latest/
 
+      - name: LS the current directory
+        run: |
+          ls -la
+
       - name: Generate Javadoc Index at gh-pages Root
         run: |
           chmod +x ./scripts/generate_index.sh
