@@ -1,3 +1,0 @@
-var versions = [
-'vrefs',
-'latest'];
