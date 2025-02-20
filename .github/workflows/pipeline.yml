@@ -107,6 +107,9 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "🔍 Detected version: $VERSION"
 
+      - name: List content of the directory
+        run: ls -la docs/javadoc
+
       - name: Clone or Create `gh-pages` Branch
         run: |
           git clone --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
@@ -128,8 +131,6 @@ jobs:
           # Move generated index.html to gh-pages root
           cp ../docs/index.html .
 
-      - name: List content of the directory
-        run: ls -la
 
       - name: Commit and Push to `gh-pages`
         run: |
