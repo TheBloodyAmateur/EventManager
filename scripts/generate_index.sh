@@ -1,5 +1,5 @@
 
-# Create index.html at the root of gh-pages
+# Create index.html at the root of docs/javadoc
 echo '<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,14 +66,14 @@ echo '<!DOCTYPE html>
     <div class="container">
         <h1>Javadoc Versions</h1>
         <p>Select a version to view:</p>
-        <ul>' > gh-pages/index.html
+        <ul>' > docs/javadoc/index.html
 
-# Loop through all versioned Javadoc folders inside gh-pages/javadoc/
+# Loop through all versioned Javadoc folders inside docs/javadoc/javadoc/
 for dir in docs/javadoc/*; do
   if [[ -d "$dir" ]]; then
     version=$(basename "$dir")
     echo "Generating index for version $version"
-    echo "<li><a href='docs/javadoc/$version/'>Version $version</a></li>" >> gh-pages/index.html
+    echo "<li><a href='$version/index.html'>Version $version</a></li>" >> docs/javadoc/index.html
   fi
 done
 
@@ -81,4 +81,4 @@ echo '</ul>
     <div class="footer">Documentation hosted on GitHub Pages</div>
     </div>
 </body>
-</html>' >> gh-pages/index.html
+</html>' >> docs/javadoc/index.html

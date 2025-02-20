@@ -107,10 +107,6 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "🔍 Detected version: $VERSION"
 
-      - name: Clone `gh-pages` Branch
-        run: |
-          git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }}.git gh-pages
-
       - name: Generate modified javadoc for gh-branch
         run: |
           mkdir -p docs/javadoc/${{ env.VERSION }}
@@ -120,51 +116,14 @@ jobs:
 
       - name: Generate Javadoc Index at gh-pages Root
         run: |
-          echo '<!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>EventManager Javadoc</title>
-              <style>
-                  body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
-                  h1 { color: #333; }
-                  ul { list-style-type: none; padding: 0; }
-                  li { margin: 10px 0; }
-                  a { text-decoration: none; color: #007BFF; font-weight: bold; }
-                  a:hover { text-decoration: underline; }
-              </style>
-          </head>
-          <body>
-              <h1>EventManager Javadoc</h1>
-              <p>Select a version to view the documentation:</p>
-              <ul>' > gh-pages/index.html
-
-          for dir in gh-pages/javadoc/*; do
-            if [[ -d "$dir" ]]; then
-              version=$(basename "$dir")
-              echo "<li><a href='javadoc/$version/'>Version $version</a></li>" >> gh-pages/index.html
-            fi
-          done
-
-          echo '</ul>
-              <p><em>Hosted on GitHub Pages</em></p>
-          </body>
-          </html>' >> gh-pages/index.html
+          ./scripts/generate_javadoc_index.sh
 
       - name: List content of the directory
         run: ls -la
 
       - name: Commit and Push to `gh-pages`
         run: |
-          cd gh-pages
-          git add .
-          
-          # Only commit if there are changes
-          if git diff --staged --quiet; then
-            echo "⚠️ No changes to commit. Skipping push."
-            exit 0
-          fi
+          git add docs
           
           git commit -m "Deploy Javadoc ${{ env.VERSION }}"
           
