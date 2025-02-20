@@ -152,6 +152,16 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Formats the event metadata and message.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#formatArguments(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">formatArguments</a><wbr>(<a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Formats the event arguments.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#formatElement(com.github.eventmanager.formatters.KeyValueWrapper)" class="member-name-link">formatElement</a><wbr>(<a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>&nbsp;arg)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Formats the event element.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#valueOf(java.lang.String)" class="member-name-link">valueOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -284,6 +294,32 @@ not permitted.)</div>
 <dd><code>message</code> - the event message.</dd>
 <dt>Returns:</dt>
 <dd>the formatted event as a string.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="formatElement(com.github.eventmanager.formatters.KeyValueWrapper)">
+<h3>formatElement</h3>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">formatElement</span><wbr><span class="parameters">(<a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>&nbsp;arg)</span></div>
+<div class="block">Formats the event element.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>arg</code> - the event element.</dd>
+<dt>Returns:</dt>
+<dd>the formatted event element as a string.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="formatArguments(com.github.eventmanager.formatters.KeyValueWrapper...)">
+<h3>formatArguments</h3>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">formatArguments</span><wbr><span class="parameters">(<a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</span></div>
+<div class="block">Formats the event arguments.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>args</code> - the event arguments.</dd>
+<dt>Returns:</dt>
+<dd>the formatted event arguments as a string.</dd>
 </dl>
 </section>
 </li>
