@@ -20,7 +20,9 @@ jobs:
           if [[ "${{ github.actor }}" != "TheBloodyAmateur" ]]; then
             echo "❌ Only TheBloodyAmateur can push to main!"
             exit 1
-          fi
+          fi   
+  
+
   build:
     needs: restrict_push
     runs-on: ubuntu-latest
@@ -69,6 +71,7 @@ jobs:
       - name: Debug `TAG_VERSION` from build.outputs
         run: |
           echo "🔍 build.outputs.TAG_VERSION: ${{ steps.check_release.outputs.TAG_VERSION }}"
+
 
   deploy_javadoc:
     needs: build
