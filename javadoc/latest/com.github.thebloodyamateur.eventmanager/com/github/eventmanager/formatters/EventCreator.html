@@ -81,7 +81,11 @@ loadScripts(document, 'script');</script>
 <div class="block">The EventCreator class is a builder class that creates event logs.
  Contrary to the EventFormatter class, it can create event logs with a custom format. The format can be specified by
  the user when creating an instance of the EventCreator class. The format can be one of the following: "json", "xml",
- "csv", or "key-value".</div>
+ "csv", or "key-value".
+ <br><br>
+ The class includes information which can be found in the default format, such as the class name, method name, line
+ number, timestamp, level, exception, message, and arguments. These values are generated when creating an instance of
+ the EventCreator class, this should be kept in mind when creating events.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -120,13 +124,13 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#args(java.lang.String,com.github.eventmanager.formatters.KeyValueWrapper)" class="member-name-link">args</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;body,
  <a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>&nbsp;args)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Appends the key-value pairs of the log to the event log.</div>
+<div class="block">Appends a key-value pairs o the log to the event log.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#args(java.lang.String,com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">args</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;body,
  <a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Appends the key-value pairs of the log to the event log.</div>
+<div class="block">Appends a number of key-value pairs of the log to the event log.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#className()" class="member-name-link">className</a>()</code></div>
@@ -141,7 +145,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#exception(java.lang.String)" class="member-name-link">exception</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exception)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Appends the exception of the log to the event log.</div>
+<div class="block">Appends the exception to the event.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#level(java.lang.String)" class="member-name-link">level</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;level)</code></div>
@@ -269,7 +273,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="exception(java.lang.String)">
 <h3>exception</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">exception</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exception)</span></div>
-<div class="block">Appends the exception of the log to the event log.</div>
+<div class="block">Appends the exception to the event.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>exception</code> - The exception of the log.</dd>
@@ -309,11 +313,11 @@ loadScripts(document, 'script');</script>
 <h3>args</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">args</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;body,
  <a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>&nbsp;args)</span></div>
-<div class="block">Appends the key-value pairs of the log to the event log.</div>
+<div class="block">Appends a key-value pairs o the log to the event log.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>body</code> - The body of the log.</dd>
-<dd><code>args</code> - The key-value pairs of the log.</dd>
+<dd><code>args</code> - The key-value pair of the argument body.</dd>
 <dt>Returns:</dt>
 <dd>The EventCreator object.</dd>
 </dl>
@@ -324,11 +328,11 @@ loadScripts(document, 'script');</script>
 <h3>args</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">args</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;body,
  <a href="KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</span></div>
-<div class="block">Appends the key-value pairs of the log to the event log.</div>
+<div class="block">Appends a number of key-value pairs of the log to the event log.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>body</code> - The body of the log.</dd>
-<dd><code>args</code> - The key-value pairs of the log.</dd>
+<dd><code>args</code> - The key-value pair of the argument body.</dd>
 <dt>Returns:</dt>
 <dd>The EventCreator object.</dd>
 </dl>
