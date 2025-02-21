@@ -16,7 +16,7 @@ tasks.withType(JavaCompile).configureEach {
     options.release.set(17)
 }
 
-group = 'com.github.thebloodyamateur'
+group = 'com.github.eventmanager'
 version = '1.0.48'
 
 
@@ -43,7 +43,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
-            groupId = 'com.github.TheBloodyAmateur'
+            groupId = 'com.github.eventmanager'
             artifactId = 'EventManager'
             version = '1.0.48'
         }

@@ -27,7 +27,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 dependencies {
-    implementation 'com.github.TheBloodyAmateur:EventManager:1.0.7'
+    implementation 'com.github.TheBloodyAmateur:EventManager:version'
 }
 ```
 Or for Gradle (Kotlin):
@@ -36,6 +36,6 @@ repositories {
     maven("https://jitpack.io")
 }
 dependencies {
-    implementation("com.github.TheBloodyAmateur:EventManager:1.0.7")
+    implementation("com.github.TheBloodyAmateur:EventManager:version")
 }
 ```
