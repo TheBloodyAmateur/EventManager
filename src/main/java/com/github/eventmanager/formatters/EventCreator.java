@@ -7,6 +7,11 @@ import java.text.SimpleDateFormat;
  * Contrary to the EventFormatter class, it can create event logs with a custom format. The format can be specified by
  * the user when creating an instance of the EventCreator class. The format can be one of the following: "json", "xml",
  * "csv", or "key-value".
+ * <br><br>
+ * The class includes information which can be found in the default format, such as the class name, method name, line
+ * number, timestamp, level, exception, message, and arguments. These values are generated when creating an instance of
+ * the EventCreator class, this should be kept in mind when creating events.
+ *
  * */
 public class EventCreator {
     private final StackTraceElement[] stackTraceElement = Thread.currentThread().getStackTrace();
@@ -47,7 +52,7 @@ public class EventCreator {
     }
 
     /**
-     * Appends a key-value pair to the event log.
+     * Appends a key-value pair to the event. In case the format is "csv", only the value is appended.
      * @param key The key.
      * @param value The value .
      * */
@@ -56,7 +61,7 @@ public class EventCreator {
     }
 
     /**
-     * Appends a list of key-value pairs to the event log.
+     * Appends a list of key-value pairs to the event log. In case the format is "csv", only the values are appended.
      * @param args The list of key-value pairs.
      * */
     private void appendArguments(String body, KeyValueWrapper ... args) {
@@ -132,7 +137,7 @@ public class EventCreator {
     }
 
     /**
-     * Appends the exception of the log to the event log.
+     * Appends the exception to the event.
      * @param exception The exception of the log.
      * @return The EventCreator object.
      * */
@@ -165,9 +170,9 @@ public class EventCreator {
     }
 
     /**
-     * Appends the key-value pairs of the log to the event log.
+     * Appends a key-value pairs o the log to the event log.
      * @param body The body of the log.
-     * @param args The key-value pairs of the log.
+     * @param args The key-value pair of the argument body.
      * @return The EventCreator object.
      * */
     public EventCreator args(String body, KeyValueWrapper args) {
@@ -177,9 +182,9 @@ public class EventCreator {
     }
 
     /**
-     * Appends the key-value pairs of the log to the event log.
+     * Appends a number of key-value pairs of the log to the event log.
      * @param body The body of the log.
-     * @param args The key-value pairs of the log.
+     * @param args The key-value pair of the argument body.
      * @return The EventCreator object.
      * */
     public EventCreator args(String body, KeyValueWrapper ... args) {
