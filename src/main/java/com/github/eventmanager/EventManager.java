@@ -40,7 +40,7 @@ public class EventManager {
      * @param configPath the path to the configuration file.
      */
     public EventManager(String configPath) {
-        this.logHandler = new LogHandler(new ConfigLoader(configPath));
+        this.logHandler = new LogHandler(configPath);
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
     }
 

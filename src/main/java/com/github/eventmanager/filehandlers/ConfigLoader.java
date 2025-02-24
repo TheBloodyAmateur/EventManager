@@ -10,6 +10,8 @@ import java.io.File;
 /**
  * The ConfigLoader class is responsible for loading the configuration settings for the EventManager application.
  * It reads the configuration from a specified file path and deserializes it into a Config object.
+ * @deprecated This class is deprecated and will be removed in a future release.
+ * Use the {@link LogHandler} class from the com.github.eventmanager package instead.
  */
 @Getter
 public class ConfigLoader {
@@ -29,6 +31,7 @@ public class ConfigLoader {
      * If the file cannot be loaded, default configuration values are used.
      *
      * @param configPath the path to the configuration file.
+     * @deprecated This method is deprecated and will be removed in a future release.
      */
     private void loadConfigFile(String configPath) {
         // Get the path of the file and decode it to UTF-8 to cope with special characters

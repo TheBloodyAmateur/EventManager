@@ -1,5 +1,7 @@
 package com.github.eventmanager.filehandlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.eventmanager.EventManager;
 import com.github.eventmanager.compressors.Gzip;
 import com.github.eventmanager.compressors.Zip;
 import com.github.eventmanager.filehandlers.config.Config;
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
 /**
  * The LogHandler class is responsible for managing log files for the EventManager application.
  * It handles log file creation, rotation based on size and time, and reading log file content.
+ * @since 1.0
  */
 public class LogHandler {
     @Getter
@@ -32,13 +35,35 @@ public class LogHandler {
     /**
      * Constructs a LogHandler with the specified ConfigLoader.
      *
-     * @param configLoader the ConfigLoader to load configuration settings.
+     * @param configPath the path to the configuration file.
      */
-    public LogHandler(ConfigLoader configLoader) {
-        this.config = configLoader.getConfig();
+    public LogHandler(String configPath) {
+        this.loadConfigFile(configPath);
         String fileName = this.config.getLogFile().getFileName();
         String fileExtension = this.config.getLogFile().getFileExtension();
         this.currentFileName = this.createNewFileName(fileName, fileExtension);
+    }
+
+    /**
+     * Loads the configuration file from the specified path.
+     * If the file cannot be loaded, default configuration values are used.
+     *
+     * @param configPath the path to the configuration file.
+     */
+    private void loadConfigFile(String configPath) {
+        // Get the path of the file and decode it to UTF-8 to cope with special characters
+        configPath = EventManager.setCorrectOSSeperator(configPath);
+        String path = System.getProperty("user.dir") + File.separator + configPath;
+        path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
+
+        // Load the config file
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            config = mapper.readValue(new File(path), Config.class);
+        } catch (Exception e) {
+            System.out.println("ERROR: Could not load the config file. Using default values.");
+            config = new Config();
+        }
     }
 
     /**

@@ -17,13 +17,13 @@ class EventManagerTest {
 
     @Test
     void createInstance() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         EventManager eventManager = new EventManager(logHandler);
     }
 
     @Test
     void createDefaultEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("default");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -49,7 +49,7 @@ class EventManagerTest {
 
     @Test
     void createDefaultEventsWithArguments() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("default");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -73,7 +73,7 @@ class EventManagerTest {
 
     @Test
     void createKVEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("kv");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -95,7 +95,7 @@ class EventManagerTest {
 
     @Test
     void createKVEventsWithArguments() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
         eventManager.logErrorMessage(new KeyValueWrapper("key", "value"), new KeyValueWrapper("value", "key"));
@@ -116,7 +116,7 @@ class EventManagerTest {
 
     @Test
     void createCSVEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("csv");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -138,7 +138,7 @@ class EventManagerTest {
 
     @Test
     void createCSVEventsWithArguments() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("csv");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -160,7 +160,7 @@ class EventManagerTest {
 
     @Test
     void createXMLEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("xml");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -182,7 +182,7 @@ class EventManagerTest {
 
     @Test
     void createXMLEventsWithArguments() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("xml");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -204,7 +204,7 @@ class EventManagerTest {
 
     @Test
     void createJSONEvents() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("json");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
@@ -226,7 +226,7 @@ class EventManagerTest {
 
     @Test
     void createJSONEventsWithArguments() {
-        LogHandler logHandler = new LogHandler(new ConfigLoader(configPath));
+        LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("json");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
