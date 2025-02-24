@@ -14,6 +14,7 @@ import java.io.File;
  * Use the {@link LogHandler} class from the com.github.eventmanager package instead.
  */
 @Getter
+@Deprecated
 public class ConfigLoader {
     private Config config;
 
@@ -33,6 +34,7 @@ public class ConfigLoader {
      * @param configPath the path to the configuration file.
      * @deprecated This method is deprecated and will be removed in a future release.
      */
+    @Deprecated
     private void loadConfigFile(String configPath) {
         // Get the path of the file and decode it to UTF-8 to cope with special characters
         configPath = EventManager.setCorrectOSSeperator(configPath);
