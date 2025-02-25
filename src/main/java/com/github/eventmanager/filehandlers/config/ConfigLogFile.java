@@ -7,9 +7,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * It includes settings for the file path, file name, and file extension of the log files.
  */
 public class ConfigLogFile {
-    private AtomicReference<String> filePath = new AtomicReference<>("/tmp/");
-    private AtomicReference<String> fileName = new AtomicReference<>("application");
-    private AtomicReference<String> fileExtension = new AtomicReference<>(".log");
+    private final AtomicReference<String> filePath = new AtomicReference<>("/tmp/");
+    private final AtomicReference<String> fileName = new AtomicReference<>("application");
+    private final AtomicReference<String> fileExtension = new AtomicReference<>(".log");
 
     /**
      * Gets the file path for the log files.

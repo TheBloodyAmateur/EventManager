@@ -23,6 +23,7 @@ public class ConfigLoader {
      *
      * @param configPath the path to the configuration file.
      */
+    @Deprecated
     public ConfigLoader(String configPath) {
         loadConfigFile(configPath);
     }
