@@ -202,7 +202,6 @@ class EventManagerTest {
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
-            logLines.forEach(System.out::println);
             assertTrue(logLines.stream().anyMatch(line -> line.contains("<message>test3</message>")));
             this.eventManager = eventManager;
         } catch (Exception e) {
@@ -227,7 +226,6 @@ class EventManagerTest {
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
-            logLines.forEach(System.out::println);
             assertTrue(logLines.stream().anyMatch(line -> line.contains("<darth>vader</darth><luke>skywalker</luke>")));
             this.eventManager = eventManager;
         } catch (Exception e) {

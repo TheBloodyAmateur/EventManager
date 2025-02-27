@@ -2,6 +2,7 @@ package com.github.eventmanager.filehandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.eventmanager.EventManager;
+import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.compressors.Gzip;
 import com.github.eventmanager.compressors.Zip;
 import com.github.eventmanager.filehandlers.config.Config;
@@ -25,12 +26,15 @@ import java.util.regex.Pattern;
  * It handles log file creation, rotation based on size and time, and reading log file content.
  * @since 1.0
  */
+@Getter
 public class LogHandler {
-    @Getter
     private Config config;
-    @Getter
     @Setter
     private String currentFileName;
+    @Getter
+    @Setter
+    private String currentInternalFileName;
+    private InternalEventManager internalEventManager;
 
     /**
      * Constructs a LogHandler with the specified ConfigLoader.
@@ -60,10 +64,18 @@ public class LogHandler {
         try {
             ObjectMapper mapper = new ObjectMapper();
             config = mapper.readValue(new File(path), Config.class);
+            initialiseInternalEventManager();
+            internalEventManager.logInfo("Config file loaded successfully.");
         } catch (Exception e) {
-            System.out.println("ERROR: Could not load the config file. Using default values.");
             config = new Config();
+            initialiseInternalEventManager();
+            internalEventManager.logError("Could not load the config file. Using default values.");
         }
+    }
+
+    private void initialiseInternalEventManager() {
+        this.currentInternalFileName = this.createNewFileName(this.config.getInternalEvents().getFileName(), this.config.getInternalEvents().getFileExtension());
+        internalEventManager = new InternalEventManager(this);
     }
 
     /**
@@ -105,7 +117,7 @@ public class LogHandler {
                 }
             }
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            internalEventManager.logError("An error occurred: " + e.getMessage());
         }
     }
 
@@ -136,6 +148,15 @@ public class LogHandler {
     }
 
     /**
+     * Checks if the log file for internal events exists.
+     *
+     * @return true if the log file exists, false otherwise.
+     */
+    public boolean checkIfInternalLogFileExists() {
+        return new File(this.config.getInternalEvents().getFilePath()).exists();
+    }
+
+    /**
      * Creates a new log file.
      */
     public void createLogFile() {
@@ -144,7 +165,20 @@ public class LogHandler {
             newFile.createNewFile();
             this.setCurrentFileName(String.valueOf(newFile));
         } catch (IOException e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            internalEventManager.logError("An error occurred: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Creates a new log file for internal events.
+     */
+    public void createInternalLogFile() {
+        try {
+            File newFile = new File(this.getCurrentInternalFileName());
+            newFile.createNewFile();
+            this.setCurrentInternalFileName(String.valueOf(newFile));
+        } catch (IOException e) {
+            internalEventManager.logError("An error occurred: " + e.getMessage());
         }
     }
 
@@ -159,7 +193,7 @@ public class LogHandler {
             reader = new BufferedReader(new FileReader(this.config.getLogFile().getFilePath()));
             return reader.lines().toList();
         } catch (IOException e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            internalEventManager.logError("An error occurred: " + e.getMessage());
         }
         return null;
     }
