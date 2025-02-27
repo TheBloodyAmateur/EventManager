@@ -73,6 +73,9 @@ public class LogHandler {
         }
     }
 
+    /**
+     * Initialises the internal event manager.
+     * */
     private void initialiseInternalEventManager() {
         this.currentInternalFileName = this.createNewFileName(this.config.getInternalEvents().getFileName(), this.config.getInternalEvents().getFileExtension());
         internalEventManager = new InternalEventManager(this);
