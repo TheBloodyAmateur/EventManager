@@ -177,7 +177,7 @@ public enum EventFormatter {
         for (KeyValueWrapper arg : args) {
             builder.append(arg.toString()).append(" ");
         }
-        return String.format("[%s] %s %s %s %s: %s\n",
+        return String.format("[%s] %s %s %s %s: %s",
                 metadata.get("time"),
                 metadata.get("level"),
                 metadata.get("className"),
@@ -193,7 +193,7 @@ public enum EventFormatter {
      * @return the formatted event as a string.
      * */
     private static String formatDefault(Map<String, String> metadata, String message) {
-        return String.format("[%s] %s %s %s %s: %s\n",
+        return String.format("[%s] %s %s %s %s: %s",
                 metadata.get("time"),
                 metadata.get("level"),
                 metadata.get("className"),
@@ -214,7 +214,7 @@ public enum EventFormatter {
         for (KeyValueWrapper arg : args) {
             builder.append(arg.toString()).append(" ");
         }
-        builder.append("\n");
+        builder.append("");
         return builder.toString();
     }
 
@@ -227,7 +227,7 @@ public enum EventFormatter {
     private static String formatKeyValue(Map<String, String> metadata, String message) {
         StringBuilder builder = new StringBuilder();
         appendMetadata(builder, metadata);
-        builder.append("message=").append(message).append("\n");
+        builder.append("message=").append(message);
         return builder.toString();
     }
 
@@ -246,7 +246,6 @@ public enum EventFormatter {
                 builder.append(",");
             }
         }
-        builder.append("\n");
         return builder.toString();
     }
 
@@ -274,7 +273,7 @@ public enum EventFormatter {
     private static String formatCsv(Map<String, String> metadata, String message) {
         StringBuilder builder = new StringBuilder();
         appendCsvMetadata(builder, metadata);
-        builder.append(message).append("\n");
+        builder.append(message);
         return builder.toString();
     }
 
@@ -289,7 +288,7 @@ public enum EventFormatter {
         for (KeyValueWrapper arg : args) {
             builder.append("<").append(arg.getKey()).append(">").append(arg.getValue()).append("</").append(arg.getKey()).append(">");
         }
-        builder.append("</event>\n");
+        builder.append("</event>");
         return builder.toString();
     }
 
@@ -302,7 +301,7 @@ public enum EventFormatter {
     private static String formatXml(Map<String, String> metadata, String message) {
         StringBuilder builder = stringBuilderWithMetaData(metadata);
         builder.append("<message>").append(message).append("</message>");
-        builder.append("</event>\n");
+        builder.append("</event>");
         return builder.toString();
     }
 
@@ -340,9 +339,9 @@ public enum EventFormatter {
     private static String convertToJson(Map<String, Object> event) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(event) + "\n";
+            return mapper.writeValueAsString(event);
         } catch (Exception e) {
-            return "{\"error\": \"Failed to convert to JSON\"}\n";
+            return "{\"error\": \"Failed to convert to JSON\"}";
         }
     }
 
@@ -424,7 +423,7 @@ public enum EventFormatter {
         for (KeyValueWrapper arg : args) {
             event.put(arg.getKey(), arg.getValue());
         }
-        return "\"args\": {" + convertToJson(event).substring(1, convertToJson(event).length() - 2) + "}";
+        return "\"args\": {" + convertToJson(event).substring(1, convertToJson(event).length() - 1) + "}";
     }
 
     /**

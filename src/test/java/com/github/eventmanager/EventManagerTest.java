@@ -1,8 +1,8 @@
 package com.github.eventmanager;
 
-import com.github.eventmanager.filehandlers.ConfigLoader;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.KeyValueWrapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -14,11 +14,27 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class EventManagerTest {
     String configPath = "config/loggingConfig.json";
+    private EventManager eventManager;
+
+    // Wait for events to be logged because the event thread is asynchronous
+    void waitForEvents() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterEach
+    void tearDown() {
+        eventManager.stopEventThread();
+    }
 
     @Test
     void createInstance() {
         LogHandler logHandler = new LogHandler(configPath);
         EventManager eventManager = new EventManager(logHandler);
+        this.eventManager = eventManager;
     }
 
     @Test
@@ -36,12 +52,14 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is an informational message")));
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is an error message")));
             assertTrue(logLines.stream().anyMatch(line -> line.contains("This is a fatal message")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -53,19 +71,20 @@ class EventManagerTest {
         logHandler.getConfig().getEvent().setEventFormat("default");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
-        eventManager.logErrorMessage(new KeyValueWrapper("key", "value"), new KeyValueWrapper("value", "key"));
         eventManager.logWarningMessage(new KeyValueWrapper("gisela", "brünhilde"), new KeyValueWrapper("detlef", "herzig"));
-        eventManager.logFatalMessage(new KeyValueWrapper("darth", "vader"), new KeyValueWrapper("luke", "skywalker"));
 
         // Check if the log file exists
         assertTrue(logHandler.checkIfLogFileExists());
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
-            assertTrue(logLines.stream().anyMatch(line -> line.contains("This is a fatal message")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("gisela=\"brünhilde\"")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("detlef=\"herzig\"")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -84,10 +103,12 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("key=\"value\"")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -105,10 +126,12 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("key=\"value\"")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -127,10 +150,12 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("test3")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -149,10 +174,12 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("vader,skywalker")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -171,10 +198,13 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
+            logLines.forEach(System.out::println);
             assertTrue(logLines.stream().anyMatch(line -> line.contains("<message>test3</message>")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -193,10 +223,13 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
+            logLines.forEach(System.out::println);
             assertTrue(logLines.stream().anyMatch(line -> line.contains("<darth>vader</darth><luke>skywalker</luke>")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -215,10 +248,12 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("\"message\":\"test1\"")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
@@ -237,10 +272,12 @@ class EventManagerTest {
 
         // Check if the events were logged
         try {
+            waitForEvents();
             String filePath = logHandler.getConfig().getLogFile().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
 
             assertTrue(logLines.stream().anyMatch(line -> line.contains("\"key\":\"value\"")));
+            this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }

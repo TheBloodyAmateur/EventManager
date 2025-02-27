@@ -1,6 +1,5 @@
 package com.github.eventmanager;
 
-import com.github.eventmanager.filehandlers.ConfigLoader;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
@@ -13,6 +12,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The EventManager class is responsible for managing and logging events.
@@ -22,7 +23,10 @@ public class EventManager {
     @Setter
     @Getter
     private String timeFormat;
-    private LogHandler logHandler;
+    @Getter
+    private final LogHandler logHandler;
+    private static final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
+    private final Thread eventThread;
 
     /**
      * Constructs an EventManager with the specified LogHandler.
@@ -32,16 +36,69 @@ public class EventManager {
     public EventManager(LogHandler logHandler) {
         this.logHandler = logHandler;
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
+        this.eventThread = initiatEventThread();
     }
 
     /**
      * Constructs an EventManager with the specified configuration file path.
      *
-     * @param configPath the path to the configuration file.
+     * @param configPath the path to the configuration file. Passing an empty string or invalid path will force
+     *                   the EventManager to fall back to the default configuration.
+     *
      */
     public EventManager(String configPath) {
         this.logHandler = new LogHandler(configPath);
         this.timeFormat = this.logHandler.getConfig().getEvent().getTimeFormat();
+        this.eventThread = initiatEventThread();
+    }
+
+    /**
+     * Creates a new Thread to write events to the log file. It will run indefinitely until it is interrupted (either
+     * by calling the {@link EventManager#stopEventThread()} method or by the JVM shutting down).
+     * The thread will write events to the log file if the queue is not empty and internal events are enabled.
+     * */
+    public Thread initiatEventThread() {
+        Thread thread = new Thread(() -> {
+            try {
+                // Run indefinitely until the thread is interrupted or internal events are disabled
+                while (!Thread.currentThread().isInterrupted() && logHandler.getConfig().getInternalEvents().isEnabled()) {
+                    String event = eventQueue.take();
+                    writeEventToLogFile(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        thread.start();
+        return thread;
+    }
+
+    /**
+     * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
+     * shutting down the application to ensure that all events are written to the log file.
+     */
+    public void stopEventThread() {
+        System.out.println("Stopping event thread...");
+        eventThread.interrupt();
+
+        // Process remaining events
+        while (!eventQueue.isEmpty()) {
+            try {
+                String event = eventQueue.poll();
+                if (event != null) {
+                    writeEventToLogFile(event);
+                }
+            } catch (Exception e) {
+                System.err.println("Error writing remaining events: " + e.getMessage());
+            }
+        }
+
+        try {
+            eventThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("Event thread stopped successfully.");
     }
 
     /**
@@ -63,7 +120,6 @@ public class EventManager {
      *
      * @param level   the log level of the message.
      * @param message the object to log.
-     * @throws IOException on input error.
      */
     private void logMessage(String level, Object message) {
         if (message instanceof Exception) {
@@ -83,7 +139,7 @@ public class EventManager {
             default -> EventFormatter.DEFAULT.format(metaData, message.toString());
         };
 
-        writeEventToLogFile(event);
+        writeEventToQueue(event);
     }
 
     /**
@@ -91,7 +147,6 @@ public class EventManager {
      *
      * @param level    the log level of the message.
      * @param messages an object array to be appended to the message.
-     * @throws IOException on input error.
      */
     private void logMessage(String level, KeyValueWrapper... messages) {
         Map<String, String> metaData = setMetaDataFields(level);
@@ -105,13 +160,11 @@ public class EventManager {
             default -> EventFormatter.DEFAULT.format(metaData, messages);
         };
 
-        writeEventToLogFile(event);
+        writeEventToQueue(event);
     }
 
     /**
      * Writes the event to the log file.
-     *
-     * @param event the event to write.
      */
     private void writeEventToLogFile(String event) {
         if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
@@ -127,11 +180,15 @@ public class EventManager {
             }
             String filePath = this.logHandler.getConfig().getLogFile().getFilePath();
             FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentFileName(), true);
-            myWriter.write(event);
+            myWriter.write(event + "\n");
             myWriter.close();
         } catch (IOException e) {
             System.out.println("An error occurred in writeEventToLogFile:" + e.getMessage());
         }
+    }
+
+    private void writeEventToQueue(String event) {
+        this.eventQueue.add(event);
     }
 
     /**

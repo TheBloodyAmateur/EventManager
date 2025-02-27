@@ -44,8 +44,8 @@ public class Config {
     /**
      * Configuration settings related to internal events.
      * <p>
-     * This includes settings such as the file name, file extension, and file path
-     * for the internal log files.
+     * This includes settings such as the file name, file extension, file path
+     * for the internal log files and whether to enable this setting or not.
      */
     private final ConfigInternalEvents internalEvents = new ConfigInternalEvents();
 }
