@@ -115,14 +115,24 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfLogFileExists()" class="member-name-link">checkIfLogFileExists</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfInternalLogFileExists()" class="member-name-link">checkIfInternalLogFileExists</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Checks if the log file for internal events exists.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfLogFileExists()" class="member-name-link">checkIfLogFileExists</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Checks if the log file exists.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfLogFileNeedsRotation()" class="member-name-link">checkIfLogFileNeedsRotation</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkIfLogFileNeedsRotation()" class="member-name-link">checkIfLogFileNeedsRotation</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Checks if the log file needs rotation based on size and time.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createInternalLogFile()" class="member-name-link">createInternalLogFile</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates a new log file for internal events.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createLogFile()" class="member-name-link">createLogFile</a>()</code></div>
@@ -205,10 +215,28 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="checkIfInternalLogFileExists()">
+<h3>checkIfInternalLogFileExists</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">checkIfInternalLogFileExists</span>()</div>
+<div class="block">Checks if the log file for internal events exists.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>true if the log file exists, false otherwise.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="createLogFile()">
 <h3>createLogFile</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createLogFile</span>()</div>
 <div class="block">Creates a new log file.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="createInternalLogFile()">
+<h3>createInternalLogFile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createInternalLogFile</span>()</div>
+<div class="block">Creates a new log file for internal events.</div>
 </section>
 </li>
 <li>
