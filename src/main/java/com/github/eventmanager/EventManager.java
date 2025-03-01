@@ -1,6 +1,7 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.formatters.EventCreator;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 
@@ -145,6 +146,13 @@ public class EventManager extends ManagerBase {
     }
 
     /**
+     * Logs a fatal message with a EventCreator message.
+     *
+     * @param message the message to log.
+     */
+    public void logFatalMessage(EventCreator message) {writeEventToQueue(message.create());}
+
+    /**
      * Logs an error message.
      *
      * @param exception the exception to log.
@@ -163,6 +171,13 @@ public class EventManager extends ManagerBase {
     }
 
     /**
+     * Logs an error message with a EventCreator message.
+     *
+     * @param message the message to log.
+     */
+    public void logErrorMessage(EventCreator message) {writeEventToQueue(message.create());}
+
+    /**
      * Logs a warning message.
      *
      * @param exception the exception to log.
@@ -179,6 +194,13 @@ public class EventManager extends ManagerBase {
     public void logWarningMessage(KeyValueWrapper... args) {
         logMessage("WARNING", args);
     }
+
+    /**
+     * Logs a warning message with a EventCreator message.
+     *
+     * @param message the message to log.
+     */
+    public void logWarningMessage(EventCreator message) {writeEventToQueue(message.create());}
 
     /**
      * Checks if informational logs are enabled.
@@ -214,6 +236,17 @@ public class EventManager extends ManagerBase {
     }
 
     /**
+     * Logs an informational message with a EventCreator message.
+     *
+     * @param message the message to log.
+     */
+    public void logInfoMessage(EventCreator message) {
+        if (areInfoLogsEnabled()) {
+            writeEventToQueue(message.create());
+        }
+    }
+
+    /**
      * Logs a debug message.
      *
      * @param exception the exception to log.
@@ -232,6 +265,17 @@ public class EventManager extends ManagerBase {
     public void logDebugMessage(KeyValueWrapper... args) {
         if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             logMessage("DEBUG", args);
+        }
+    }
+
+    /**
+     * Logs a debug message with a EventCreator message.
+     *
+     * @param message the message to log.
+     */
+    public void logDebugMessage(EventCreator message) {
+        if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
+            writeEventToQueue(message.create());
         }
     }
 }
