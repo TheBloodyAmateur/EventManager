@@ -52,7 +52,7 @@ public class EventManager extends ManagerBase {
         eventThread.interrupt();
 
         // Process remaining events
-        while (!eventQueue.isEmpty() && logHandler.getConfig().getInternalEvents().isEnabled()) {
+        while (!eventQueue.isEmpty()) {
             try {
                 String event = eventQueue.poll();
                 if (event != null) {
