@@ -20,6 +20,7 @@ FIXES=""
 DOCS=""
 CHORES=""
 REFACTORS=""
+SECURITY=""
 
 while IFS= read -r COMMIT; do
   if [[ $COMMIT == feat:* ]]; then
@@ -32,6 +33,8 @@ while IFS= read -r COMMIT; do
     CHORES+="- ${COMMIT#chore: }\n"
   elif [[ $COMMIT == refactor:* ]]; then
     REFACTORS+="- ${COMMIT#refactor: }\n"
+  elif [[ $COMMIT == security:* ]]; then
+    SECURITY+="- ${COMMIT#security: }\n"
   fi
 done <<< "$COMMITS"
 
@@ -50,6 +53,9 @@ if [[ -n "$CHORES" ]]; then
 fi
 if [[ -n "$REFACTORS" ]]; then
   RELEASE_NOTES+="\n### 🔄 Refactors\n$REFACTORS"
+fi
+if [[ -n "$SECURITY" ]]; then
+  RELEASE_NOTES+="\n### 🔒 Security\n$SECURITY"
 fi
 
 # Output release notes

@@ -44,7 +44,7 @@ class InternalEventManagerTest {
             String filePath = logHandler.getConfig().getInternalEvents().getFilePath();
             List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentInternalFileName()));
 
-            System.out.println(logLines.toString());
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("INTERNAL:ERROR")));
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e);
         }
