@@ -159,6 +159,18 @@ public class EventCreator {
     }
 
     /**
+     * Appends the message of the log to the event log.
+     * @param fieldName The field name of the log.
+     * @param message The message of the log.
+     * @return The EventCreator object.
+     * */
+    public EventCreator message(String fieldName, String message) {
+        appendElement(fieldName, message);
+        appendSeperator();
+        return this;
+    }
+
+    /**
      * Appends the arguments of the log to the event log.
      * @param args The arguments of the log.
      * @return The EventCreator object.
@@ -171,9 +183,15 @@ public class EventCreator {
 
     /**
      * Appends a key-value pairs o the log to the event log.
-     * @param body The body of the log.
+     * @param body The body name of the log.
      * @param args The key-value pair of the argument body.
      * @return The EventCreator object.
+     * <br><br>
+     * Example:
+     * <pre>{@code
+     *  EventCreator eventCreator = new EventCreator("json");
+     *  eventCreator.args("arguments", new KeyValueWrapper);
+     *  }</pre>
      * */
     public EventCreator args(String body, KeyValueWrapper args) {
         appendArguments(body, args);
@@ -189,6 +207,56 @@ public class EventCreator {
      * */
     public EventCreator args(String body, KeyValueWrapper ... args) {
         appendArguments(body, args);
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends the thread ID to the event.
+     * @return The EventCreator object.
+     * */
+    public EventCreator threadID() {
+        appendElement("threadID", String.valueOf(Thread.currentThread().getId()));
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends the thread name to the event.
+     * @return The EventCreator object.
+     * */
+    public EventCreator threadName() {
+        appendElement("threadName", Thread.currentThread().getName());
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends the hostname to the event log.
+     * @return The EventCreator object.
+     */
+    public EventCreator hostname() {
+        try {
+            String hostname = java.net.InetAddress.getLocalHost().getHostName();
+            appendElement("hostname", hostname);
+        } catch (Exception e) {
+            appendElement("hostname", "Unknown");
+        }
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends the IP address to the event log.
+     * @return The EventCreator object.
+     */
+    public EventCreator ipAddress() {
+        try {
+            String ipAddress = java.net.InetAddress.getLocalHost().getHostAddress();
+            appendElement("ipAddress", ipAddress);
+        } catch (Exception e) {
+            appendElement("ipAddress", "Unknown");
+        }
         appendSeperator();
         return this;
     }

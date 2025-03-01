@@ -2,6 +2,8 @@ package com.github.eventmanager.formatters;
 
 import org.junit.jupiter.api.Test;
 
+import java.net.UnknownHostException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EventCreatorTest {
@@ -9,54 +11,94 @@ class EventCreatorTest {
     @Test
     void testJSONEventOne() {
         String eventCreator = new EventCreator("json").lineNumber().create();
-        assertEquals("{\"lineNumber\": \"11\"}", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\"}", eventCreator);
     }
 
     @Test
     void testJSONEventTwo() {
         String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").create();
-        assertEquals("{\"lineNumber\": \"17\",\"message\": \"Hello, World!\"}", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\"}", eventCreator);
     }
 
     @Test
     void testJSONEventThree() {
         String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).create();
-        assertEquals("{\"lineNumber\": \"23\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"}}", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"}}", eventCreator);
     }
 
     @Test
     void testXMLEventOne() {
         String eventCreator = new EventCreator("xml").lineNumber().create();
-        assertEquals("<event><lineNumber>29</lineNumber></event>", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber></event>", eventCreator);
     }
 
     @Test
     void testXMLEventTwo() {
         String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").create();
-        assertEquals("<event><lineNumber>35</lineNumber><message>Hello, World!</message></event>", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message></event>", eventCreator);
     }
 
     @Test
     void testXMLEventThree() {
         String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).create();
-        assertEquals("<event><lineNumber>41</lineNumber><message>Hello, World!</message><args><args>arg1</args></args></event>", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args></event>", eventCreator);
     }
 
     @Test
     void testCSVEventOne() {
         String eventCreator = new EventCreator("csv").lineNumber().create();
-        assertEquals("47", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals(String.valueOf(lineNumber), eventCreator);
     }
 
     @Test
     void testCSVEventTwo() {
         String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").create();
-        assertEquals("53,Hello World!", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals(lineNumber + ",Hello World!", eventCreator);
     }
 
     @Test
     void testCSVEventThree() {
         String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").args("args",new KeyValueWrapper("args", "arg1")).create();
-        assertEquals("59,Hello World!,arg1", eventCreator);
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals(lineNumber + ",Hello World!,arg1", eventCreator);
+    }
+
+    @Test
+    void testHostName() {
+        String eventCreator = new EventCreator("json").lineNumber().hostname().create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        try {
+            String hostname = java.net.InetAddress.getLocalHost().getHostName();
+            assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"hostname\": \"" + hostname + "\"}", eventCreator);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void testIPAddress() {
+        String eventCreator = new EventCreator("json").lineNumber().ipAddress().create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        try {
+            String ipAddress = java.net.InetAddress.getLocalHost().getHostAddress();
+            assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"ipAddress\": \"" + ipAddress + "\"}", eventCreator);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void testThreadName() {
+        String eventCreator = new EventCreator("json").lineNumber().threadName().create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"threadName\": \"" + Thread.currentThread().getName() + "\"}", eventCreator);
     }
 }
