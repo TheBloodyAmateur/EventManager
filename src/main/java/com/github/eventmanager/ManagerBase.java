@@ -1,12 +1,17 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventFormatter;
+import com.github.eventmanager.processors.MaskIPV4Address;
+import com.github.eventmanager.processors.Processor;
 import lombok.Getter;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,8 +23,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 abstract class ManagerBase {
     @Getter
     protected LogHandler logHandler;
-    protected Thread eventThread = new Thread();
-    protected BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
+    protected Thread eventThread;
+    protected Thread processingThread;
+    protected final List<Processor> processors = new ArrayList<>();
+    protected final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
+    protected final BlockingQueue<String> processingQueue = new LinkedBlockingQueue<>();
 
     /**
      * Constructs an ManagerBase with the specified LogHandler.
@@ -41,12 +49,95 @@ abstract class ManagerBase {
         this.logHandler = new LogHandler(configPath);
     }
 
+    protected void initiateThreads() {
+        initialiseProcessors();
+        this.processingThread = initiateProcessingThread();
+        this.eventThread = initiateEventThread();
+    }
+
+    protected String processEvent(String event) {
+        for (Processor processor : processors) {
+            switch (this.logHandler.getConfig().getEvent().getEventFormat())
+            {
+                case "kv" -> event = processor.processKV(event);
+                case "xml" -> event = processor.processXML(event);
+                case "json" -> event = processor.processJSON(event);
+            }
+        }
+        return event;
+    }
+
+    private void initialiseProcessors(){
+        for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
+            Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
+            if (processor != null && !isProcessorAlreadyRegistered(processor)) {
+                processors.add(processor);
+            }
+        }
+    }
+
+    private Thread initiateProcessingThread(){
+        Thread thread = new Thread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = processingQueue.take();
+                    event = processEvent(event);
+                    writeEventToQueue(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        thread.start();
+        return thread;
+    }
+
+    private Processor createProcessorInstance(String className, Map<String, Object> parameters) {
+        try {
+            String packagePrefix = "com.github.eventmanager.processors.";
+            Class<?> clazz = Class.forName(packagePrefix + className);
+
+            if (clazz == MaskIPV4Address.class && parameters != null) {
+                List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
+                return new MaskIPV4Address(excludeRanges);
+            }
+
+            return (Processor) clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private boolean isProcessorAlreadyRegistered(Processor processor) {
+        return processors.stream().anyMatch(p -> p.getClass().equals(processor.getClass()));
+    }
+
     /**
      * Creates a new Thread to write events to the log file. It will run indefinitely until it is interrupted (either
      * by calling the {@link ManagerBase#stopEventThread()} method or by the JVM shutting down).
      * The thread will write events to the log file if the queue is not empty and internal events are enabled.
+     *
+     * @deprecated This method is deprecated and will be removed in a future release, as it was not intended to be
+     * used by external classes... there was also a typo. Use {@link ManagerBase#initiatEventThread()} instead.
      * */
+    @Deprecated
     public Thread initiatEventThread() {
+        Thread thread = new Thread(() -> {
+            try {
+                // Run indefinitely until the thread is interrupted
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = eventQueue.take();
+                    writeEventToLogFile(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        thread.start();
+        return thread;
+    }
+
+    protected Thread initiateEventThread() {
         Thread thread = new Thread(() -> {
             try {
                 // Run indefinitely until the thread is interrupted
@@ -126,7 +217,7 @@ abstract class ManagerBase {
             default -> EventFormatter.DEFAULT.format(metaData, formattedMessage);
         };
 
-        writeEventToQueue(event);
+        writeEventToProcessingQueue(event);
     }
 
     /**
@@ -136,5 +227,9 @@ abstract class ManagerBase {
      * */
     protected void writeEventToQueue(String event) {
         this.eventQueue.add(event);
+    }
+
+    protected void writeEventToProcessingQueue(String event) {
+        this.processingQueue.add(event);
     }
 }

@@ -13,30 +13,50 @@ public final class InternalEventManager extends ManagerBase {
     private final String prefix = "INTERNAL:";
     public InternalEventManager(LogHandler logHandler) {
         super(logHandler);
-        this.eventThread = initiatEventThread();
+        initiateThreads();
     }
 
     @Override
     public void stopEventThread() {
-        System.out.println("Stopping event thread...");
+        System.out.println("Stopping processing thread gracefully...");
+        processingThread.interrupt();
+
+        // Process remaining events in the processing queue
+        while (!processingQueue.isEmpty()) {
+            try {
+                String event = processingQueue.poll();
+                if (event != null) {
+                    processEvent(event);
+                    writeEventToQueue(event);
+                }
+            } catch (Exception e) {
+                System.out.println("Error writing remaining events: " + e.getMessage());
+            }
+        }
+        System.out.println("processingQueue was successfully processed.");
+
+        System.out.println("Stopping processing thread gracefully...");
         eventThread.interrupt();
 
         // Process remaining events
-        while (!eventQueue.isEmpty() && logHandler.getConfig().getInternalEvents().isEnabled()) {
+        while (!eventQueue.isEmpty()) {
             try {
                 String event = eventQueue.poll();
                 if (event != null) {
                     writeEventToLogFile(event);
                 }
             } catch (Exception e) {
-                System.err.println("Error writing remaining events: " + e.getMessage());
+                System.out.println("Error writing remaining events: " + e.getMessage());
             }
         }
+        System.out.println("eventQueue was successfully processed.");
 
         try {
+            processingThread.join();
             eventThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            System.out.println("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
         }
         System.out.println("Event thread stopped successfully.");
     }

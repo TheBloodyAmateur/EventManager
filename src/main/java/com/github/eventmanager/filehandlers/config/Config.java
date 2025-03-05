@@ -1,6 +1,10 @@
 package com.github.eventmanager.filehandlers.config;
 
+import com.github.eventmanager.processors.DefaultProcessors;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Config class holds the configuration settings for the EventManager application.
@@ -12,6 +16,7 @@ import lombok.Getter;
  *   <li>{@link ConfigLogFile} - Configuration settings related to log files.</li>
  *   <li>{@link ConfigLogRotate} - Configuration settings related to log file rotation.</li>
  *   <li>{@link ConfigInternalEvents} - Configuration settings related to internal events.</li>
+ *   <li>{@link ProcessorEntry} - Configuration settings related to event processors.</li>
  * </ul>
  */
 @Getter
@@ -48,4 +53,11 @@ public class Config {
      * for the internal log files and whether to enable this setting or not.
      */
     private final ConfigInternalEvents internalEvents = new ConfigInternalEvents();
+
+    /**
+     * Configuration settings related to event processors.
+     * <p>
+     * This includes settings such as the name of the processor and its parameters.
+     */
+    private final List<ProcessorEntry> processors = new ArrayList<>(DefaultProcessors.createDefault());
 }

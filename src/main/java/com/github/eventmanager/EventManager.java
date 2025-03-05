@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class EventManager extends ManagerBase {
     private final InternalEventManager internalEventManager;
+
     /**
      * Constructs an EventManager with the specified LogHandler.
      *
@@ -24,8 +25,7 @@ public class EventManager extends ManagerBase {
         super(logHandler);
         this.internalEventManager = this.logHandler.getInternalEventManager();
         internalEventManager.logInfo("EventManager started successfully.");
-        internalEventManager.logInfo("Initializing event thread...");
-        this.eventThread = initiatEventThread();
+        initiateThreads();
     }
 
     /**
@@ -40,7 +40,7 @@ public class EventManager extends ManagerBase {
         this.internalEventManager = this.logHandler.getInternalEventManager();
         internalEventManager.logInfo("EventManager started successfully.");
         internalEventManager.logInfo("Initializing event thread...");
-        this.eventThread = initiatEventThread();
+        initiateThreads();
     }
 
     /**
@@ -48,7 +48,24 @@ public class EventManager extends ManagerBase {
      * shutting down the application to ensure that all events are written to the log file.
      */
     public void stopEventThread() {
-        internalEventManager.logInfo("Stopping event thread gracefully...");
+        internalEventManager.logInfo("Stopping processing thread gracefully...");
+        processingThread.interrupt();
+
+        // Process remaining events in the processing queue
+        while (!processingQueue.isEmpty()) {
+            try {
+                String event = processingQueue.poll();
+                if (event != null) {
+                    processEvent(event);
+                    writeEventToQueue(event);
+                }
+            } catch (Exception e) {
+                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
+            }
+        }
+        internalEventManager.logInfo("processingQueue was successfully processed.");
+
+        internalEventManager.logInfo("Stopping processing thread gracefully...");
         eventThread.interrupt();
 
         // Process remaining events
@@ -62,11 +79,14 @@ public class EventManager extends ManagerBase {
                 internalEventManager.logError("Error writing remaining events: " + e.getMessage());
             }
         }
+        internalEventManager.logInfo("eventQueue was successfully processed.");
 
         try {
+            processingThread.join();
             eventThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            internalEventManager.logError("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
         }
         internalEventManager.logInfo("Event thread stopped successfully.");
     }
@@ -103,7 +123,7 @@ public class EventManager extends ManagerBase {
             default -> EventFormatter.DEFAULT.format(metaData, messages);
         };
 
-        writeEventToQueue(event);
+        writeEventToProcessingQueue(event);
     }
 
     protected void writeEventToLogFile(String event) {
@@ -123,7 +143,7 @@ public class EventManager extends ManagerBase {
             myWriter.write(event + "\n");
             myWriter.close();
         } catch (IOException e) {
-            System.out.println("An error occurred in writeEventToLogFile:" + e.getMessage());
+            internalEventManager.logError("An error occurred in writeEventToLogFile:" + e.getMessage());
         }
     }
 
