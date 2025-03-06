@@ -1,5 +1,8 @@
 package com.github.eventmanager.processors;
 
+/**
+ * The MaskPasswords class is responsible for masking passwords in event data.
+ * */
 public class MaskPasswords implements Processor {
     @Override
     public String processKV(String event) {
