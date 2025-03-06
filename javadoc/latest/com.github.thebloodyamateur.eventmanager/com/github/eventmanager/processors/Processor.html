@@ -75,10 +75,11 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="MaskIPV4Address.html" title="class in com.github.eventmanager.processors">MaskIPV4Address</a></code>, <code><a href="MaskPasswords.html" title="class in com.github.eventmanager.processors">MaskPasswords</a></code></dd>
+<dd><code><a href="EnrichingProcessor.html" title="class in com.github.eventmanager.processors">EnrichingProcessor</a></code>, <code><a href="MaskIPV4Address.html" title="class in com.github.eventmanager.processors">MaskIPV4Address</a></code>, <code><a href="MaskPasswords.html" title="class in com.github.eventmanager.processors">MaskPasswords</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">Processor</span></div>
+<div class="block">The Processor interface provides methods to process events in different formats (KV, JSON, XML).</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -95,13 +96,19 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#processJSON(java.lang.String)" class="member-name-link">processJSON</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Processes a JSON formatted event.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#processKV(java.lang.String)" class="member-name-link">processKV</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Processes a key-value formatted event.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#processXML(java.lang.String)" class="member-name-link">processXML</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Processes an XML formatted event.</div>
+</div>
 </div>
 </div>
 </div>
@@ -120,18 +127,39 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="processKV(java.lang.String)">
 <h3>processKV</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">processKV</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event)</span></div>
+<div class="block">Processes a key-value formatted event.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>event</code> - the key-value formatted event string.</dd>
+<dt>Returns:</dt>
+<dd>the processed event string.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="processJSON(java.lang.String)">
 <h3>processJSON</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">processJSON</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event)</span></div>
+<div class="block">Processes a JSON formatted event.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>event</code> - the JSON formatted event string.</dd>
+<dt>Returns:</dt>
+<dd>the processed event string.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="processXML(java.lang.String)">
 <h3>processXML</h3>
 <div class="member-signature"><span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">processXML</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;event)</span></div>
+<div class="block">Processes an XML formatted event.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>event</code> - the XML formatted event string.</dd>
+<dt>Returns:</dt>
+<dd>the processed event string.</dd>
+</dl>
 </section>
 </li>
 </ul>
