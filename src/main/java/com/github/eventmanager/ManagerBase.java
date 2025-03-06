@@ -6,6 +6,7 @@ import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.processors.MaskIPV4Address;
 import com.github.eventmanager.processors.Processor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +26,9 @@ abstract class ManagerBase {
     protected LogHandler logHandler;
     protected Thread eventThread;
     protected Thread processingThread;
-    protected final List<Processor> processors = new ArrayList<>();
+    @Getter
+    @Setter
+    protected List<Processor> processors = new ArrayList<>();
     protected final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
     protected final BlockingQueue<String> processingQueue = new LinkedBlockingQueue<>();
 

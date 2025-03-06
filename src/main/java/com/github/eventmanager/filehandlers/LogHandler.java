@@ -80,7 +80,6 @@ public class LogHandler {
      * */
     private void initialiseInternalEventManager() {
         this.currentInternalFileName = this.createNewFileName(this.config.getInternalEvents().getFileName(), this.config.getInternalEvents().getFileExtension());
-        createInternalLogFile();
         internalEventManager = new InternalEventManager(this);
     }
 
@@ -177,6 +176,8 @@ public class LogHandler {
 
     /**
      * Creates a new log file for internal events.
+     *
+     * @Deprecated This method is deprecated and will be removed in the next release, because it is not used.
      */
     public void createInternalLogFile() {
         try {
