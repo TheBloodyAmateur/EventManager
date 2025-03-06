@@ -44,7 +44,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="sub-nav-list">
 <li>Package:&nbsp;</li>
-<li>Description&nbsp;|&nbsp;</li>
+<li><a href="#package-description">Description</a>&nbsp;|&nbsp;</li>
 <li><a href="#related-package-summary">Related Packages</a>&nbsp;|&nbsp;</li>
 <li><a href="#class-summary">Classes and Interfaces</a></li>
 </ul>
@@ -65,6 +65,22 @@ loadScripts(document, 'script');</script>
 </div>
 <hr>
 <div class="package-signature">package <span class="element-name">com.github.eventmanager.processors</span></div>
+<section class="package-description" id="package-description">
+<div class="block">This package contains classes that implement various event processing functionalities.
+
+ <p>The processors in this package are responsible for handling different types of event data,
+ such as masking sensitive information (e.g., passwords, IP addresses) and enriching events with additional metadata.
+
+ <p>Classes included in this package:
+ <ul>
+   <li><a href="MaskPasswords.html" title="class in com.github.eventmanager.processors"><code>MaskPasswords</code></a> - Masks passwords in event data.</li>
+   <li><a href="MaskIPV4Address.html" title="class in com.github.eventmanager.processors"><code>MaskIPV4Address</code></a> - Masks IPv4 addresses in event data.</li>
+   <li><a href="EnrichingProcessor.html" title="class in com.github.eventmanager.processors"><code>EnrichingProcessor</code></a> - Enriches event data with additional metadata such as hostname and IP address.</li>
+ </ul>
+
+ <p>Each processor class implements the <a href="Processor.html" title="interface in com.github.eventmanager.processors"><code>Processor</code></a> interface,
+ which defines methods for processing events in different formats (KV, JSON, XML).</div>
+</section>
 <section class="summary">
 <ul class="summary-list">
 <li>
@@ -100,16 +116,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="DefaultProcessors.html" title="class in com.github.eventmanager.processors">DefaultProcessors</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">The DefaultProcessors class provides a method to create a list of default processors.</div>
+</div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="EnrichingProcessor.html" title="class in com.github.eventmanager.processors">EnrichingProcessor</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">The EnrichingProcessor class is responsible for enriching event data with additional metadata.</div>
+</div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="MaskIPV4Address.html" title="class in com.github.eventmanager.processors">MaskIPV4Address</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">The MaskIPV4Address class implements the Processor interface and provides methods to mask IPv4 addresses in
  different event formats (KV, JSON, XML).</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="MaskPasswords.html" title="class in com.github.eventmanager.processors">MaskPasswords</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">The MaskPasswords class is responsible for masking passwords in event data.</div>
+</div>
 <div class="col-first even-row-color class-summary class-summary-tab1"><a href="Processor.html" title="interface in com.github.eventmanager.processors">Processor</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">The Processor interface provides methods to process events in different formats (KV, JSON, XML).</div>
