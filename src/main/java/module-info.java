@@ -9,5 +9,6 @@ module com.github.eventmanager {
 
     exports com.github.eventmanager;
     exports com.github.eventmanager.filehandlers;
+    exports com.github.eventmanager.filehandlers.config;
     exports com.github.eventmanager.formatters;
 }
