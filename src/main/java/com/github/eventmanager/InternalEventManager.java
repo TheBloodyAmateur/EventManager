@@ -67,10 +67,10 @@ public final class InternalEventManager extends ManagerBase {
      * */
     protected void writeEventToLogFile(String event) {
         if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
-            System.out.print(event);
+            System.out.println(event);
             return;
         } else if (this.logHandler.getConfig().getEvent().getPrintAndSaveToFile()) {
-            System.out.print(event);
+            System.out.println(event);
         }
 
         try {
