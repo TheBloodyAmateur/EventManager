@@ -1,4 +1,5 @@
 name: 🐞 Bug Report
+description: Report a bug or unexpected behavior in EventManage
 labels: [bug]
 
 body:
