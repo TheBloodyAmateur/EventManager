@@ -1,0 +1,37 @@
+name: 🚀 Feature Request
+about: Suggest a new feature or improvement for EventManager
+labels: [enhancement]
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "💡 Feature Summary"
+      description: "Briefly describe the feature in one or two sentences."
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "🛠️ Detailed Description"
+      description: "Provide a detailed description of what you want the feature to achieve and how it could be used."
+    validations:
+      required: true
+
+  - type: textarea
+    id: api
+    attributes:
+      label: "📦 Proposed API (Optional)"
+      description: "Include examples of how the feature would be used in code, configuration, or logs."
+      placeholder: "Example:\n\nlogger.addProcessor(new MyFeatureProcessor());"
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "📝 Additional Notes (Optional)"
+      description: "Add any additional context, challenges, or links relevant to the feature."
+    validations:
+      required: false
