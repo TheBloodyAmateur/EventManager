@@ -5,6 +5,8 @@ import com.github.eventmanager.formatters.KeyValueWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -33,8 +35,7 @@ class EventManagerTest {
     @Test
     void createInstance() {
         LogHandler logHandler = new LogHandler(configPath);
-        EventManager eventManager = new EventManager(logHandler);
-        this.eventManager = eventManager;
+        this.eventManager = new EventManager(logHandler);
     }
 
     @Test
@@ -279,6 +280,28 @@ class EventManagerTest {
             this.eventManager = eventManager;
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testConsoleOutput() {
+        //Redirect System.out to a ByteArrayOutputStream
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        try {
+            LogHandler logHandler = new LogHandler(configPath, true);
+            logHandler.getConfig().getEvent().setPrintToConsole(true);
+            this.eventManager = new EventManager(logHandler);
+            eventManager.logErrorMessage("This is an error message");
+
+            // Check if the console output contains the error message
+            waitForEvents();
+            assertTrue(outContent.toString().contains("This is an error message"));
+        } finally {
+            // Clean up: Reset System.out
+            System.setOut(originalOut);
         }
     }
 }
