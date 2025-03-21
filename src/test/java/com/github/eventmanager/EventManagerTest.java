@@ -146,6 +146,7 @@ class EventManagerTest {
         eventManager.logFatalMessage("test3");
 
         // Check if the log file exists
+        System.out.println(logHandler.checkIfLogFileExists());
         assertTrue(logHandler.checkIfLogFileExists());
 
         // Check if the events were logged

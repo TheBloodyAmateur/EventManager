@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,9 +45,7 @@ public class LogHandler {
      */
     public LogHandler(String configPath) {
         this.loadConfigFile(configPath);
-        String fileName = this.config.getLogFile().getFileName();
-        String fileExtension = this.config.getLogFile().getFileExtension();
-        this.currentFileName = this.createNewFileName(fileName, fileExtension);
+        setInitialValues();
     }
 
     /**
@@ -57,9 +56,36 @@ public class LogHandler {
     public LogHandler(String configPath, boolean printToConsole) {
         this.printToConsole = printToConsole;
         this.loadConfigFile(configPath);
+        setInitialValues();
+    }
+
+    private void setInitialValues() {
         String fileName = this.config.getLogFile().getFileName();
         String fileExtension = this.config.getLogFile().getFileExtension();
         this.currentFileName = this.createNewFileName(fileName, fileExtension);
+        String filePath = this.config.getLogFile().getFilePath();
+        this.config.getLogFile().setFilePath(setCorrectFilePath(filePath));
+        filePath = this.config.getInternalEvents().getFilePath();
+        this.config.getInternalEvents().setFilePath(setCorrectFilePath(filePath));
+    }
+
+    /**
+     * Sets the correct file path. If the file path does not exist, the default file path is
+     * used based on the operating system.
+     *
+     * @param filePath the file path to check.
+     * @return the correct file path based on the operating system.
+     */
+    private String setCorrectFilePath(String filePath) {
+        if (Files.exists(Paths.get(filePath))) {
+            return filePath;
+        } else {
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                return "C:\\Windows\\Temp\\";
+            } else {
+                return "/tmp/";
+            }
+        }
     }
 
     /**
@@ -167,7 +193,7 @@ public class LogHandler {
      * @return true if the log file exists, false otherwise.
      */
     public boolean checkIfLogFileExists() {
-        return new File(this.config.getLogFile().getFilePath()).exists();
+        return Files.exists(Paths.get(this.config.getLogFile().getFilePath()));
     }
 
     /**
@@ -176,7 +202,7 @@ public class LogHandler {
      * @return true if the log file exists, false otherwise.
      */
     public boolean checkIfInternalLogFileExists() {
-        return new File(this.config.getInternalEvents().getFilePath()).exists();
+        return Files.exists(Paths.get(this.config.getInternalEvents().getFilePath()));
     }
 
     /**
