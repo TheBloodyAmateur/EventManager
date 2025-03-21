@@ -3,6 +3,7 @@ package com.github.eventmanager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventFormatter;
+import com.github.eventmanager.processors.EnrichingProcessor;
 import com.github.eventmanager.processors.MaskIPV4Address;
 import com.github.eventmanager.processors.Processor;
 import lombok.Getter;
@@ -72,6 +73,7 @@ abstract class ManagerBase {
 
     private void initialiseProcessors(){
         for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
+            System.out.println(entry.getName() + " " + entry.getParameters());
             Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
             if (processor != null && !isProcessorAlreadyRegistered(processor)) {
                 processors.add(processor);
@@ -100,15 +102,32 @@ abstract class ManagerBase {
             String packagePrefix = "com.github.eventmanager.processors.";
             Class<?> clazz = Class.forName(packagePrefix + className);
 
-            if (clazz == MaskIPV4Address.class && parameters != null) {
-                List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
-                return new MaskIPV4Address(excludeRanges);
-            }
+            Processor excludeRanges = getProcessor(parameters, clazz);
+            if (excludeRanges != null) return excludeRanges;
 
             return (Processor) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * Returns a Processor instance based on the given parameters and class.
+     *
+     * @param parameters the parameters to pass to the Processor.
+     * @param clazz the class of the Processor.
+     * */
+    private static Processor getProcessor(Map<String, Object> parameters, Class<?> clazz) {
+        if(parameters == null) return null;
+
+        if (clazz == MaskIPV4Address.class) {
+            List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
+            return new MaskIPV4Address(excludeRanges);
+        } else if (clazz == EnrichingProcessor.class) {
+            List<String> excludeRanges = (List<String>) parameters.get("enrichingFields");
+            return new EnrichingProcessor(excludeRanges);
+        }
+        return null;
     }
 
     private boolean isProcessorAlreadyRegistered(Processor processor) {

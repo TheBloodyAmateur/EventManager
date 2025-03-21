@@ -11,6 +11,10 @@ import java.util.List;
 public class EnrichingProcessor implements Processor {
     private List<String> enrichingFields = List.of("hostname", "ip");
 
+    public EnrichingProcessor(List<String> enrichingFields) {
+        this.enrichingFields = enrichingFields != null ? enrichingFields : this.enrichingFields;
+    }
+
     @Override
     public String processKV(String event) {
         return enrichKVEvent(event);

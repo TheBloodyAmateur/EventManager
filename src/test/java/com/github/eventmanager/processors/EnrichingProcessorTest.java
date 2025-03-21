@@ -1,9 +1,14 @@
 package com.github.eventmanager.processors;
 
+import com.github.eventmanager.EventManager;
+import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventCreator;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +19,7 @@ class EnrichingProcessorTest {
         String expectedHost;
         String expectedIp = "";
 
-        EnrichingProcessor enrichingProcessor = new EnrichingProcessor();
+        EnrichingProcessor enrichingProcessor = new EnrichingProcessor(List.of("hostname", "ip"));
         String event = new EventCreator("kv").lineNumber().create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
         String enrichedEvent = enrichingProcessor.processKV(event);
@@ -36,7 +41,7 @@ class EnrichingProcessorTest {
         String expectedHost;
         String expectedIp = "";
 
-        EnrichingProcessor enrichingProcessor = new EnrichingProcessor();
+        EnrichingProcessor enrichingProcessor = new EnrichingProcessor(List.of("hostname", "ip"));
         String event = new EventCreator("json").lineNumber().create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
 
@@ -60,7 +65,7 @@ class EnrichingProcessorTest {
         String expectedHost;
         String expectedIp = "";
 
-        EnrichingProcessor enrichingProcessor = new EnrichingProcessor();
+        EnrichingProcessor enrichingProcessor = new EnrichingProcessor(List.of("hostname", "ip"));
         String event = new EventCreator("xml").lineNumber().create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
 
@@ -77,5 +82,49 @@ class EnrichingProcessorTest {
                 "</hostname><ip>" + expectedIp + "</ip></event>";
 
         assertEquals(expected, enrichedEvent);
+    }
+
+
+    @Test
+    void testDifferentParameters() {
+        String osName = "";
+        String javaVersion = "";
+
+        EnrichingProcessor enrichingProcessor = new EnrichingProcessor(List.of("osName", "javaVersion"));
+        String event = new EventCreator("xml").lineNumber().create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+
+        String enrichedEvent = enrichingProcessor.processXML(event);
+
+        try {
+            osName = System.getProperty("os.name");
+            javaVersion = System.getProperty("java.version");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        String expected = "<event>" +
+                "<lineNumber>"+lineNumber+"</lineNumber>" +
+                "<osName>" + osName + "</osName>" +
+                "<javaVersion>" + javaVersion + "</javaVersion>" +
+                "</event>";
+
+        assertEquals(expected, enrichedEvent);
+    }
+
+    @Test
+    void addProcessorToEventManager() {
+        LogHandler logHandler = new LogHandler("");
+        logHandler.getConfig().getEvent().setEventFormat("xml");
+        logHandler.getConfig().getEvent().setPrintToConsole(true);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("EnrichingProcessor");
+        processorEntry.setParameters(Map.of("enrichingFields", List.of("osName", "javaVersion")));
+
+        logHandler.getConfig().getProcessors().add(processorEntry);
+
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logErrorMessage("This is an error message");
     }
 }
