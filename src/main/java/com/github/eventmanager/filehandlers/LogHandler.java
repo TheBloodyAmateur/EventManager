@@ -35,6 +35,7 @@ public class LogHandler {
     @Setter
     private String currentInternalFileName;
     private InternalEventManager internalEventManager;
+    private boolean printToConsole = false;
 
     /**
      * Constructs a LogHandler with the specified ConfigLoader.
@@ -42,6 +43,19 @@ public class LogHandler {
      * @param configPath the path to the configuration file.
      */
     public LogHandler(String configPath) {
+        this.loadConfigFile(configPath);
+        String fileName = this.config.getLogFile().getFileName();
+        String fileExtension = this.config.getLogFile().getFileExtension();
+        this.currentFileName = this.createNewFileName(fileName, fileExtension);
+    }
+
+    /**
+     * Constructs a LogHandler with the specified ConfigLoader.
+     *
+     * @param configPath the path to the configuration file.
+     */
+    public LogHandler(String configPath, boolean printToConsole) {
+        this.printToConsole = printToConsole;
         this.loadConfigFile(configPath);
         String fileName = this.config.getLogFile().getFileName();
         String fileExtension = this.config.getLogFile().getFileExtension();
@@ -79,6 +93,10 @@ public class LogHandler {
      * Initialises the internal event manager.
      * */
     private void initialiseInternalEventManager() {
+        if(this.printToConsole){
+            internalEventManager = new InternalEventManager(this);
+            return;
+        }
         this.currentInternalFileName = this.createNewFileName(this.config.getInternalEvents().getFileName(), this.config.getInternalEvents().getFileExtension());
         internalEventManager = new InternalEventManager(this);
     }
