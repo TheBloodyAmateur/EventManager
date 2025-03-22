@@ -89,6 +89,8 @@ public class EventManager extends ManagerBase {
             internalEventManager.logError("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
         }
         internalEventManager.logInfo("Event thread stopped successfully.");
+        internalEventManager.logInfo("EventManager stopped successfully. Shutting down internal event manager...");
+        internalEventManager.stopEventThread();
     }
 
     /**

@@ -14,12 +14,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class EventManagerTest {
+public class EventManagerTest {
     String configPath = "config/loggingConfig.json";
     private EventManager eventManager;
 
     // Wait for events to be logged because the event thread is asynchronous
-    void waitForEvents() {
+    public static void waitForEvents() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {

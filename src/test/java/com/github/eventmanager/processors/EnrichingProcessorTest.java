@@ -6,10 +6,13 @@ import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventCreator;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.eventmanager.EventManagerTest.waitForEvents;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EnrichingProcessorTest {
@@ -114,17 +117,31 @@ class EnrichingProcessorTest {
 
     @Test
     void addProcessorToEventManager() {
-        LogHandler logHandler = new LogHandler("");
-        logHandler.getConfig().getEvent().setEventFormat("xml");
-        logHandler.getConfig().getEvent().setPrintToConsole(true);
+        //Redirect System.out to a ByteArrayOutputStream
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
 
-        ProcessorEntry processorEntry = new ProcessorEntry();
-        processorEntry.setName("EnrichingProcessor");
-        processorEntry.setParameters(Map.of("enrichingFields", List.of("osName", "javaVersion")));
+        try {
+            LogHandler logHandler = new LogHandler("");
+            logHandler.getConfig().getEvent().setEventFormat("xml");
+            logHandler.getConfig().getEvent().setPrintToConsole(true);
 
-        logHandler.getConfig().getProcessors().add(processorEntry);
+            ProcessorEntry processorEntry = new ProcessorEntry();
+            processorEntry.setName("EnrichingProcessor");
+            processorEntry.setParameters(Map.of("enrichingFields", List.of("osName", "javaVersion")));
 
-        EventManager eventManager = new EventManager(logHandler);
-        eventManager.logErrorMessage("This is an error message");
+            logHandler.getConfig().getProcessors().add(processorEntry);
+
+            EventManager eventManager = new EventManager(logHandler);
+            eventManager.logErrorMessage("This is an error message");
+            waitForEvents();
+
+            assertTrue(outContent.toString().contains("<osName>"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }

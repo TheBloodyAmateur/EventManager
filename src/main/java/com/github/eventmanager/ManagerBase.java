@@ -2,10 +2,12 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
+import com.github.eventmanager.filehandlers.config.RegexEntry;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.processors.EnrichingProcessor;
 import com.github.eventmanager.processors.MaskIPV4Address;
 import com.github.eventmanager.processors.Processor;
+import com.github.eventmanager.processors.RegexProcessor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -73,7 +75,6 @@ abstract class ManagerBase {
 
     private void initialiseProcessors(){
         for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
-            System.out.println(entry.getName() + " " + entry.getParameters());
             Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
             if (processor != null && !isProcessorAlreadyRegistered(processor)) {
                 processors.add(processor);
@@ -124,8 +125,11 @@ abstract class ManagerBase {
             List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
             return new MaskIPV4Address(excludeRanges);
         } else if (clazz == EnrichingProcessor.class) {
-            List<String> excludeRanges = (List<String>) parameters.get("enrichingFields");
-            return new EnrichingProcessor(excludeRanges);
+            List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
+            return new EnrichingProcessor(enrichingFields);
+        } else if (clazz == RegexProcessor.class) {
+            List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
+            return new RegexProcessor(regexEntries);
         }
         return null;
     }

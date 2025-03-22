@@ -12,6 +12,10 @@ import java.util.List;
 public class RegexProcessor implements Processor{
     private List<RegexEntry> regexEntries;
 
+    public RegexProcessor(List<RegexEntry> regexEntries) {
+        this.regexEntries = regexEntries != null ? regexEntries : List.of();
+    }
+
     @Override
     public String processKV(String event) {
         return processEvent(event, "KV");
@@ -53,9 +57,9 @@ public class RegexProcessor implements Processor{
      */
     private String processRegex(String format, String fieldName, String value) {
         return switch (format){
-          case "KV" -> fieldName+"=\"("+ value+")\"";
-          case "JSON" -> "\""+ fieldName+"\":\\s+\""+ value+"\"";
-          case "XML" -> "<"+ fieldName+">("+ value+")</"+ fieldName+">";
+          case "KV" -> fieldName+"=\""+ value+"\"";
+          case "JSON" -> "\""+ fieldName+"\":\\ \""+ value+"\"";
+          case "XML" -> "<"+ fieldName+">"+ value+"</"+ fieldName+">";
           default -> "N\\A";
         };
     }
