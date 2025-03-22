@@ -147,6 +147,7 @@ public class LogHandler {
         File[] files = directory.listFiles();
 
         String fileName = this.config.getLogFile().getFileName();
+        String fileExtension = this.config.getLogFile().getFileExtension();
         Pattern pattern = Pattern.compile(fileName + "-(?<fileTimeStamp>[0-9\\-]+).log$");
 
         try {
@@ -157,11 +158,16 @@ public class LogHandler {
                     long size = new File(this.config.getLogFile().getFilePath()).length();
                     long creationTime = fileTime.toMillis() / 1000L;
                     long currentTime = System.currentTimeMillis() / 1000L;
+                    this.currentFileName = this.createNewFileName(fileName, fileExtension);
 
+                    // Check if the log file needs rotation based on time and set the new file name if needed
                     if ((currentTime - creationTime) > this.config.getLogRotateConfig().getRotationPeriodInSeconds()) {
                         this.rotateLogFile(file);
+                        this.currentFileName = this.createNewFileName(fileName, fileExtension);
+
                     } else if (size > this.config.getLogRotateConfig().getMaxSizeInKB()) {
                         this.rotateLogFile(file);
+                        this.currentFileName = this.createNewFileName(fileName, fileExtension);
                     }
                 }
             }
