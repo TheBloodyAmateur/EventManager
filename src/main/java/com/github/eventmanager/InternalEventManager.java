@@ -26,7 +26,7 @@ public final class InternalEventManager extends ManagerBase {
             try {
                 String event = processingQueue.poll();
                 if (event != null) {
-                    processEvent(event);
+                    event = processEvent(event);
                     writeEventToQueue(event);
                 }
             } catch (Exception e) {
