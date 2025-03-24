@@ -120,6 +120,7 @@ public class LogHandler {
      * */
     private void initialiseInternalEventManager() {
         if(this.printToConsole){
+            this.config.getEvent().setPrintToConsole(true);
             internalEventManager = new InternalEventManager(this);
             return;
         }
