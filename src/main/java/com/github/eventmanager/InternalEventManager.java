@@ -16,40 +16,11 @@ public final class InternalEventManager extends ManagerBase {
         initiateThreads();
     }
 
-    @Override
-    public void stopEventThread() {
+    public void stopPipeline() {
         System.out.println("Stopping processing thread gracefully...");
-        processingThread.interrupt();
 
-        // Process remaining events in the processing queue
-        while (!processingQueue.isEmpty()) {
-            try {
-                String event = processingQueue.poll();
-                if (event != null) {
-                    event = processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (Exception e) {
-                System.out.println("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        System.out.println("processingQueue was successfully processed.");
-
-        System.out.println("Stopping processing thread gracefully...");
-        eventThread.interrupt();
-
-        // Process remaining events
-        while (!eventQueue.isEmpty()) {
-            try {
-                String event = eventQueue.poll();
-                if (event != null) {
-                    writeEventToLogFile(event);
-                }
-            } catch (Exception e) {
-                System.out.println("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        System.out.println("eventQueue was successfully processed.");
+        stopProcessingThread();
+        stopEventThreadInternal();
 
         try {
             processingThread.join();
@@ -58,7 +29,7 @@ public final class InternalEventManager extends ManagerBase {
             Thread.currentThread().interrupt();
             System.out.println("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
         }
-        System.out.println("Event thread stopped successfully.");
+        System.out.println("Internal event managers pipeline stopped successfully.");
     }
 
     /**

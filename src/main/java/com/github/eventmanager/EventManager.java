@@ -49,37 +49,9 @@ public class EventManager extends ManagerBase {
      */
     public void stopEventThread() {
         internalEventManager.logInfo("Stopping processing thread gracefully...");
-        processingThread.interrupt();
 
-        // Process remaining events in the processing queue
-        while (!processingQueue.isEmpty()) {
-            try {
-                String event = processingQueue.poll();
-                if (event != null) {
-                    event = processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (Exception e) {
-                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        internalEventManager.logInfo("processingQueue was successfully processed.");
-
-        internalEventManager.logInfo("Stopping processing thread gracefully...");
-        eventThread.interrupt();
-
-        // Process remaining events
-        while (!eventQueue.isEmpty()) {
-            try {
-                String event = eventQueue.poll();
-                if (event != null) {
-                    writeEventToLogFile(event);
-                }
-            } catch (Exception e) {
-                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        internalEventManager.logInfo("eventQueue was successfully processed.");
+        stopProcessingThread(internalEventManager);
+        stopEventThread(internalEventManager);
 
         try {
             processingThread.join();
@@ -90,7 +62,7 @@ public class EventManager extends ManagerBase {
         }
         internalEventManager.logInfo("Event thread stopped successfully.");
         internalEventManager.logInfo("EventManager stopped successfully. Shutting down internal event manager...");
-        internalEventManager.stopEventThread();
+        internalEventManager.stopPipeline();
     }
 
     /**

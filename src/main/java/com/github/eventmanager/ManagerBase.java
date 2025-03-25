@@ -61,27 +61,13 @@ abstract class ManagerBase {
         this.eventThread = initiateEventThread();
     }
 
-    protected String processEvent(String event) {
-        for (Processor processor : processors) {
-            switch (this.logHandler.getConfig().getEvent().getEventFormat())
-            {
-                case "kv" -> event = processor.processKV(event);
-                case "xml" -> event = processor.processXML(event);
-                case "json" -> event = processor.processJSON(event);
-            }
-        }
-        return event;
-    }
-
-    private void initialiseProcessors(){
-        for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
-            Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
-            if (processor != null && !isProcessorAlreadyRegistered(processor)) {
-                processors.add(processor);
-            }
-        }
-    }
-
+    /**
+     * Creates a new Thread to process events. It will run indefinitely until it is interrupted (either
+     * by calling the {@link ManagerBase#stopProcessingThread(InternalEventManager)} method or by the JVM shutting down).
+     * The thread will process events if the queue is not empty.
+     *
+     * @return the processing thread.
+     */
     private Thread initiateProcessingThread(){
         Thread thread = new Thread(() -> {
             try {
@@ -98,50 +84,53 @@ abstract class ManagerBase {
         return thread;
     }
 
-    private Processor createProcessorInstance(String className, Map<String, Object> parameters) {
-        try {
-            String packagePrefix = "com.github.eventmanager.processors.";
-            Class<?> clazz = Class.forName(packagePrefix + className);
-
-            Processor excludeRanges = getProcessor(parameters, clazz);
-            if (excludeRanges != null) return excludeRanges;
-
-            return (Processor) clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     /**
-     * Returns a Processor instance based on the given parameters and class.
-     *
-     * @param parameters the parameters to pass to the Processor.
-     * @param clazz the class of the Processor.
-     * */
-    private static Processor getProcessor(Map<String, Object> parameters, Class<?> clazz) {
-        if(parameters == null) return null;
+     * Stops the processing thread by interrupting it and waiting for it to finish. This method should be called before
+     * shutting down the application to ensure that all events are processed.
+     */
+    protected void stopProcessingThread(InternalEventManager internalEventManager){
+        processingThread.interrupt();
 
-        if (clazz == MaskIPV4Address.class) {
-            List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
-            return new MaskIPV4Address(excludeRanges);
-        } else if (clazz == EnrichingProcessor.class) {
-            List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
-            return new EnrichingProcessor(enrichingFields);
-        } else if (clazz == RegexProcessor.class) {
-            List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
-            return new RegexProcessor(regexEntries);
+        // Process remaining events in the processing queue
+        while (!processingQueue.isEmpty()) {
+            try {
+                String event = processingQueue.poll();
+                if (event != null) {
+                    event = processEvent(event);
+                    writeEventToQueue(event);
+                }
+            } catch (Exception e) {
+                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
+            }
         }
-        return null;
+        internalEventManager.logInfo("processingQueue was successfully processed.");
+        internalEventManager.logInfo("Stopping processing thread gracefully...");
     }
 
-    private boolean isProcessorAlreadyRegistered(Processor processor) {
-        return processors.stream().anyMatch(p -> p.getClass().equals(processor.getClass()));
+    protected void stopProcessingThread(){
+        processingThread.interrupt();
+
+        // Process remaining events in the processing queue
+        while (!processingQueue.isEmpty()) {
+            try {
+                String event = processingQueue.poll();
+                if (event != null) {
+                    event = processEvent(event);
+                    writeEventToQueue(event);
+                }
+            } catch (Exception e) {
+                System.out.println("Error writing remaining events: " + e.getMessage());
+            }
+        }
+        System.out.println("processingQueue was successfully processed.");
+        System.out.println("Stopping processing thread gracefully...");
     }
 
     /**
      * Creates a new Thread to write events to the log file. It will run indefinitely until it is interrupted (either
-     * by calling the {@link ManagerBase#stopEventThread()} method or by the JVM shutting down).
-     * The thread will write events to the log file if the queue is not empty and internal events are enabled.
+     * by calling the {@link EventManager#stopEventThread()} or {@link InternalEventManager#stopPipeline()}
+     * method or by the JVM shutting down). The thread will write events to the log file if the queue is not
+     * empty and internal events are enabled.
      *
      * @deprecated This method is deprecated and will be removed in a future release, as it was not intended to be
      * used by external classes... there was also a typo. Use {@link ManagerBase#initiatEventThread()} instead.
@@ -183,7 +172,112 @@ abstract class ManagerBase {
      * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
      * shutting down the application to ensure that all events are written to the log file.
      */
-    public abstract void stopEventThread();
+    protected void stopEventThread(InternalEventManager internalEventManager) {
+        eventThread.interrupt();
+
+        // Process remaining events
+        while (!eventQueue.isEmpty()) {
+            try {
+                String event = eventQueue.poll();
+                if (event != null) {
+                    writeEventToLogFile(event);
+                }
+            } catch (Exception e) {
+                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
+            }
+        }
+        internalEventManager.logInfo("eventQueue was successfully processed.");
+    }
+
+    /**
+     * Stops the event thread of the internal event manager by interrupting it and waiting for it to finish.
+     * This method should be called before shutting down the application to ensure that all events are written
+     * to the log file.
+     */
+    protected void stopEventThreadInternal() {
+        eventThread.interrupt();
+
+        // Process remaining events
+        while (!eventQueue.isEmpty()) {
+            try {
+                String event = eventQueue.poll();
+                if (event != null) {
+                    writeEventToLogFile(event);
+                }
+            } catch (Exception e) {
+                System.out.println("Error writing remaining events: " + e.getMessage());
+            }
+        }
+        System.out.println("eventQueue was successfully processed.");
+    }
+
+    /**
+     * Creates a new Processor instance based on the given class name and parameters.
+     *
+     * @param className the name of the Processor class.
+     * @param parameters the parameters to pass to the Processor.
+     * @return a new Processor instance, or null if the Processor could not be created.
+     */
+    private Processor createProcessorInstance(String className, Map<String, Object> parameters) {
+        try {
+            String packagePrefix = "com.github.eventmanager.processors.";
+            Class<?> clazz = Class.forName(packagePrefix + className);
+
+            Processor excludeRanges = getProcessor(parameters, clazz);
+            if (excludeRanges != null) return excludeRanges;
+
+            return (Processor) clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns a Processor instance based on the given parameters and class.
+     *
+     * @param parameters the parameters to pass to the Processor.
+     * @param clazz the class of the Processor.
+     * */
+    private static Processor getProcessor(Map<String, Object> parameters, Class<?> clazz) {
+        if(parameters == null) return null;
+
+        if (clazz == MaskIPV4Address.class) {
+            List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
+            return new MaskIPV4Address(excludeRanges);
+        } else if (clazz == EnrichingProcessor.class) {
+            List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
+            return new EnrichingProcessor(enrichingFields);
+        } else if (clazz == RegexProcessor.class) {
+            List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
+            return new RegexProcessor(regexEntries);
+        }
+        return null;
+    }
+
+    private boolean isProcessorAlreadyRegistered(Processor processor) {
+        return processors.stream().anyMatch(p -> p.getClass().equals(processor.getClass()));
+    }
+
+    protected String processEvent(String event) {
+        for (Processor processor : processors) {
+            switch (this.logHandler.getConfig().getEvent().getEventFormat())
+            {
+                case "kv" -> event = processor.processKV(event);
+                case "xml" -> event = processor.processXML(event);
+                case "json" -> event = processor.processJSON(event);
+            }
+        }
+        return event;
+    }
+
+    private void initialiseProcessors(){
+        for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
+            Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
+            if (processor != null && !isProcessorAlreadyRegistered(processor)) {
+                processors.add(processor);
+            }
+        }
+    }
 
     /**
      * Writes the given event to the log file. If the event is not empty, it will be written to the log file specified
