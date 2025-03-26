@@ -1,21 +1,13 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
-import com.github.eventmanager.filehandlers.config.ProcessorEntry;
-import com.github.eventmanager.filehandlers.config.RegexEntry;
 import com.github.eventmanager.formatters.EventFormatter;
-import com.github.eventmanager.processors.EnrichingProcessor;
-import com.github.eventmanager.processors.MaskIPV4Address;
-import com.github.eventmanager.processors.Processor;
-import com.github.eventmanager.processors.RegexProcessor;
+import com.github.eventmanager.helpers.ProcessorHelper;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,14 +16,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  * The ManagerBase class is responsible for queuing and writing events to the log file.
  * It provides a thread-safe queue to store events and a thread to write events to the log file.
  * */
-abstract class ManagerBase {
+public abstract class ManagerBase {
     @Getter
     protected LogHandler logHandler;
     protected Thread eventThread;
     protected Thread processingThread;
-    @Getter
-    @Setter
-    protected List<Processor> processors = new ArrayList<>();
+    protected ProcessorHelper processorHelper;
     protected final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
     protected final BlockingQueue<String> processingQueue = new LinkedBlockingQueue<>();
 
@@ -42,6 +32,7 @@ abstract class ManagerBase {
      */
     public ManagerBase(LogHandler logHandler) {
         this.logHandler = logHandler;
+        this.processorHelper = new ProcessorHelper(logHandler);
     }
 
     /**
@@ -56,7 +47,7 @@ abstract class ManagerBase {
     }
 
     protected void initiateThreads() {
-        initialiseProcessors();
+        this.processorHelper.initialiseProcessors();
         this.processingThread = initiateProcessingThread();
         this.eventThread = initiateEventThread();
     }
@@ -73,7 +64,7 @@ abstract class ManagerBase {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = processingQueue.take();
-                    event = processEvent(event);
+                    event = this.processorHelper.processEvent(event);
                     writeEventToQueue(event);
                 }
             } catch (InterruptedException e) {
@@ -96,7 +87,7 @@ abstract class ManagerBase {
             try {
                 String event = processingQueue.poll();
                 if (event != null) {
-                    event = processEvent(event);
+                    event = this.processorHelper.processEvent(event);
                     writeEventToQueue(event);
                 }
             } catch (Exception e) {
@@ -115,7 +106,7 @@ abstract class ManagerBase {
             try {
                 String event = processingQueue.poll();
                 if (event != null) {
-                    event = processEvent(event);
+                    event = this.processorHelper.processEvent(event);
                     writeEventToQueue(event);
                 }
             } catch (Exception e) {
@@ -212,74 +203,6 @@ abstract class ManagerBase {
     }
 
     /**
-     * Creates a new Processor instance based on the given class name and parameters.
-     *
-     * @param className the name of the Processor class.
-     * @param parameters the parameters to pass to the Processor.
-     * @return a new Processor instance, or null if the Processor could not be created.
-     */
-    private Processor createProcessorInstance(String className, Map<String, Object> parameters) {
-        try {
-            String packagePrefix = "com.github.eventmanager.processors.";
-            Class<?> clazz = Class.forName(packagePrefix + className);
-
-            Processor excludeRanges = getProcessor(parameters, clazz);
-            if (excludeRanges != null) return excludeRanges;
-
-            return (Processor) clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Returns a Processor instance based on the given parameters and class.
-     *
-     * @param parameters the parameters to pass to the Processor.
-     * @param clazz the class of the Processor.
-     * */
-    private static Processor getProcessor(Map<String, Object> parameters, Class<?> clazz) {
-        if(parameters == null) return null;
-
-        if (clazz == MaskIPV4Address.class) {
-            List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
-            return new MaskIPV4Address(excludeRanges);
-        } else if (clazz == EnrichingProcessor.class) {
-            List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
-            return new EnrichingProcessor(enrichingFields);
-        } else if (clazz == RegexProcessor.class) {
-            List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
-            return new RegexProcessor(regexEntries);
-        }
-        return null;
-    }
-
-    private boolean isProcessorAlreadyRegistered(Processor processor) {
-        return processors.stream().anyMatch(p -> p.getClass().equals(processor.getClass()));
-    }
-
-    protected String processEvent(String event) {
-        for (Processor processor : processors) {
-            switch (this.logHandler.getConfig().getEvent().getEventFormat())
-            {
-                case "kv" -> event = processor.processKV(event);
-                case "xml" -> event = processor.processXML(event);
-                case "json" -> event = processor.processJSON(event);
-            }
-        }
-        return event;
-    }
-
-    private void initialiseProcessors(){
-        for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
-            Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
-            if (processor != null && !isProcessorAlreadyRegistered(processor)) {
-                processors.add(processor);
-            }
-        }
-    }
-
-    /**
      * Writes the given event to the log file. If the event is not empty, it will be written to the log file specified
      * in the configuration file. If the log file does not exist, it will be created. If the log file cannot be created
      * or written to, an error message will be printed to the console.
@@ -341,7 +264,7 @@ abstract class ManagerBase {
     }
 
     /**
-     * Writes the given event to the event queue. This method is thread-safe and can be called from multiple threads.
+     * Writes the given event to the event queue.
      *
      * @param event the event to write to the queue.
      * */
@@ -349,6 +272,11 @@ abstract class ManagerBase {
         this.eventQueue.add(event);
     }
 
+    /**
+     * Writes the given event to the processing queue.
+     *
+     * @param event the event to write to the queue.
+     * */
     protected void writeEventToProcessingQueue(String event) {
         this.processingQueue.add(event);
     }

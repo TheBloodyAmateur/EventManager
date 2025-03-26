@@ -12,4 +12,5 @@ module com.github.eventmanager {
     exports com.github.eventmanager.filehandlers.config;
     exports com.github.eventmanager.formatters;
     exports com.github.eventmanager.processors;
+    exports com.github.eventmanager.helpers;
 }
