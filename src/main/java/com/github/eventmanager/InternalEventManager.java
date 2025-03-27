@@ -14,6 +14,7 @@ public final class InternalEventManager extends ManagerBase {
     public InternalEventManager(LogHandler logHandler) {
         super(logHandler);
         initiateThreads();
+        logInfo("InternalEventManager started successfully.");
     }
 
     /**
@@ -28,7 +29,7 @@ public final class InternalEventManager extends ManagerBase {
      * Logs a message with the specified level and message to the log file.
      * @param event the event to log.
      * */
-    protected void writeEventToLogFile(String event) {
+    private void writeEventToLogFile(String event) {
         if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
             System.out.println(event);
             return;

@@ -26,7 +26,7 @@ public class EventManager extends ManagerBase {
         super(logHandler);
         this.internalEventManager = this.logHandler.getInternalEventManager();
         internalEventManager.logInfo("EventManager started successfully.");
-        initiateThreads();
+        initiateThreads(internalEventManager);
     }
 
     /**
@@ -41,7 +41,7 @@ public class EventManager extends ManagerBase {
         this.internalEventManager = this.logHandler.getInternalEventManager();
         internalEventManager.logInfo("EventManager started successfully.");
         internalEventManager.logInfo("Initializing event thread...");
-        initiateThreads();
+        initiateThreads(internalEventManager);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.github.eventmanager.processors;
 
 import com.github.eventmanager.EventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.filehandlers.config.RegexEntry;
 import com.github.eventmanager.formatters.EventCreator;
@@ -63,12 +64,18 @@ public class RegexProcessorTest {
         try{
             LogHandler logHandler = new LogHandler("");
             logHandler.getConfig().getEvent().setEventFormat("xml");
-            logHandler.getConfig().getEvent().setPrintToConsole(true);
+
+            OutputEntry outputEntry = new OutputEntry();
+            outputEntry.setName("PrintOutput");
+            logHandler.getConfig().getOutputs().add(outputEntry);
 
             ProcessorEntry processorEntry = new ProcessorEntry();
             processorEntry.setName("RegexProcessor");
             processorEntry.setParameters(Map.of("regexEntries",
-                    List.of(new RegexEntry("field1", "value1", "replacement1"))));
+                    List.of(
+                            new RegexEntry("field1", "value1", "replacement1")
+                    )
+            ));
 
             logHandler.getConfig().getProcessors().add(processorEntry);
 

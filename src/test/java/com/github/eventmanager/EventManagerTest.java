@@ -1,6 +1,7 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -292,7 +293,11 @@ public class EventManagerTest {
 
         try {
             LogHandler logHandler = new LogHandler(configPath, true);
-            logHandler.getConfig().getEvent().setPrintToConsole(true);
+
+            OutputEntry outputEntry = new OutputEntry();
+            outputEntry.setName("PrintOutput");
+            logHandler.getConfig().getOutputs().add(outputEntry);
+
             this.eventManager = new EventManager(logHandler);
             eventManager.logErrorMessage("This is an error message");
 

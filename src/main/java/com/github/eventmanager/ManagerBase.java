@@ -4,6 +4,7 @@ import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import com.github.eventmanager.helpers.EventMetaDataBuilder;
+import com.github.eventmanager.helpers.OutputHelper;
 import com.github.eventmanager.helpers.ProcessorHelper;
 import com.github.eventmanager.helpers.ThreadHelper;
 import lombok.Getter;
@@ -29,6 +30,11 @@ public abstract class ManagerBase {
     protected ProcessorHelper processorHelper;
 
     /**
+     * Helper class for output operations.
+     */
+    protected OutputHelper outputHelper;
+
+    /**
      * Queue that holds events ready to be written to the log file.
      */
     protected final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
@@ -41,7 +47,7 @@ public abstract class ManagerBase {
     /**
      * Manages threading operations for event and processing threads.
      */
-    private final ThreadHelper threadManager = new ThreadHelper();
+    private final ThreadHelper threadHelper = new ThreadHelper();
 
     /**
      * Initializes ManagerBase with a provided LogHandler instance.
@@ -51,6 +57,7 @@ public abstract class ManagerBase {
     public ManagerBase(LogHandler logHandler) {
         this.logHandler = logHandler;
         this.processorHelper = new ProcessorHelper(logHandler);
+        this.outputHelper = new OutputHelper(logHandler);
     }
 
     /**
@@ -67,8 +74,9 @@ public abstract class ManagerBase {
      */
     protected void initiateThreads() {
         processorHelper.initialiseProcessors();
+        outputHelper.initialiseOutputs();
 
-        threadManager.startProcessingThread(() -> {
+        threadHelper.startProcessingThread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = processingQueue.take();
@@ -80,11 +88,42 @@ public abstract class ManagerBase {
             }
         });
 
-        threadManager.startEventThread(() -> {
+        threadHelper.startEventThread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = eventQueue.take();
-                    writeEventToLogFile(event);
+                    outputEvent(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+    }
+
+    /**
+     * Starts event processing and logging threads.
+     */
+    protected void initiateThreads(InternalEventManager internalEventManager) {
+        processorHelper.initialiseProcessors();
+        outputHelper.initialiseOutputs();
+
+        threadHelper.startProcessingThread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = processingQueue.take();
+                    event = processorHelper.processEvent(event);
+                    writeEventToQueue(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+
+        threadHelper.startEventThread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = eventQueue.take();
+                    outputEvent(internalEventManager, event);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -99,7 +138,7 @@ public abstract class ManagerBase {
      * @param internalEventManager The event manager used for logging shutdown information.
      */
     protected void stopAllThreads(InternalEventManager internalEventManager) {
-        threadManager.stopThread(threadManager.getProcessingThread(), processingQueue, event -> {
+        threadHelper.stopThread(threadHelper.getProcessingThread(), processingQueue, event -> {
             try {
                 event = processorHelper.processEvent(event);
                 writeEventToQueue(event);
@@ -109,9 +148,9 @@ public abstract class ManagerBase {
         });
         internalEventManager.logInfo("Processing queue processed successfully.");
 
-        threadManager.stopThread(threadManager.getEventThread(), eventQueue, event -> {
+        threadHelper.stopThread(threadHelper.getEventThread(), eventQueue, event -> {
             try {
-                writeEventToLogFile(event);
+                outputEvent(event);
             } catch (Exception e) {
                 internalEventManager.logError("Error writing remaining events: " + e.getMessage());
             }
@@ -124,7 +163,7 @@ public abstract class ManagerBase {
      * Logs status information directly to the standard output.
      */
     protected void stopAllThreads() {
-        threadManager.stopThread(threadManager.getProcessingThread(), processingQueue, event -> {
+        threadHelper.stopThread(threadHelper.getProcessingThread(), processingQueue, event -> {
             try {
                 event = processorHelper.processEvent(event);
                 writeEventToQueue(event);
@@ -134,9 +173,9 @@ public abstract class ManagerBase {
         });
         System.out.println("Processing queue processed successfully.");
 
-        threadManager.stopThread(threadManager.getEventThread(), eventQueue, event -> {
+        threadHelper.stopThread(threadHelper.getEventThread(), eventQueue, event -> {
             try {
-                writeEventToLogFile(event);
+                outputEvent(event);
             } catch (Exception e) {
                 System.out.println("Error writing remaining events: " + e.getMessage());
             }
@@ -209,9 +248,16 @@ public abstract class ManagerBase {
     }
 
     /**
-     * Abstract method for writing the event directly to the log file.
-     *
-     * @param event The formatted event string ready for logging.
+     * Passes the event to the output or outputs specified in the runtime or config specification.
      */
-    protected abstract void writeEventToLogFile(String event);
+    protected void outputEvent(String event){
+        this.outputHelper.outputEvent(event);
+    }
+
+    /**
+     * Passes the event to the output or outputs specified in the runtime or config specification.
+     */
+    protected void outputEvent(InternalEventManager internalEventManager, String event){
+        this.outputHelper.outputEvent(internalEventManager, event);
+    }
 }
