@@ -79,7 +79,7 @@ public class OutputHelper {
     }
 
     /**
-     * Output the event to all output destinations.
+     * Output the internal events to all output destinations.
      * */
     public void outputEvent(String event) {
         for (Output output : outputs) {

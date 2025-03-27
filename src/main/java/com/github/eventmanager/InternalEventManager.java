@@ -26,31 +26,6 @@ public final class InternalEventManager extends ManagerBase {
     }
 
     /**
-     * Logs a message with the specified level and message to the log file.
-     * @param event the event to log.
-     * */
-    private void writeEventToLogFile(String event) {
-        if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
-            System.out.println(event);
-            return;
-        } else if (this.logHandler.getConfig().getEvent().getPrintAndSaveToFile()) {
-            System.out.println(event);
-        }
-
-        try {
-            if (!this.logHandler.checkIfInternalLogFileExists()) {
-                this.logHandler.createLogFile();
-            }
-            String filePath = this.logHandler.getConfig().getInternalEvents().getFilePath();
-            FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentInternalFileName(), true);
-            myWriter.write(event + "\n");
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred in writeEventToLogFile:" + e.getMessage());
-        }
-    }
-
-    /**
      * Log a fatal events to the log file.
      * @param message the message to log.
      * */

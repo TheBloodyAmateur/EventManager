@@ -83,27 +83,6 @@ public class EventManager extends ManagerBase {
         return path;
     }
 
-    protected void writeEventToLogFile(String event) {
-        if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
-            System.out.println(event);
-            return;
-        } else if (this.logHandler.getConfig().getEvent().getPrintAndSaveToFile()) {
-            System.out.println(event);
-        }
-
-        try {
-            if (!this.logHandler.checkIfLogFileExists()) {
-                this.logHandler.createLogFile();
-            }
-            String filePath = this.logHandler.getConfig().getLogFile().getFilePath();
-            FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentFileName(), true);
-            myWriter.write(event + "\n");
-            myWriter.close();
-        } catch (IOException e) {
-            internalEventManager.logError("An error occurred in writeEventToLogFile:" + e.getMessage());
-        }
-    }
-
     /**
      * Logs a fatal message.
      *

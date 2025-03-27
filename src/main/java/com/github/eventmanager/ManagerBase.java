@@ -73,20 +73,7 @@ public abstract class ManagerBase {
      * Starts event processing and logging threads.
      */
     protected void initiateThreads() {
-        processorHelper.initialiseProcessors();
-        outputHelper.initialiseOutputs();
-
-        threadHelper.startProcessingThread(() -> {
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    String event = processingQueue.take();
-                    event = processorHelper.processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
+        initialiseProcessorThreadAndOutputs();
 
         threadHelper.startEventThread(() -> {
             try {
@@ -104,6 +91,24 @@ public abstract class ManagerBase {
      * Starts event processing and logging threads.
      */
     protected void initiateThreads(InternalEventManager internalEventManager) {
+        initialiseProcessorThreadAndOutputs();
+
+        threadHelper.startEventThread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = eventQueue.take();
+                    outputEvent(internalEventManager, event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+    }
+
+    /**
+     * Initializes the processing thread and output destinations.
+     */
+    private void initialiseProcessorThreadAndOutputs() {
         processorHelper.initialiseProcessors();
         outputHelper.initialiseOutputs();
 
@@ -113,17 +118,6 @@ public abstract class ManagerBase {
                     String event = processingQueue.take();
                     event = processorHelper.processEvent(event);
                     writeEventToQueue(event);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
-
-        threadHelper.startEventThread(() -> {
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    String event = eventQueue.take();
-                    outputEvent(internalEventManager, event);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
