@@ -3,9 +3,11 @@ package com.github.eventmanager.helpers;
 import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
+import com.github.eventmanager.filehandlers.config.SocketEntry;
 import com.github.eventmanager.outputs.LogOutput;
 import com.github.eventmanager.outputs.Output;
 import com.github.eventmanager.outputs.PrintOutput;
+import com.github.eventmanager.outputs.SocketOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,17 +55,11 @@ public class OutputHelper {
             return new PrintOutput();
         } else if (clazz == LogOutput.class) {
             return new LogOutput();
+        } else if (clazz == SocketOutput.class) {
+            List<SocketEntry> socketSettings = (List<SocketEntry>) parameters.get("socketSettings");
+            return new SocketOutput(socketSettings);
         }
         return null;
-    }
-
-    /**
-     * Checks if a Processor is already registered.
-     *
-     * @param output the processor to check.
-     * */
-    private boolean isOutputAlreadyRegistered(Output output) {
-        return outputs.stream().anyMatch(p -> p.getClass().equals(output.getClass()));
     }
 
     /**
@@ -72,7 +68,7 @@ public class OutputHelper {
     public void initialiseOutputs(){
         for (OutputEntry entry : this.logHandler.getConfig().getOutputs()) {
             Output outputInstance = createOutputInstance(entry.getName(), entry.getParameters());
-            if (outputInstance != null && !isOutputAlreadyRegistered(outputInstance)) {
+            if (outputInstance != null) {
                 outputs.add(outputInstance);
             }
         }
