@@ -2,33 +2,51 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventFormatter;
+import com.github.eventmanager.formatters.KeyValueWrapper;
+import com.github.eventmanager.helpers.EventMetaDataBuilder;
 import com.github.eventmanager.helpers.ProcessorHelper;
+import com.github.eventmanager.helpers.ThreadHelper;
 import lombok.Getter;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 /**
- * The ManagerBase class is responsible for queuing and writing events to the log file.
- * It provides a thread-safe queue to store events and a thread to write events to the log file.
- * */
+ * Abstract base class providing foundational functionality for event management,
+ * including event queuing, processing, and logging.
+ */
 public abstract class ManagerBase {
+
+    /**
+     * Handles log file writing and log configuration.
+     */
     @Getter
     protected LogHandler logHandler;
-    protected Thread eventThread;
-    protected Thread processingThread;
+
+    /**
+     * Processes and enriches log events.
+     */
     protected ProcessorHelper processorHelper;
+
+    /**
+     * Queue that holds events ready to be written to the log file.
+     */
     protected final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
+
+    /**
+     * Queue that holds events pending processing by processors.
+     */
     protected final BlockingQueue<String> processingQueue = new LinkedBlockingQueue<>();
 
     /**
-     * Constructs an ManagerBase with the specified LogHandler.
+     * Manages threading operations for event and processing threads.
+     */
+    private final ThreadHelper threadManager = new ThreadHelper();
+
+    /**
+     * Initializes ManagerBase with a provided LogHandler instance.
      *
-     * @param logHandler the LogHandler to use for logging events.
+     * @param logHandler The LogHandler responsible for managing logging operations.
      */
     public ManagerBase(LogHandler logHandler) {
         this.logHandler = logHandler;
@@ -36,101 +54,34 @@ public abstract class ManagerBase {
     }
 
     /**
-     * Constructs an ManagerBase with the specified configuration file path.
+     * Initializes ManagerBase using a configuration file path.
      *
-     * @param configPath the path to the configuration file. Passing an empty string or invalid path will force
-     *                   the ManagerBase to fall back to the default configuration.
-     *
+     * @param configPath Path to the logging configuration file.
      */
     public ManagerBase(String configPath) {
-        this.logHandler = new LogHandler(configPath);
-    }
-
-    protected void initiateThreads() {
-        this.processorHelper.initialiseProcessors();
-        this.processingThread = initiateProcessingThread();
-        this.eventThread = initiateEventThread();
+        this(new LogHandler(configPath));
     }
 
     /**
-     * Creates a new Thread to process events. It will run indefinitely until it is interrupted (either
-     * by calling the {@link ManagerBase#stopProcessingThread(InternalEventManager)} method or by the JVM shutting down).
-     * The thread will process events if the queue is not empty.
-     *
-     * @return the processing thread.
+     * Starts event processing and logging threads.
      */
-    private Thread initiateProcessingThread(){
-        Thread thread = new Thread(() -> {
+    protected void initiateThreads() {
+        processorHelper.initialiseProcessors();
+
+        threadManager.startProcessingThread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = processingQueue.take();
-                    event = this.processorHelper.processEvent(event);
+                    event = processorHelper.processEvent(event);
                     writeEventToQueue(event);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         });
-        thread.start();
-        return thread;
-    }
 
-    /**
-     * Stops the processing thread by interrupting it and waiting for it to finish. This method should be called before
-     * shutting down the application to ensure that all events are processed.
-     */
-    protected void stopProcessingThread(InternalEventManager internalEventManager){
-        processingThread.interrupt();
-
-        // Process remaining events in the processing queue
-        while (!processingQueue.isEmpty()) {
+        threadManager.startEventThread(() -> {
             try {
-                String event = processingQueue.poll();
-                if (event != null) {
-                    event = this.processorHelper.processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (Exception e) {
-                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        internalEventManager.logInfo("processingQueue was successfully processed.");
-        internalEventManager.logInfo("Stopping processing thread gracefully...");
-    }
-
-    protected void stopProcessingThread(){
-        processingThread.interrupt();
-
-        // Process remaining events in the processing queue
-        while (!processingQueue.isEmpty()) {
-            try {
-                String event = processingQueue.poll();
-                if (event != null) {
-                    event = this.processorHelper.processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (Exception e) {
-                System.out.println("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        System.out.println("processingQueue was successfully processed.");
-        System.out.println("Stopping processing thread gracefully...");
-    }
-
-    /**
-     * Creates a new Thread to write events to the log file. It will run indefinitely until it is interrupted (either
-     * by calling the {@link EventManager#stopEventThread()} or {@link InternalEventManager#stopPipeline()}
-     * method or by the JVM shutting down). The thread will write events to the log file if the queue is not
-     * empty and internal events are enabled.
-     *
-     * @deprecated This method is deprecated and will be removed in a future release, as it was not intended to be
-     * used by external classes... there was also a typo. Use {@link ManagerBase#initiatEventThread()} instead.
-     * */
-    @Deprecated
-    public Thread initiatEventThread() {
-        Thread thread = new Thread(() -> {
-            try {
-                // Run indefinitely until the thread is interrupted
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = eventQueue.take();
                     writeEventToLogFile(event);
@@ -139,117 +90,72 @@ public abstract class ManagerBase {
                 Thread.currentThread().interrupt();
             }
         });
-        thread.start();
-        return thread;
-    }
-
-    protected Thread initiateEventThread() {
-        Thread thread = new Thread(() -> {
-            try {
-                // Run indefinitely until the thread is interrupted
-                while (!Thread.currentThread().isInterrupted()) {
-                    String event = eventQueue.take();
-                    writeEventToLogFile(event);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
-        thread.start();
-        return thread;
     }
 
     /**
-     * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
-     * shutting down the application to ensure that all events are written to the log file.
+     * Stops all threads gracefully and processes remaining events,
+     * using InternalEventManager for structured logging of shutdown status.
+     *
+     * @param internalEventManager The event manager used for logging shutdown information.
      */
-    protected void stopEventThread(InternalEventManager internalEventManager) {
-        eventThread.interrupt();
-
-        // Process remaining events
-        while (!eventQueue.isEmpty()) {
+    protected void stopAllThreads(InternalEventManager internalEventManager) {
+        threadManager.stopThread(threadManager.getProcessingThread(), processingQueue, event -> {
             try {
-                String event = eventQueue.poll();
-                if (event != null) {
-                    writeEventToLogFile(event);
-                }
+                event = processorHelper.processEvent(event);
+                writeEventToQueue(event);
+            } catch (Exception e) {
+                internalEventManager.logError("Error processing remaining events: " + e.getMessage());
+            }
+        });
+        internalEventManager.logInfo("Processing queue processed successfully.");
+
+        threadManager.stopThread(threadManager.getEventThread(), eventQueue, event -> {
+            try {
+                writeEventToLogFile(event);
             } catch (Exception e) {
                 internalEventManager.logError("Error writing remaining events: " + e.getMessage());
             }
-        }
-        internalEventManager.logInfo("eventQueue was successfully processed.");
+        });
+        internalEventManager.logInfo("Event queue processed successfully.");
     }
 
     /**
-     * Stops the event thread of the internal event manager by interrupting it and waiting for it to finish.
-     * This method should be called before shutting down the application to ensure that all events are written
-     * to the log file.
+     * Stops all threads gracefully without structured logging.
+     * Logs status information directly to the standard output.
      */
-    protected void stopEventThreadInternal() {
-        eventThread.interrupt();
-
-        // Process remaining events
-        while (!eventQueue.isEmpty()) {
+    protected void stopAllThreads() {
+        threadManager.stopThread(threadManager.getProcessingThread(), processingQueue, event -> {
             try {
-                String event = eventQueue.poll();
-                if (event != null) {
-                    writeEventToLogFile(event);
-                }
+                event = processorHelper.processEvent(event);
+                writeEventToQueue(event);
+            } catch (Exception e) {
+                System.out.println("Error processing remaining events: " + e.getMessage());
+            }
+        });
+        System.out.println("Processing queue processed successfully.");
+
+        threadManager.stopThread(threadManager.getEventThread(), eventQueue, event -> {
+            try {
+                writeEventToLogFile(event);
             } catch (Exception e) {
                 System.out.println("Error writing remaining events: " + e.getMessage());
             }
-        }
-        System.out.println("eventQueue was successfully processed.");
+        });
+        System.out.println("Event queue processed successfully.");
     }
 
     /**
-     * Writes the given event to the log file. If the event is not empty, it will be written to the log file specified
-     * in the configuration file. If the log file does not exist, it will be created. If the log file cannot be created
-     * or written to, an error message will be printed to the console.
+     * Formats and queues a log message for processing and eventual writing to log file.
      *
-     * @param event the event to write to the log file.
-     * */
-    protected abstract void writeEventToLogFile(String event);
-
-    /**
-     * Sets the metadata fields for the event.
-     *
-     * @param level the log level of the event.
-     * @return a map containing the metadata fields.
-     */
-    protected Map<String, String> setMetaDataFields(String level) {
-        StackTraceElement[] stackTraceElement = Thread.currentThread().getStackTrace();
-        String className = stackTraceElement[4].getClassName();
-        String methodName = stackTraceElement[4].getMethodName();
-        int lineNumber = stackTraceElement[4].getLineNumber();
-
-        String time = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(this.logHandler.getConfig().getEvent().getTimeFormat()));
-
-        Map<String, String> metaDataFields = new HashMap<>();
-        metaDataFields.put("time", time);
-        metaDataFields.put("level", level);
-        metaDataFields.put("className", className);
-        metaDataFields.put("methodName", methodName);
-        metaDataFields.put("lineNumber", String.valueOf(lineNumber));
-
-        return metaDataFields;
-    }
-
-    /**
-     * Logs a message to the destination file.
-     *
-     * @param level   the log level of the message.
-     * @param message the object to log.
+     * @param level   Log level (e.g., INFO, ERROR).
+     * @param message Message content to log, which can be an Exception or String.
      */
     protected void logMessage(String level, Object message) {
-        String formattedMessage;
-        if (message instanceof Exception) {
-            formattedMessage = ((Exception) message).getMessage();
-        } else {
-            formattedMessage = message.toString();
-        }
+        String formattedMessage = (message instanceof Exception)
+                ? ((Exception) message).getMessage()
+                : message.toString();
 
-        Map<String, String> metaData = setMetaDataFields(level);
+        Map<String, String> metaData = EventMetaDataBuilder.buildMetaData(level, this.logHandler);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
         String event = switch (eventFormat) {
@@ -264,20 +170,48 @@ public abstract class ManagerBase {
     }
 
     /**
-     * Writes the given event to the event queue.
+     * Logs a message to the destination file.
      *
-     * @param event the event to write to the queue.
-     * */
-    protected void writeEventToQueue(String event) {
-        this.eventQueue.add(event);
+     * @param level    the log level of the message.
+     * @param messages an object array to be appended to the message.
+     */
+    protected void logMessage(String level, KeyValueWrapper... messages) {
+        Map<String, String> metaData = EventMetaDataBuilder.buildMetaData(level, this.logHandler);
+        String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
+
+        String event = switch (eventFormat) {
+            case "kv" -> EventFormatter.KEY_VALUE.format(metaData, messages);
+            case "csv" -> EventFormatter.CSV.format(metaData, messages);
+            case "xml" -> EventFormatter.XML.format(metaData, messages);
+            case "json" -> EventFormatter.JSON.format(metaData, messages);
+            default -> EventFormatter.DEFAULT.format(metaData, messages);
+        };;
+
+        writeEventToProcessingQueue(event);
     }
 
     /**
-     * Writes the given event to the processing queue.
+     * Adds processed event to the event queue.
      *
-     * @param event the event to write to the queue.
-     * */
-    protected void writeEventToProcessingQueue(String event) {
-        this.processingQueue.add(event);
+     * @param event The event string after processing.
+     */
+    protected void writeEventToQueue(String event) {
+        eventQueue.add(event);
     }
+
+    /**
+     * Adds raw event to the processing queue.
+     *
+     * @param event The event string before processing.
+     */
+    protected void writeEventToProcessingQueue(String event) {
+        processingQueue.add(event);
+    }
+
+    /**
+     * Abstract method for writing the event directly to the log file.
+     *
+     * @param event The formatted event string ready for logging.
+     */
+    protected abstract void writeEventToLogFile(String event);
 }

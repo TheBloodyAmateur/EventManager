@@ -16,20 +16,12 @@ public final class InternalEventManager extends ManagerBase {
         initiateThreads();
     }
 
+    /**
+     * Stops the internal event thread by interrupting it and waiting for it to finish. This method should be called
+     * before shutting down the application to ensure that all internal events are written to the log file.
+     * */
     public void stopPipeline() {
-        System.out.println("Stopping processing thread gracefully...");
-
-        stopProcessingThread();
-        stopEventThreadInternal();
-
-        try {
-            processingThread.join();
-            eventThread.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
-        }
-        System.out.println("Internal event managers pipeline stopped successfully.");
+        stopAllThreads();
     }
 
     /**

@@ -29,7 +29,7 @@ public class EventManagerTest {
 
     @AfterEach
     void tearDown() {
-        eventManager.stopEventThread();
+        eventManager.stopPipeline();
     }
 
     @Test

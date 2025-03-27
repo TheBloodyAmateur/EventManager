@@ -27,7 +27,7 @@ class InternalEventManagerTest {
 
     @AfterEach
     void tearDown() {
-        eventManager.stopEventThread();
+        eventManager.stopPipeline();
     }
 
     @Test

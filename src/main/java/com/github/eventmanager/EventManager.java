@@ -4,6 +4,7 @@ import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventCreator;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
+import com.github.eventmanager.helpers.EventMetaDataBuilder;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,20 +47,23 @@ public class EventManager extends ManagerBase {
     /**
      * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
      * shutting down the application to ensure that all events are written to the log file.
+     *
+     * @deprecated Use {@link #stopPipeline()} instead.
      */
+    @Deprecated
     public void stopEventThread() {
-        internalEventManager.logInfo("Stopping processing thread gracefully...");
+        stopAllThreads(this.internalEventManager);
+        internalEventManager.logInfo("Event thread stopped successfully.");
+        internalEventManager.logInfo("EventManager stopped successfully. Shutting down internal event manager...");
+        internalEventManager.stopPipeline();
+    }
 
-        stopProcessingThread(internalEventManager);
-        stopEventThread(internalEventManager);
-
-        try {
-            processingThread.join();
-            eventThread.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            internalEventManager.logError("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
-        }
+    /**
+     * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
+     * shutting down the application to ensure that all events are written to the log file.
+     */
+    public void stopPipeline() {
+        stopAllThreads(this.internalEventManager);
         internalEventManager.logInfo("Event thread stopped successfully.");
         internalEventManager.logInfo("EventManager stopped successfully. Shutting down internal event manager...");
         internalEventManager.stopPipeline();
@@ -77,27 +81,6 @@ public class EventManager extends ManagerBase {
             path = path.replace("/", "\\");
         }
         return path;
-    }
-
-    /**
-     * Logs a message to the destination file.
-     *
-     * @param level    the log level of the message.
-     * @param messages an object array to be appended to the message.
-     */
-    private void logMessage(String level, KeyValueWrapper... messages) {
-        String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
-        Map<String, String> metaData = setMetaDataFields(level);
-
-        String event = switch (eventFormat) {
-            case "kv" -> EventFormatter.KEY_VALUE.format(metaData, messages);
-            case "csv" -> EventFormatter.CSV.format(metaData, messages);
-            case "xml" -> EventFormatter.XML.format(metaData, messages);
-            case "json" -> EventFormatter.JSON.format(metaData, messages);
-            default -> EventFormatter.DEFAULT.format(metaData, messages);
-        };
-
-        writeEventToProcessingQueue(event);
     }
 
     protected void writeEventToLogFile(String event) {
