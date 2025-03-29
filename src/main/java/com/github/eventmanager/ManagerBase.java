@@ -1,12 +1,14 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import com.github.eventmanager.helpers.EventMetaDataBuilder;
 import com.github.eventmanager.helpers.OutputHelper;
 import com.github.eventmanager.helpers.ProcessorHelper;
 import com.github.eventmanager.helpers.ThreadHelper;
+import com.github.eventmanager.outputs.Output;
 import lombok.Getter;
 
 import java.util.Map;
@@ -253,5 +255,13 @@ public abstract class ManagerBase {
      */
     protected void outputEvent(InternalEventManager internalEventManager, String event){
         this.outputHelper.outputEvent(internalEventManager, event);
+    }
+
+    protected boolean addOutput(OutputEntry output) {
+        return this.outputHelper.addOutput(output);
+    }
+
+    protected boolean removeOutput(String outputName) {
+        return this.outputHelper.removeOutput(outputName);
     }
 }

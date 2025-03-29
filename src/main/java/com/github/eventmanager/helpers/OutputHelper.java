@@ -74,6 +74,31 @@ public class OutputHelper {
         }
     }
 
+    public void addNewOutput(OutputEntry outputEntry) {
+        if (outputEntry == null) return;
+        Output outputInstance = createOutputInstance(outputEntry.getName(), outputEntry.getParameters());
+        if (outputInstance != null) {
+            outputs.add(outputInstance);
+        }
+    }
+
+    public boolean addOutput(OutputEntry outputEntry) {
+        if (outputEntry == null) return false;
+        addNewOutput(outputEntry);
+        return true;
+    }
+
+    public boolean removeOutput(String outputName) {
+        if (outputName == null) return false;
+        for (Output output : outputs) {
+            if (output.getClass().getSimpleName().equalsIgnoreCase(outputName)) {
+                outputs.remove(output);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Output the internal events to all output destinations.
      * */

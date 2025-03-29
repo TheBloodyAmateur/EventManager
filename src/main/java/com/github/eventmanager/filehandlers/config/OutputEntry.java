@@ -21,4 +21,18 @@ public class OutputEntry {
      */
     private Map<String, Object> parameters;
 
+    /**
+     * Constructor to initialize the OutputEntry with a name and parameters.
+     *
+     * @param name       The name of the output.
+     * @param parameters The parameters for the output.
+     */
+    public OutputEntry(String name, Map<String, Object> parameters) {
+        this.name = name;
+        this.parameters = parameters;
+    }
+
+    public OutputEntry() {
+
+    }
 }

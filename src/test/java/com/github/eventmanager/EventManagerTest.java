@@ -2,15 +2,19 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
+import com.github.eventmanager.filehandlers.config.SocketEntry;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -304,6 +308,59 @@ public class EventManagerTest {
             // Check if the console output contains the error message
             waitForEvents();
             assertTrue(outContent.toString().contains("This is an error message"));
+        } finally {
+            // Clean up: Reset System.out
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    void addProcessorAndVerifyProcessors(){
+        //Redirect System.out to a ByteArrayOutputStream
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        try (ServerSocket serverSocket = new ServerSocket(6000)) {
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+
+            // Start mock socket server
+            Future<String> receivedEvent = executor.submit(() -> {
+                try (Socket socket = serverSocket.accept();
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                    return reader.readLine(); // read a single event line
+                }
+            });
+            LogHandler logHandler = new LogHandler(configPath, true);
+
+            OutputEntry outputEntry = new OutputEntry();
+            outputEntry.setName("PrintOutput");
+            logHandler.getConfig().getOutputs().add(outputEntry);
+
+            this.eventManager = new EventManager(logHandler);
+
+            OutputEntry outputEntry2 = new OutputEntry();
+            outputEntry2.setName("SocketOutput");
+            outputEntry2.setParameters(Map.of("socketSettings",
+                    List.of(
+                            new SocketEntry("localhost", 6000)
+                    )
+            ));
+            eventManager.addOutput(outputEntry2);
+
+            for (int i = 0; i < 10000; i++) {
+                eventManager.logErrorMessage("This is an error message");
+            }
+
+            // Check if the console output contains the error message
+            waitForEvents();
+            assertTrue(outContent.toString().contains("This is an error message"));
+            String received = receivedEvent.get(2, TimeUnit.SECONDS);
+            assertTrue(received.contains("This is an error message"));
+        } catch (IOException | ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
         } finally {
             // Clean up: Reset System.out
             System.setOut(originalOut);
