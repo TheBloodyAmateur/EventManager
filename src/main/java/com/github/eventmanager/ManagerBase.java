@@ -12,6 +12,9 @@ import com.github.eventmanager.helpers.ThreadHelper;
 import com.github.eventmanager.outputs.Output;
 import lombok.Getter;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -316,5 +319,11 @@ public abstract class ManagerBase {
      */
     protected boolean removeProcessor(ProcessorEntry processorEntry) {
         return this.processorHelper.removeProcessor(processorEntry);
+    }
+
+    protected static String castExceptionStackTraceToString(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString().trim();
     }
 }
