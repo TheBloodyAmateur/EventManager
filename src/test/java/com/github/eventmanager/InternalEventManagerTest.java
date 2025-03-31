@@ -2,9 +2,7 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
