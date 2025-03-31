@@ -258,19 +258,63 @@ public abstract class ManagerBase {
         this.outputHelper.outputEvent(internalEventManager, event);
     }
 
+    /**
+     * Adds a new output destination.
+     *
+     * @param output The output entry to add.
+     * @return true if the output was added successfully, false otherwise.
+     */
     protected boolean addOutput(OutputEntry output) {
         return this.outputHelper.addOutput(output);
     }
 
+    /**
+     * Removes an output destination.
+     *
+     * @param outputEntry The output entry to remove.
+     * @return true if the output was removed successfully, false otherwise.
+     */
     protected boolean removeOutput(OutputEntry outputEntry) {
         return this.outputHelper.removeOutput(outputEntry);
     }
 
+    /**
+     * Removes an output destination by class name.
+     *
+     * @param outputName The class name of the output to remove.
+     * @return true if the output was removed successfully, false otherwise.
+     */
+    protected boolean removeOutput(String outputName) {
+        return this.outputHelper.removeOutput(outputName);
+    }
+
+    /**
+     * Adds a new processor to the list of processors.
+     *
+     * @param processorName The processor entry to add.
+     * @return true if the processor was added successfully, false otherwise.
+     */
     protected boolean addProcessor(ProcessorEntry processorName) {
         return this.processorHelper.addProcessor(processorName);
     }
 
+    /**
+     * Removes a processor from the list of processors.
+     *
+     * @param processorName The class name of the processor to remove.
+     * @return true if the processor was removed successfully, false otherwise.
+     */
     protected boolean removeProcessor(String processorName) {
         return this.processorHelper.removeProcessor(processorName);
+    }
+
+    /**
+     * Removes a processor from the list of processors.
+     *
+     * @param processorEntry The processor entry to remove.
+     * @return true if the processor was removed successfully, false otherwise.
+     */
+    protected boolean removeProcessor(ProcessorEntry processorEntry) {
+        return this.processorHelper.removeProcessor(processorEntry);
     }
 }

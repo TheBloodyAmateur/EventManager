@@ -127,4 +127,17 @@ public class ProcessorHelper {
         }
         return false;
     }
+
+    public boolean removeProcessor(ProcessorEntry processorEntry) {
+        if (processorEntry == null) return false;
+        for (Processor processor : processors) {
+            // Generate a object of the same type as the processorEntry
+            Processor outputInstance = getProcessor(processorEntry.getParameters(), processor.getClass());
+            if (processor.getClass().equals(outputInstance.getClass())) {
+                processors.remove(processor);
+                return true;
+            }
+        }
+        return false;
+    }
 }

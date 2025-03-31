@@ -8,6 +8,7 @@ import com.github.eventmanager.outputs.LogOutput;
 import com.github.eventmanager.outputs.Output;
 import com.github.eventmanager.outputs.PrintOutput;
 import com.github.eventmanager.outputs.SocketOutput;
+import com.github.eventmanager.processors.Processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,10 +93,29 @@ public class OutputHelper {
         return true;
     }
 
+    public boolean removeOutput(String outputName) {
+        if (outputName == null) return false;
+        for (Output output : outputs) {
+            if (output.getClass().getSimpleName().equalsIgnoreCase(outputName)) {
+                outputs.remove(output);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Removes an output destination.
+     *
+     * @param outputEntry the output entry to remove.
+     * @return true if the output was removed, false otherwise.
+     */
     public boolean removeOutput(OutputEntry outputEntry) {
         if (outputEntry == null) return false;
         for (Output output : outputs) {
-            if (output.getClass().getSimpleName().equals(outputEntry.getName())) {
+            // Generate a object of the same type as the outputEntry
+            Output outputInstance = createOutputInstance(outputEntry.getName(), outputEntry.getParameters());
+            if (output.getClass().equals(outputInstance.getClass())) {
                 outputs.remove(output);
                 return true;
             }
