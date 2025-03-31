@@ -106,4 +106,25 @@ public class ProcessorHelper {
             }
         }
     }
+
+    public boolean addProcessor(ProcessorEntry processorEntry) {
+        if (processorEntry == null) return false;
+        Processor processor = createProcessorInstance(processorEntry.getName(), processorEntry.getParameters());
+        if (processor != null && !isProcessorAlreadyRegistered(processor)) {
+            processors.add(processor);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeProcessor(String processorName) {
+        if (processorName == null) return false;
+        for (Processor processor : processors) {
+            if (processor.getClass().getSimpleName().equalsIgnoreCase(processorName)) {
+                processors.remove(processor);
+                return true;
+            }
+        }
+        return false;
+    }
 }

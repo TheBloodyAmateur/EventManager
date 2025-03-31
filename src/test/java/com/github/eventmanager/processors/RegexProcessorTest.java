@@ -41,7 +41,7 @@ public class RegexProcessorTest {
     @Test
     public void testProcessJSON() {
         String event = "{\"field1\": \"value1\", \"field2\": \"value2\"}";
-        String expected = "{\"field1\": \"replacement1\", \"field2\": \"replacement2\"}";
+        String expected = "{\"field1\":\"replacement1\",\"field2\":\"replacement2\"}";
         String result = regexProcessor.processJSON(event);
         assertEquals(expected, result);
     }

@@ -2,6 +2,7 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
+import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import com.github.eventmanager.helpers.EventMetaDataBuilder;
@@ -261,7 +262,15 @@ public abstract class ManagerBase {
         return this.outputHelper.addOutput(output);
     }
 
-    protected boolean removeOutput(String outputName) {
-        return this.outputHelper.removeOutput(outputName);
+    protected boolean removeOutput(OutputEntry outputEntry) {
+        return this.outputHelper.removeOutput(outputEntry);
+    }
+
+    protected boolean addProcessor(ProcessorEntry processorName) {
+        return this.processorHelper.addProcessor(processorName);
+    }
+
+    protected boolean removeProcessor(String processorName) {
+        return this.processorHelper.removeProcessor(processorName);
     }
 }

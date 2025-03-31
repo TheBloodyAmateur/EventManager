@@ -23,6 +23,8 @@ public class RegexProcessor implements Processor{
 
     @Override
     public String processJSON(String event) {
+        //Replace all white spaces in the event
+        event = event.replaceAll("\\s+", "");
         return processEvent(event, "JSON");
     }
 
@@ -58,7 +60,7 @@ public class RegexProcessor implements Processor{
     private String processRegex(String format, String fieldName, String value) {
         return switch (format){
           case "KV" -> fieldName+"=\""+ value+"\"";
-          case "JSON" -> "\""+ fieldName+"\":\\ \""+ value+"\"";
+          case "JSON" -> "\""+ fieldName+ "\":\"" + value+"\"";
           case "XML" -> "<"+ fieldName+">"+ value+"</"+ fieldName+">";
           default -> "N\\A";
         };

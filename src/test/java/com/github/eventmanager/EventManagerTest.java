@@ -2,6 +2,8 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
+import com.github.eventmanager.filehandlers.config.ProcessorEntry;
+import com.github.eventmanager.filehandlers.config.RegexEntry;
 import com.github.eventmanager.filehandlers.config.SocketEntry;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import org.junit.jupiter.api.AfterEach;
@@ -49,9 +51,9 @@ public class EventManagerTest {
         logHandler.getConfig().getEvent().setEventFormat("default");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
         EventManager eventManager = new EventManager(logHandler);
-        eventManager.logErrorMessage( "This is an informational message");
-        eventManager.logWarningMessage( "This is an error message");
-        eventManager.logFatalMessage( "This is a fatal message");
+        eventManager.logErrorMessage("This is an informational message");
+        eventManager.logWarningMessage("This is an error message");
+        eventManager.logFatalMessage("This is a fatal message");
 
         // Check if the log file exists
         assertTrue(logHandler.checkIfLogFileExists());
@@ -315,7 +317,7 @@ public class EventManagerTest {
     }
 
     @Test
-    void addProcessorAndVerifyProcessors(){
+    void addOutputAndVerifyOutput() {
         //Redirect System.out to a ByteArrayOutputStream
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -363,5 +365,107 @@ public class EventManagerTest {
             // Clean up: Reset System.out
             System.setOut(originalOut);
         }
+    }
+
+    @Test
+    void removeOutputAndVerifyOutput() {
+        //Redirect System.out to a ByteArrayOutputStream
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        this.eventManager = new EventManager(logHandler);
+
+        eventManager.removeOutput(new OutputEntry("PrintOutput", null));
+        eventManager.logErrorMessage("This is an error message");
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+
+        assertTrue(output.isEmpty());
+
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void addProcessorAndVerifyOutput() {
+        //Redirect System.out to a ByteArrayOutputStream
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        this.eventManager = new EventManager(logHandler);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("RegexProcessor");
+        processorEntry.setParameters(Map.of("regexEntries",
+                List.of(
+                        new RegexEntry("level","ERROR", "KETCHUP")
+                )
+        ));
+
+        eventManager.addProcessor(processorEntry);
+        eventManager.logErrorMessage("This is an error message");
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+
+        assertTrue(output.contains("\"level\":\"KETCHUP\""));
+
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void removeProcessorAndVerifyOutput() {
+        //Redirect System.out to a ByteArrayOutputStream
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        this.eventManager = new EventManager(logHandler);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("RegexProcessor");
+        processorEntry.setParameters(Map.of("regexEntries",
+                List.of(
+                        new RegexEntry("level","ERROR", "KETCHUP")
+                )
+        ));
+
+        eventManager.addProcessor(processorEntry);
+        eventManager.removeProcessor("RegexProcessor");
+        eventManager.logErrorMessage("This is an error message");
+
+        waitForEvents();
+
+        // Check if the console output contains the error message
+        String output = outContent.toString();
+
+        assertTrue(output.contains("\"level\":\"ERROR\""));
+        System.setOut(originalOut);
+
     }
 }

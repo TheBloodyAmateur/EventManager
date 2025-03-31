@@ -74,10 +74,14 @@ public class OutputHelper {
         }
     }
 
+    private boolean isOutputAlreadyRegistered(Output output) {
+        return outputs.stream().anyMatch(p -> p.getClass().equals(output.getClass()));
+    }
+
     public void addNewOutput(OutputEntry outputEntry) {
         if (outputEntry == null) return;
         Output outputInstance = createOutputInstance(outputEntry.getName(), outputEntry.getParameters());
-        if (outputInstance != null) {
+        if (outputInstance != null && !isOutputAlreadyRegistered(outputInstance)) {
             outputs.add(outputInstance);
         }
     }
@@ -88,10 +92,10 @@ public class OutputHelper {
         return true;
     }
 
-    public boolean removeOutput(String outputName) {
-        if (outputName == null) return false;
+    public boolean removeOutput(OutputEntry outputEntry) {
+        if (outputEntry == null) return false;
         for (Output output : outputs) {
-            if (output.getClass().getSimpleName().equalsIgnoreCase(outputName)) {
+            if (output.getClass().getSimpleName().equals(outputEntry.getName())) {
                 outputs.remove(output);
                 return true;
             }
