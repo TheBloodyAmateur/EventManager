@@ -14,76 +14,15 @@ public final class InternalEventManager extends ManagerBase {
     public InternalEventManager(LogHandler logHandler) {
         super(logHandler);
         initiateThreads();
-    }
-
-    @Override
-    public void stopEventThread() {
-        System.out.println("Stopping processing thread gracefully...");
-        processingThread.interrupt();
-
-        // Process remaining events in the processing queue
-        while (!processingQueue.isEmpty()) {
-            try {
-                String event = processingQueue.poll();
-                if (event != null) {
-                    event = processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (Exception e) {
-                System.out.println("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        System.out.println("processingQueue was successfully processed.");
-
-        System.out.println("Stopping processing thread gracefully...");
-        eventThread.interrupt();
-
-        // Process remaining events
-        while (!eventQueue.isEmpty()) {
-            try {
-                String event = eventQueue.poll();
-                if (event != null) {
-                    writeEventToLogFile(event);
-                }
-            } catch (Exception e) {
-                System.out.println("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        System.out.println("eventQueue was successfully processed.");
-
-        try {
-            processingThread.join();
-            eventThread.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
-        }
-        System.out.println("Event thread stopped successfully.");
+        logInfo("InternalEventManager started successfully.");
     }
 
     /**
-     * Logs a message with the specified level and message to the log file.
-     * @param event the event to log.
+     * Stops the internal event thread by interrupting it and waiting for it to finish. This method should be called
+     * before shutting down the application to ensure that all internal events are written to the log file.
      * */
-    protected void writeEventToLogFile(String event) {
-        if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
-            System.out.println(event);
-            return;
-        } else if (this.logHandler.getConfig().getEvent().getPrintAndSaveToFile()) {
-            System.out.println(event);
-        }
-
-        try {
-            if (!this.logHandler.checkIfInternalLogFileExists()) {
-                this.logHandler.createLogFile();
-            }
-            String filePath = this.logHandler.getConfig().getInternalEvents().getFilePath();
-            FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentInternalFileName(), true);
-            myWriter.write(event + "\n");
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred in writeEventToLogFile:" + e.getMessage());
-        }
+    public void stopPipeline() {
+        stopAllThreads();
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.github.eventmanager.filehandlers.config;
 
+import com.github.eventmanager.outputs.DefaultOutput;
 import com.github.eventmanager.processors.DefaultProcessors;
 import lombok.Getter;
 
@@ -60,4 +61,11 @@ public class Config {
      * This includes settings such as the name of the processor and its parameters.
      */
     private final List<ProcessorEntry> processors = new ArrayList<>(DefaultProcessors.createDefault());
+
+    /**
+     * Configuration settings related to outputs.
+     * <p>
+     * This includes settings such as the name of the output and its parameters.
+     */
+    private final List<OutputEntry> outputs = new ArrayList<>(DefaultOutput.createDefault());
 }

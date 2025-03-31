@@ -1,0 +1,15 @@
+{
+  "outputs": [
+    {
+      "name": "console",
+      "params": {}
+    },
+    {
+      "name": "socket",
+      "params": {
+        "host": "localhost",
+        "port": 6000
+      }
+    }
+  ]
+}

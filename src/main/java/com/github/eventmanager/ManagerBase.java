@@ -1,238 +1,197 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
-import com.github.eventmanager.filehandlers.config.RegexEntry;
 import com.github.eventmanager.formatters.EventFormatter;
-import com.github.eventmanager.processors.EnrichingProcessor;
-import com.github.eventmanager.processors.MaskIPV4Address;
-import com.github.eventmanager.processors.Processor;
-import com.github.eventmanager.processors.RegexProcessor;
+import com.github.eventmanager.formatters.KeyValueWrapper;
+import com.github.eventmanager.helpers.EventMetaDataBuilder;
+import com.github.eventmanager.helpers.OutputHelper;
+import com.github.eventmanager.helpers.ProcessorHelper;
+import com.github.eventmanager.helpers.ThreadHelper;
+import com.github.eventmanager.outputs.Output;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 /**
- * The ManagerBase class is responsible for queuing and writing events to the log file.
- * It provides a thread-safe queue to store events and a thread to write events to the log file.
- * */
-abstract class ManagerBase {
+ * Abstract base class providing foundational functionality for event management,
+ * including event queuing, processing, and logging.
+ */
+public abstract class ManagerBase {
+
+    /**
+     * Handles log file writing and log configuration.
+     */
     @Getter
     protected LogHandler logHandler;
-    protected Thread eventThread;
-    protected Thread processingThread;
-    @Getter
-    @Setter
-    protected List<Processor> processors = new ArrayList<>();
+
+    /**
+     * Processes and enriches log events.
+     */
+    protected ProcessorHelper processorHelper;
+
+    /**
+     * Helper class for output operations.
+     */
+    protected OutputHelper outputHelper;
+
+    /**
+     * Queue that holds events ready to be written to the log file.
+     */
     protected final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
+
+    /**
+     * Queue that holds events pending processing by processors.
+     */
     protected final BlockingQueue<String> processingQueue = new LinkedBlockingQueue<>();
 
     /**
-     * Constructs an ManagerBase with the specified LogHandler.
+     * Manages threading operations for event and processing threads.
+     */
+    private final ThreadHelper threadHelper = new ThreadHelper();
+
+    /**
+     * Initializes ManagerBase with a provided LogHandler instance.
      *
-     * @param logHandler the LogHandler to use for logging events.
+     * @param logHandler The LogHandler responsible for managing logging operations.
      */
     public ManagerBase(LogHandler logHandler) {
         this.logHandler = logHandler;
+        this.processorHelper = new ProcessorHelper(logHandler);
+        this.outputHelper = new OutputHelper(logHandler);
     }
 
     /**
-     * Constructs an ManagerBase with the specified configuration file path.
+     * Initializes ManagerBase using a configuration file path.
      *
-     * @param configPath the path to the configuration file. Passing an empty string or invalid path will force
-     *                   the ManagerBase to fall back to the default configuration.
-     *
+     * @param configPath Path to the logging configuration file.
      */
     public ManagerBase(String configPath) {
-        this.logHandler = new LogHandler(configPath);
+        this(new LogHandler(configPath));
     }
 
+    /**
+     * Starts event processing and logging threads.
+     */
     protected void initiateThreads() {
-        initialiseProcessors();
-        this.processingThread = initiateProcessingThread();
-        this.eventThread = initiateEventThread();
-    }
+        initialiseProcessorThreadAndOutputs();
 
-    protected String processEvent(String event) {
-        for (Processor processor : processors) {
-            switch (this.logHandler.getConfig().getEvent().getEventFormat())
-            {
-                case "kv" -> event = processor.processKV(event);
-                case "xml" -> event = processor.processXML(event);
-                case "json" -> event = processor.processJSON(event);
+        threadHelper.startEventThread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = eventQueue.take();
+                    outputEvent(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        }
-        return event;
+        });
     }
 
-    private void initialiseProcessors(){
-        for (ProcessorEntry entry : this.logHandler.getConfig().getProcessors()) {
-            Processor processor = createProcessorInstance(entry.getName(), entry.getParameters());
-            if (processor != null && !isProcessorAlreadyRegistered(processor)) {
-                processors.add(processor);
+    /**
+     * Starts event processing and logging threads.
+     */
+    protected void initiateThreads(InternalEventManager internalEventManager) {
+        initialiseProcessorThreadAndOutputs();
+
+        threadHelper.startEventThread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    String event = eventQueue.take();
+                    outputEvent(internalEventManager, event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        }
+        });
     }
 
-    private Thread initiateProcessingThread(){
-        Thread thread = new Thread(() -> {
+    /**
+     * Initializes the processing thread and output destinations.
+     */
+    private void initialiseProcessorThreadAndOutputs() {
+        processorHelper.initialiseProcessors();
+        outputHelper.initialiseOutputs();
+
+        threadHelper.startProcessingThread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = processingQueue.take();
-                    event = processEvent(event);
+                    event = processorHelper.processEvent(event);
                     writeEventToQueue(event);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         });
-        thread.start();
-        return thread;
-    }
-
-    private Processor createProcessorInstance(String className, Map<String, Object> parameters) {
-        try {
-            String packagePrefix = "com.github.eventmanager.processors.";
-            Class<?> clazz = Class.forName(packagePrefix + className);
-
-            Processor excludeRanges = getProcessor(parameters, clazz);
-            if (excludeRanges != null) return excludeRanges;
-
-            return (Processor) clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
-     * Returns a Processor instance based on the given parameters and class.
+     * Stops all threads gracefully and processes remaining events,
+     * using InternalEventManager for structured logging of shutdown status.
      *
-     * @param parameters the parameters to pass to the Processor.
-     * @param clazz the class of the Processor.
-     * */
-    private static Processor getProcessor(Map<String, Object> parameters, Class<?> clazz) {
-        if(parameters == null) return null;
-
-        if (clazz == MaskIPV4Address.class) {
-            List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
-            return new MaskIPV4Address(excludeRanges);
-        } else if (clazz == EnrichingProcessor.class) {
-            List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
-            return new EnrichingProcessor(enrichingFields);
-        } else if (clazz == RegexProcessor.class) {
-            List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
-            return new RegexProcessor(regexEntries);
-        }
-        return null;
-    }
-
-    private boolean isProcessorAlreadyRegistered(Processor processor) {
-        return processors.stream().anyMatch(p -> p.getClass().equals(processor.getClass()));
-    }
-
-    /**
-     * Creates a new Thread to write events to the log file. It will run indefinitely until it is interrupted (either
-     * by calling the {@link ManagerBase#stopEventThread()} method or by the JVM shutting down).
-     * The thread will write events to the log file if the queue is not empty and internal events are enabled.
-     *
-     * @deprecated This method is deprecated and will be removed in a future release, as it was not intended to be
-     * used by external classes... there was also a typo. Use {@link ManagerBase#initiatEventThread()} instead.
-     * */
-    @Deprecated
-    public Thread initiatEventThread() {
-        Thread thread = new Thread(() -> {
+     * @param internalEventManager The event manager used for logging shutdown information.
+     */
+    protected void stopAllThreads(InternalEventManager internalEventManager) {
+        threadHelper.stopThread(threadHelper.getProcessingThread(), processingQueue, event -> {
             try {
-                // Run indefinitely until the thread is interrupted
-                while (!Thread.currentThread().isInterrupted()) {
-                    String event = eventQueue.take();
-                    writeEventToLogFile(event);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                event = processorHelper.processEvent(event);
+                writeEventToQueue(event);
+            } catch (Exception e) {
+                internalEventManager.logError("Error processing remaining events: " + e.getMessage());
             }
         });
-        thread.start();
-        return thread;
-    }
+        internalEventManager.logInfo("Processing queue processed successfully.");
 
-    protected Thread initiateEventThread() {
-        Thread thread = new Thread(() -> {
+        threadHelper.stopThread(threadHelper.getEventThread(), eventQueue, event -> {
             try {
-                // Run indefinitely until the thread is interrupted
-                while (!Thread.currentThread().isInterrupted()) {
-                    String event = eventQueue.take();
-                    writeEventToLogFile(event);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                outputEvent(event);
+            } catch (Exception e) {
+                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
             }
         });
-        thread.start();
-        return thread;
+        internalEventManager.logInfo("Event queue processed successfully.");
     }
 
     /**
-     * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
-     * shutting down the application to ensure that all events are written to the log file.
+     * Stops all threads gracefully without structured logging.
+     * Logs status information directly to the standard output.
      */
-    public abstract void stopEventThread();
+    protected void stopAllThreads() {
+        threadHelper.stopThread(threadHelper.getProcessingThread(), processingQueue, event -> {
+            try {
+                event = processorHelper.processEvent(event);
+                writeEventToQueue(event);
+            } catch (Exception e) {
+                System.out.println("Error processing remaining events: " + e.getMessage());
+            }
+        });
+        System.out.println("Processing queue processed successfully.");
 
-    /**
-     * Writes the given event to the log file. If the event is not empty, it will be written to the log file specified
-     * in the configuration file. If the log file does not exist, it will be created. If the log file cannot be created
-     * or written to, an error message will be printed to the console.
-     *
-     * @param event the event to write to the log file.
-     * */
-    protected abstract void writeEventToLogFile(String event);
-
-    /**
-     * Sets the metadata fields for the event.
-     *
-     * @param level the log level of the event.
-     * @return a map containing the metadata fields.
-     */
-    protected Map<String, String> setMetaDataFields(String level) {
-        StackTraceElement[] stackTraceElement = Thread.currentThread().getStackTrace();
-        String className = stackTraceElement[4].getClassName();
-        String methodName = stackTraceElement[4].getMethodName();
-        int lineNumber = stackTraceElement[4].getLineNumber();
-
-        String time = ZonedDateTime.now().format(DateTimeFormatter.ofPattern(this.logHandler.getConfig().getEvent().getTimeFormat()));
-
-        Map<String, String> metaDataFields = new HashMap<>();
-        metaDataFields.put("time", time);
-        metaDataFields.put("level", level);
-        metaDataFields.put("className", className);
-        metaDataFields.put("methodName", methodName);
-        metaDataFields.put("lineNumber", String.valueOf(lineNumber));
-
-        return metaDataFields;
+        threadHelper.stopThread(threadHelper.getEventThread(), eventQueue, event -> {
+            try {
+                outputEvent(event);
+            } catch (Exception e) {
+                System.out.println("Error writing remaining events: " + e.getMessage());
+            }
+        });
+        System.out.println("Event queue processed successfully.");
     }
 
     /**
-     * Logs a message to the destination file.
+     * Formats and queues a log message for processing and eventual writing to log file.
      *
-     * @param level   the log level of the message.
-     * @param message the object to log.
+     * @param level   Log level (e.g., INFO, ERROR).
+     * @param message Message content to log, which can be an Exception or String.
      */
     protected void logMessage(String level, Object message) {
-        String formattedMessage;
-        if (message instanceof Exception) {
-            formattedMessage = ((Exception) message).getMessage();
-        } else {
-            formattedMessage = message.toString();
-        }
+        String formattedMessage = (message instanceof Exception)
+                ? ((Exception) message).getMessage()
+                : message.toString();
 
-        Map<String, String> metaData = setMetaDataFields(level);
+        Map<String, String> metaData = EventMetaDataBuilder.buildMetaData(level, this.logHandler);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
         String event = switch (eventFormat) {
@@ -247,15 +206,115 @@ abstract class ManagerBase {
     }
 
     /**
-     * Writes the given event to the event queue. This method is thread-safe and can be called from multiple threads.
+     * Logs a message to the destination file.
      *
-     * @param event the event to write to the queue.
-     * */
-    protected void writeEventToQueue(String event) {
-        this.eventQueue.add(event);
+     * @param level    the log level of the message.
+     * @param messages an object array to be appended to the message.
+     */
+    protected void logMessage(String level, KeyValueWrapper... messages) {
+        Map<String, String> metaData = EventMetaDataBuilder.buildMetaData(level, this.logHandler);
+        String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
+
+        String event = switch (eventFormat) {
+            case "kv" -> EventFormatter.KEY_VALUE.format(metaData, messages);
+            case "csv" -> EventFormatter.CSV.format(metaData, messages);
+            case "xml" -> EventFormatter.XML.format(metaData, messages);
+            case "json" -> EventFormatter.JSON.format(metaData, messages);
+            default -> EventFormatter.DEFAULT.format(metaData, messages);
+        };;
+
+        writeEventToProcessingQueue(event);
     }
 
+    /**
+     * Adds processed event to the event queue.
+     *
+     * @param event The event string after processing.
+     */
+    protected void writeEventToQueue(String event) {
+        eventQueue.add(event);
+    }
+
+    /**
+     * Adds raw event to the processing queue.
+     *
+     * @param event The event string before processing.
+     */
     protected void writeEventToProcessingQueue(String event) {
-        this.processingQueue.add(event);
+        processingQueue.add(event);
+    }
+
+    /**
+     * Passes the event to the output or outputs specified in the runtime or config specification.
+     */
+    protected void outputEvent(String event){
+        this.outputHelper.outputEvent(event);
+    }
+
+    /**
+     * Passes the event to the output or outputs specified in the runtime or config specification.
+     */
+    protected void outputEvent(InternalEventManager internalEventManager, String event){
+        this.outputHelper.outputEvent(internalEventManager, event);
+    }
+
+    /**
+     * Adds a new output destination.
+     *
+     * @param output The output entry to add.
+     * @return true if the output was added successfully, false otherwise.
+     */
+    protected boolean addOutput(OutputEntry output) {
+        return this.outputHelper.addOutput(output);
+    }
+
+    /**
+     * Removes an output destination.
+     *
+     * @param outputEntry The output entry to remove.
+     * @return true if the output was removed successfully, false otherwise.
+     */
+    protected boolean removeOutput(OutputEntry outputEntry) {
+        return this.outputHelper.removeOutput(outputEntry);
+    }
+
+    /**
+     * Removes an output destination by class name.
+     *
+     * @param outputName The class name of the output to remove.
+     * @return true if the output was removed successfully, false otherwise.
+     */
+    protected boolean removeOutput(String outputName) {
+        return this.outputHelper.removeOutput(outputName);
+    }
+
+    /**
+     * Adds a new processor to the list of processors.
+     *
+     * @param processorName The processor entry to add.
+     * @return true if the processor was added successfully, false otherwise.
+     */
+    protected boolean addProcessor(ProcessorEntry processorName) {
+        return this.processorHelper.addProcessor(processorName);
+    }
+
+    /**
+     * Removes a processor from the list of processors.
+     *
+     * @param processorName The class name of the processor to remove.
+     * @return true if the processor was removed successfully, false otherwise.
+     */
+    protected boolean removeProcessor(String processorName) {
+        return this.processorHelper.removeProcessor(processorName);
+    }
+
+    /**
+     * Removes a processor from the list of processors.
+     *
+     * @param processorEntry The processor entry to remove.
+     * @return true if the processor was removed successfully, false otherwise.
+     */
+    protected boolean removeProcessor(ProcessorEntry processorEntry) {
+        return this.processorHelper.removeProcessor(processorEntry);
     }
 }

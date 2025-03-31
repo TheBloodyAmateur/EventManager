@@ -4,6 +4,7 @@ import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventCreator;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
+import com.github.eventmanager.helpers.EventMetaDataBuilder;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class EventManager extends ManagerBase {
         super(logHandler);
         this.internalEventManager = this.logHandler.getInternalEventManager();
         internalEventManager.logInfo("EventManager started successfully.");
-        initiateThreads();
+        initiateThreads(internalEventManager);
     }
 
     /**
@@ -40,57 +41,32 @@ public class EventManager extends ManagerBase {
         this.internalEventManager = this.logHandler.getInternalEventManager();
         internalEventManager.logInfo("EventManager started successfully.");
         internalEventManager.logInfo("Initializing event thread...");
-        initiateThreads();
+        initiateThreads(internalEventManager);
+    }
+
+    /**
+     * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
+     * shutting down the application to ensure that all events are written to the log file.
+     *
+     * @deprecated Use {@link #stopPipeline()} instead.
+     */
+    @Deprecated
+    public void stopEventThread() {
+        stopAllThreads(this.internalEventManager);
+        internalEventManager.logInfo("Event thread stopped successfully.");
+        internalEventManager.logInfo("EventManager stopped successfully. Shutting down internal event manager...");
+        internalEventManager.stopPipeline();
     }
 
     /**
      * Stops the event thread by interrupting it and waiting for it to finish. This method should be called before
      * shutting down the application to ensure that all events are written to the log file.
      */
-    public void stopEventThread() {
-        internalEventManager.logInfo("Stopping processing thread gracefully...");
-        processingThread.interrupt();
-
-        // Process remaining events in the processing queue
-        while (!processingQueue.isEmpty()) {
-            try {
-                String event = processingQueue.poll();
-                if (event != null) {
-                    event = processEvent(event);
-                    writeEventToQueue(event);
-                }
-            } catch (Exception e) {
-                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        internalEventManager.logInfo("processingQueue was successfully processed.");
-
-        internalEventManager.logInfo("Stopping processing thread gracefully...");
-        eventThread.interrupt();
-
-        // Process remaining events
-        while (!eventQueue.isEmpty()) {
-            try {
-                String event = eventQueue.poll();
-                if (event != null) {
-                    writeEventToLogFile(event);
-                }
-            } catch (Exception e) {
-                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
-            }
-        }
-        internalEventManager.logInfo("eventQueue was successfully processed.");
-
-        try {
-            processingThread.join();
-            eventThread.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            internalEventManager.logError("Error stopping threads: " + e.getMessage() + ", Thread interrupted forcefully.");
-        }
+    public void stopPipeline() {
+        stopAllThreads(this.internalEventManager);
         internalEventManager.logInfo("Event thread stopped successfully.");
         internalEventManager.logInfo("EventManager stopped successfully. Shutting down internal event manager...");
-        internalEventManager.stopEventThread();
+        internalEventManager.stopPipeline();
     }
 
     /**
@@ -105,48 +81,6 @@ public class EventManager extends ManagerBase {
             path = path.replace("/", "\\");
         }
         return path;
-    }
-
-    /**
-     * Logs a message to the destination file.
-     *
-     * @param level    the log level of the message.
-     * @param messages an object array to be appended to the message.
-     */
-    private void logMessage(String level, KeyValueWrapper... messages) {
-        String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
-        Map<String, String> metaData = setMetaDataFields(level);
-
-        String event = switch (eventFormat) {
-            case "kv" -> EventFormatter.KEY_VALUE.format(metaData, messages);
-            case "csv" -> EventFormatter.CSV.format(metaData, messages);
-            case "xml" -> EventFormatter.XML.format(metaData, messages);
-            case "json" -> EventFormatter.JSON.format(metaData, messages);
-            default -> EventFormatter.DEFAULT.format(metaData, messages);
-        };
-
-        writeEventToProcessingQueue(event);
-    }
-
-    protected void writeEventToLogFile(String event) {
-        if (this.logHandler.getConfig().getEvent().getPrintToConsole()) {
-            System.out.println(event);
-            return;
-        } else if (this.logHandler.getConfig().getEvent().getPrintAndSaveToFile()) {
-            System.out.println(event);
-        }
-
-        try {
-            if (!this.logHandler.checkIfLogFileExists()) {
-                this.logHandler.createLogFile();
-            }
-            String filePath = this.logHandler.getConfig().getLogFile().getFilePath();
-            FileWriter myWriter = new FileWriter(filePath + this.logHandler.getCurrentFileName(), true);
-            myWriter.write(event + "\n");
-            myWriter.close();
-        } catch (IOException e) {
-            internalEventManager.logError("An error occurred in writeEventToLogFile:" + e.getMessage());
-        }
     }
 
     /**

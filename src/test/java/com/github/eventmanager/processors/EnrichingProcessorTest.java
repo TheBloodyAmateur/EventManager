@@ -2,6 +2,7 @@ package com.github.eventmanager.processors;
 
 import com.github.eventmanager.EventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventCreator;
 import org.junit.jupiter.api.Test;
@@ -125,15 +126,19 @@ class EnrichingProcessorTest {
         try {
             LogHandler logHandler = new LogHandler("");
             logHandler.getConfig().getEvent().setEventFormat("xml");
-            logHandler.getConfig().getEvent().setPrintToConsole(true);
 
             ProcessorEntry processorEntry = new ProcessorEntry();
             processorEntry.setName("EnrichingProcessor");
             processorEntry.setParameters(Map.of("enrichingFields", List.of("osName", "javaVersion")));
 
+            OutputEntry outputEntry = new OutputEntry();
+            outputEntry.setName("PrintOutput");
+
             logHandler.getConfig().getProcessors().add(processorEntry);
+            logHandler.getConfig().getOutputs().add(outputEntry);
 
             EventManager eventManager = new EventManager(logHandler);
+
             eventManager.logErrorMessage("This is an error message");
             waitForEvents();
 
