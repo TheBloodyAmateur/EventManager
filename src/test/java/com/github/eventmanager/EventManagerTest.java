@@ -357,9 +357,7 @@ public class EventManagerTest {
             assertTrue(outContent.toString().contains("This is an error message"));
             String received = receivedEvent.get(2, TimeUnit.SECONDS);
             assertTrue(received.contains("This is an error message"));
-        } catch (IOException | ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException | TimeoutException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             // Clean up: Reset System.out
