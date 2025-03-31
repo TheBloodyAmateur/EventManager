@@ -189,7 +189,7 @@ public abstract class ManagerBase {
      * @param level   Log level (e.g., INFO, ERROR).
      * @param message Message content to log, which can be an Exception or String.
      */
-    protected void logMessage(String level, Object message) {
+    void logMessage(String level, Object message) {
         String formattedMessage = (message instanceof Exception)
                 ? ((Exception) message).getMessage()
                 : message.toString();
@@ -214,7 +214,7 @@ public abstract class ManagerBase {
      * @param level    the log level of the message.
      * @param messages an object array to be appended to the message.
      */
-    protected void logMessage(String level, KeyValueWrapper... messages) {
+    void logMessage(String level, KeyValueWrapper... messages) {
         Map<String, String> metaData = EventMetaDataBuilder.buildMetaData(level, this.logHandler);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
