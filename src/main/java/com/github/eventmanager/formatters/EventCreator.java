@@ -282,4 +282,12 @@ public class EventCreator {
         }
         return event.toString();
     }
+
+    public EventCreator logLevel(String custom) {
+        if (custom != null) {
+            appendElement("logLevel", custom);
+            appendSeperator();
+        }
+        return this;
+    }
 }
