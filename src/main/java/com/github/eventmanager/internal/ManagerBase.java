@@ -10,6 +10,7 @@ import lombok.Getter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -118,7 +119,9 @@ public abstract class ManagerBase {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = processingQueue.take();
                     event = processorHelper.processEvent(event);
-                    writeEventToQueue(event);
+                    if(!event.isBlank() && event!=null){
+                        writeEventToQueue(event);
+                    }
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

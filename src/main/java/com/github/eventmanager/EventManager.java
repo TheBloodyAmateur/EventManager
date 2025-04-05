@@ -5,6 +5,8 @@ import com.github.eventmanager.formatters.EventCreator;
 import com.github.eventmanager.formatters.KeyValueWrapper;
 import com.github.eventmanager.internal.ManagerBase;
 
+import java.time.Duration;
+
 /**
  * The EventManager class is responsible for managing and logging events.
  * It provides methods to log messages with different log levels and formats.
@@ -297,6 +299,29 @@ public class EventManager extends ManagerBase {
         if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             String stackTrace = castExceptionStackTraceToString(exception);
             logMessage("DEBUG", stackTrace);
+        }
+    }
+
+    /**
+     * Monitors the execution time of a task and logs an error message if it exceeds the specified threshold.
+     *
+     * @param operationName the name of the operation being monitored.
+     * @param threshold     the threshold duration for logging a warning message.
+     * @param task         the task to be executed and monitored.
+     */
+    public void monitor(String operationName, Duration threshold, Runnable task) {
+        long start = System.nanoTime();
+        try {
+            task.run();
+        } catch (Exception e) {
+            String stackTrace = castExceptionStackTraceToString(e);
+            this.logErrorMessage(stackTrace);
+        } finally {
+            long elapsed = System.nanoTime() - start;
+            if (elapsed > threshold.toNanos()) {
+                String message = String.format("Operation %s took %d ms", operationName, elapsed / 1_000_000);
+                this.logErrorMessage(message);
+            }
         }
     }
 }

@@ -14,12 +14,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EventManagerTest {
     String configPath = "config/loggingConfig.json";
@@ -291,7 +291,7 @@ public class EventManagerTest {
     }
 
     @Test
-    void testConsoleOutput() {
+    void consoleOutput() {
         //Redirect System.out to a ByteArrayOutputStream
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -470,7 +470,7 @@ public class EventManagerTest {
     }
 
     @Test
-    void testCustomLogLevel() {
+    void customLogLevel() {
         LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("default");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
@@ -492,5 +492,105 @@ public class EventManagerTest {
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
+    }
+
+    @Test
+    void filterOutEvents() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("FilterProcessor");
+        processorEntry.setParameters(Map.of("termToFilter", List.of("test")));
+
+        logHandler.getConfig().getProcessors().add(processorEntry);
+
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logErrorMessage("This is a test message");
+        eventManager.logErrorMessage("This is a message without the term");
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+        assertTrue(output.contains("This is a message without the term"));
+        assertFalse(output.contains("This is a test message"));
+
+        this.eventManager = eventManager;
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void sampleEvents() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("SampleProcessor");
+        processorEntry.setParameters(Map.of("sampleSize", 2));
+
+        logHandler.getConfig().getProcessors().add(processorEntry);
+
+        EventManager eventManager = new EventManager(logHandler);
+        for (int i = 0; i < 10; i++) {
+            eventManager.logErrorMessage("This is a test message " + i);
+        }
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+        assertTrue(output.contains("This is a test message 1"));
+        assertTrue(output.contains("This is a test message 3"));
+        assertTrue(output.contains("This is a test message 5"));
+        assertTrue(output.contains("This is a test message 7"));
+        assertTrue(output.contains("This is a test message 9"));
+
+        this.eventManager = eventManager;
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void monitor() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        this.eventManager = new EventManager(logHandler);
+        eventManager.monitor("test", Duration.ofMillis(100), () -> {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+        assertTrue(output.contains("Operation test took 20"));
+
+        System.setOut(originalOut);
     }
 }
