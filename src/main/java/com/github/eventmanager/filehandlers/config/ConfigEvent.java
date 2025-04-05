@@ -9,7 +9,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * time format for logging events, and event format for logging events.
  */
 public class ConfigEvent {
+    /**
+     * @deprecated This feature was deprecated, with {@link OutputEntry} being the new method.
+     * */
     private final AtomicBoolean printToConsole = new AtomicBoolean(false);
+    /**
+     * @deprecated This feature was deprecated, with {@link OutputEntry} being the new method.
+     * */
     private final AtomicBoolean printAndSaveToFile = new AtomicBoolean(false);
     private final AtomicBoolean debuggingMode = new AtomicBoolean(false);
     private final AtomicBoolean informationalMode = new AtomicBoolean(false);
@@ -20,6 +26,8 @@ public class ConfigEvent {
      * Gets whether logs should be printed to the console.
      *
      * @return true if logs should be printed to the console, false otherwise.
+     *
+     * @deprecated This feature was deprecated, with {@link OutputEntry} being the new method.
      */
     public boolean getPrintToConsole() {
         return printToConsole.get();
@@ -29,6 +37,8 @@ public class ConfigEvent {
      * Sets whether logs should be printed to the console.
      *
      * @param printToConsole true to print logs to the console, false otherwise.
+     *
+     * @deprecated This feature was deprecated, with {@link OutputEntry} being the new method.
      */
     public void setPrintToConsole(boolean printToConsole) {
         this.printToConsole.set(printToConsole);
@@ -38,6 +48,8 @@ public class ConfigEvent {
      * Gets whether logs should be printed and saved to a file.
      *
      * @return true if logs should be printed and saved to a file, false otherwise.
+     *
+     * @deprecated This feature was deprecated, with {@link OutputEntry} being the new method.
      */
     public boolean getPrintAndSaveToFile() {
         return printAndSaveToFile.get();
@@ -47,6 +59,8 @@ public class ConfigEvent {
      * Sets whether logs should be printed and saved to a file.
      *
      * @param printAndSaveToFile true to print and save logs to a file, false otherwise.
+     *
+     * @deprecated This feature was deprecated, with {@link OutputEntry} being the new method.
      */
     public void setPrintAndSaveToFile(boolean printAndSaveToFile) {
         this.printAndSaveToFile.set(printAndSaveToFile);
