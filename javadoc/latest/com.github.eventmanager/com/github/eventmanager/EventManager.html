@@ -73,14 +73,14 @@ loadScripts(document, 'script');</script>
 <h1 title="Class EventManager" class="title">Class EventManager</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance"><a href="ManagerBase.html" title="class in com.github.eventmanager">com.github.eventmanager.ManagerBase</a>
+<div class="inheritance"><a href="internal/ManagerBase.html" title="class in com.github.eventmanager.internal">com.github.eventmanager.internal.ManagerBase</a>
 <div class="inheritance">com.github.eventmanager.EventManager</div>
 </div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">EventManager</span>
-<span class="extends-implements">extends <a href="ManagerBase.html" title="class in com.github.eventmanager">ManagerBase</a></span></div>
+<span class="extends-implements">extends <a href="internal/ManagerBase.html" title="class in com.github.eventmanager.internal">ManagerBase</a></span></div>
 <div class="block">The EventManager class is responsible for managing and logging events.
  It provides methods to log messages with different log levels and formats.</div>
 </section>
@@ -91,8 +91,8 @@ loadScripts(document, 'script');</script>
 <section class="field-summary" id="field-summary">
 <h2>Field Summary</h2>
 <div class="inherited-list">
-<h3 id="fields-inherited-from-class-com.github.eventmanager.ManagerBase">Fields inherited from class&nbsp;com.github.eventmanager.<a href="ManagerBase.html" title="class in com.github.eventmanager">ManagerBase</a></h3>
-<code><a href="ManagerBase.html#eventQueue">eventQueue</a>, <a href="ManagerBase.html#logHandler">logHandler</a>, <a href="ManagerBase.html#outputHelper">outputHelper</a>, <a href="ManagerBase.html#processingQueue">processingQueue</a>, <a href="ManagerBase.html#processorHelper">processorHelper</a></code></div>
+<h3 id="fields-inherited-from-class-com.github.eventmanager.internal.ManagerBase">Fields inherited from class&nbsp;com.github.eventmanager.internal.<a href="internal/ManagerBase.html" title="class in com.github.eventmanager.internal">ManagerBase</a></h3>
+<code><a href="internal/ManagerBase.html#eventQueue">eventQueue</a>, <a href="internal/ManagerBase.html#logHandler">logHandler</a>, <a href="internal/ManagerBase.html#outputHelper">outputHelper</a>, <a href="internal/ManagerBase.html#processingQueue">processingQueue</a>, <a href="internal/ManagerBase.html#processorHelper">processorHelper</a></code></div>
 </section>
 </li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -131,14 +131,25 @@ loadScripts(document, 'script');</script>
 <div class="block">Checks if informational logs are enabled.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logDebugMessage(com.github.eventmanager.formatters.EventCreator)" class="member-name-link">logDebugMessage</a><wbr>(<a href="formatters/EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a>&nbsp;message)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logCustomMessage(java.lang.String,java.lang.Object)" class="member-name-link">logCustomMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;logLevel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;message)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Logs a debug message with a EventCreator message.</div>
+<div class="block">Logs a message with the specified log level and message.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logDebugMessage(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">logDebugMessage</a><wbr>(<a href="formatters/KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logDebugMessage(com.github.eventmanager.formatters.EventCreator)" class="member-name-link">logDebugMessage</a><wbr>(<a href="formatters/EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Logs a debug message with a EventCreator message.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logDebugMessage(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">logDebugMessage</a><wbr>(<a href="formatters/KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Logs a debug message with key-value pairs.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logDebugMessage(java.lang.Exception)" class="member-name-link">logDebugMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Logs a debug message with an exception stack trace.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logDebugMessage(java.lang.Object)" class="member-name-link">logDebugMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
@@ -156,19 +167,29 @@ loadScripts(document, 'script');</script>
 <div class="block">Logs an error message with key-value pairs.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logErrorMessage(java.lang.Object)" class="member-name-link">logErrorMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logErrorMessage(java.lang.Exception)" class="member-name-link">logErrorMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Logs an error message.</div>
+<div class="block">Logs an error message with an exception stack trace.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logFatalMessage(com.github.eventmanager.formatters.EventCreator)" class="member-name-link">logFatalMessage</a><wbr>(<a href="formatters/EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a>&nbsp;message)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logErrorMessage(java.lang.Object)" class="member-name-link">logErrorMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Logs a fatal message with a EventCreator message.</div>
+<div class="block">Logs an error message.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logFatalMessage(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">logFatalMessage</a><wbr>(<a href="formatters/KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logFatalMessage(com.github.eventmanager.formatters.EventCreator)" class="member-name-link">logFatalMessage</a><wbr>(<a href="formatters/EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Logs a fatal message with a EventCreator message.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logFatalMessage(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">logFatalMessage</a><wbr>(<a href="formatters/KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Logs a fatal message with key-value pairs.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logFatalMessage(java.lang.Exception)" class="member-name-link">logFatalMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Logs a fatal message with an exception stack trace.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logFatalMessage(java.lang.Object)" class="member-name-link">logFatalMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
@@ -186,19 +207,29 @@ loadScripts(document, 'script');</script>
 <div class="block">Logs an informational message with key-value pairs.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logInfoMessage(java.lang.Object)" class="member-name-link">logInfoMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logInfoMessage(java.lang.Exception)" class="member-name-link">logInfoMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Logs an informational message.</div>
+<div class="block">Logs an informational message with an exception stack trace.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logWarningMessage(com.github.eventmanager.formatters.EventCreator)" class="member-name-link">logWarningMessage</a><wbr>(<a href="formatters/EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a>&nbsp;message)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logInfoMessage(java.lang.Object)" class="member-name-link">logInfoMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Logs a warning message with a EventCreator message.</div>
+<div class="block">Logs an informational message.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logWarningMessage(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">logWarningMessage</a><wbr>(<a href="formatters/KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logWarningMessage(com.github.eventmanager.formatters.EventCreator)" class="member-name-link">logWarningMessage</a><wbr>(<a href="formatters/EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Logs a warning message with a EventCreator message.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logWarningMessage(com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">logWarningMessage</a><wbr>(<a href="formatters/KeyValueWrapper.html" title="class in com.github.eventmanager.formatters">KeyValueWrapper</a>...&nbsp;args)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Logs a warning message with key-value pairs.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logWarningMessage(java.lang.Exception)" class="member-name-link">logWarningMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Logs a warning message with an exception stack trace.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#logWarningMessage(java.lang.Object)" class="member-name-link">logWarningMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</code></div>
@@ -226,8 +257,8 @@ loadScripts(document, 'script');</script>
 </div>
 </div>
 <div class="inherited-list">
-<h3 id="methods-inherited-from-class-com.github.eventmanager.ManagerBase">Methods inherited from class&nbsp;com.github.eventmanager.<a href="ManagerBase.html" title="class in com.github.eventmanager">ManagerBase</a></h3>
-<code><a href="ManagerBase.html#addOutput(com.github.eventmanager.filehandlers.config.OutputEntry)">addOutput</a>, <a href="ManagerBase.html#addProcessor(com.github.eventmanager.filehandlers.config.ProcessorEntry)">addProcessor</a>, <a href="ManagerBase.html#initiateThreads()">initiateThreads</a>, <a href="ManagerBase.html#initiateThreads(com.github.eventmanager.InternalEventManager)">initiateThreads</a>, <a href="ManagerBase.html#logMessage(java.lang.String,com.github.eventmanager.formatters.KeyValueWrapper...)">logMessage</a>, <a href="ManagerBase.html#logMessage(java.lang.String,java.lang.Object)">logMessage</a>, <a href="ManagerBase.html#outputEvent(com.github.eventmanager.InternalEventManager,java.lang.String)">outputEvent</a>, <a href="ManagerBase.html#outputEvent(java.lang.String)">outputEvent</a>, <a href="ManagerBase.html#removeOutput(com.github.eventmanager.filehandlers.config.OutputEntry)">removeOutput</a>, <a href="ManagerBase.html#removeOutput(java.lang.String)">removeOutput</a>, <a href="ManagerBase.html#removeProcessor(com.github.eventmanager.filehandlers.config.ProcessorEntry)">removeProcessor</a>, <a href="ManagerBase.html#removeProcessor(java.lang.String)">removeProcessor</a>, <a href="ManagerBase.html#stopAllThreads()">stopAllThreads</a>, <a href="ManagerBase.html#stopAllThreads(com.github.eventmanager.InternalEventManager)">stopAllThreads</a>, <a href="ManagerBase.html#writeEventToProcessingQueue(java.lang.String)">writeEventToProcessingQueue</a>, <a href="ManagerBase.html#writeEventToQueue(java.lang.String)">writeEventToQueue</a></code></div>
+<h3 id="methods-inherited-from-class-com.github.eventmanager.internal.ManagerBase">Methods inherited from class&nbsp;com.github.eventmanager.internal.<a href="internal/ManagerBase.html" title="class in com.github.eventmanager.internal">ManagerBase</a></h3>
+<code><a href="internal/ManagerBase.html#addOutput(com.github.eventmanager.filehandlers.config.OutputEntry)">addOutput</a>, <a href="internal/ManagerBase.html#addProcessor(com.github.eventmanager.filehandlers.config.ProcessorEntry)">addProcessor</a>, <a href="internal/ManagerBase.html#castExceptionStackTraceToString(java.lang.Exception)">castExceptionStackTraceToString</a>, <a href="internal/ManagerBase.html#initiateThreads()">initiateThreads</a>, <a href="internal/ManagerBase.html#initiateThreads(com.github.eventmanager.InternalEventManager)">initiateThreads</a>, <a href="internal/ManagerBase.html#logMessage(java.lang.String,com.github.eventmanager.formatters.KeyValueWrapper...)">logMessage</a>, <a href="internal/ManagerBase.html#logMessage(java.lang.String,java.lang.Object)">logMessage</a>, <a href="internal/ManagerBase.html#outputEvent(com.github.eventmanager.InternalEventManager,java.lang.String)">outputEvent</a>, <a href="internal/ManagerBase.html#outputEvent(java.lang.String)">outputEvent</a>, <a href="internal/ManagerBase.html#removeOutput(com.github.eventmanager.filehandlers.config.OutputEntry)">removeOutput</a>, <a href="internal/ManagerBase.html#removeOutput(java.lang.String)">removeOutput</a>, <a href="internal/ManagerBase.html#removeProcessor(com.github.eventmanager.filehandlers.config.ProcessorEntry)">removeProcessor</a>, <a href="internal/ManagerBase.html#removeProcessor(java.lang.String)">removeProcessor</a>, <a href="internal/ManagerBase.html#stopAllThreads()">stopAllThreads</a>, <a href="internal/ManagerBase.html#stopAllThreads(com.github.eventmanager.InternalEventManager)">stopAllThreads</a>, <a href="internal/ManagerBase.html#writeEventToProcessingQueue(java.lang.String)">writeEventToProcessingQueue</a>, <a href="internal/ManagerBase.html#writeEventToQueue(java.lang.String)">writeEventToQueue</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
@@ -307,6 +338,19 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="logCustomMessage(java.lang.String,java.lang.Object)">
+<h3>logCustomMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logCustomMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;logLevel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;message)</span></div>
+<div class="block">Logs a message with the specified log level and message.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>logLevel</code> - the log level (e.g., "INFO", "ERROR", "DEBUG").</dd>
+<dd><code>message</code> - the message to log.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="logFatalMessage(java.lang.Object)">
 <h3>logFatalMessage</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logFatalMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</span></div>
@@ -336,6 +380,17 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="logFatalMessage(java.lang.Exception)">
+<h3>logFatalMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logFatalMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</span></div>
+<div class="block">Logs a fatal message with an exception stack trace.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>exception</code> - the exception to log.</dd>
 </dl>
 </section>
 </li>
@@ -373,6 +428,17 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="logErrorMessage(java.lang.Exception)">
+<h3>logErrorMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logErrorMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</span></div>
+<div class="block">Logs an error message with an exception stack trace.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>exception</code> - the exception to log.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="logWarningMessage(java.lang.Object)">
 <h3>logWarningMessage</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logWarningMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</span></div>
@@ -402,6 +468,17 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="logWarningMessage(java.lang.Exception)">
+<h3>logWarningMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logWarningMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</span></div>
+<div class="block">Logs a warning message with an exception stack trace.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>exception</code> - the exception to log.</dd>
 </dl>
 </section>
 </li>
@@ -450,6 +527,17 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="logInfoMessage(java.lang.Exception)">
+<h3>logInfoMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logInfoMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</span></div>
+<div class="block">Logs an informational message with an exception stack trace.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>exception</code> - the exception to log.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="logDebugMessage(java.lang.Object)">
 <h3>logDebugMessage</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logDebugMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;exception)</span></div>
@@ -479,6 +567,17 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>message</code> - the message to log.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="logDebugMessage(java.lang.Exception)">
+<h3>logDebugMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">logDebugMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a>&nbsp;exception)</span></div>
+<div class="block">Logs a debug message with an exception stack trace.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>exception</code> - the exception to log.</dd>
 </dl>
 </section>
 </li>

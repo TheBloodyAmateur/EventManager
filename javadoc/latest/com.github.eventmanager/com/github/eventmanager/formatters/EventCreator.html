@@ -144,14 +144,34 @@ loadScripts(document, 'script');</script>
 <div class="block">Finalizes the event log and returns it as a string.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#debugLevel()" class="member-name-link">debugLevel</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appends a trace log level to the event log.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#errorLevel()" class="member-name-link">errorLevel</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appends an error log level to the event log.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#exception(java.lang.String)" class="member-name-link">exception</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;exception)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Appends the exception to the event.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hostname()" class="member-name-link">hostname</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fatalLevel()" class="member-name-link">fatalLevel</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appends a fatal log level to the event log.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hostname()" class="member-name-link">hostname</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Appends the hostname to the event log.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#infoLevel()" class="member-name-link">infoLevel</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appends an info log level to the event log.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#ipAddress()" class="member-name-link">ipAddress</a>()</code></div>
@@ -198,6 +218,11 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#timestamp(java.lang.String)" class="member-name-link">timestamp</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;timestampFormat)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Appends the timestamp of the log to the event log.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#warnLevel()" class="member-name-link">warnLevel</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appends a warn log level to the event log.</div>
 </div>
 </div>
 </div>
@@ -439,6 +464,41 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd>The event log as a string.</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="fatalLevel()">
+<h3>fatalLevel</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">fatalLevel</span>()</div>
+<div class="block">Appends a fatal log level to the event log.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="errorLevel()">
+<h3>errorLevel</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">errorLevel</span>()</div>
+<div class="block">Appends an error log level to the event log.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="warnLevel()">
+<h3>warnLevel</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">warnLevel</span>()</div>
+<div class="block">Appends a warn log level to the event log.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="infoLevel()">
+<h3>infoLevel</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">infoLevel</span>()</div>
+<div class="block">Appends an info log level to the event log.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="debugLevel()">
+<h3>debugLevel</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="EventCreator.html" title="class in com.github.eventmanager.formatters">EventCreator</a></span>&nbsp;<span class="element-name">debugLevel</span>()</div>
+<div class="block">Appends a trace log level to the event log.</div>
 </section>
 </li>
 </ul>
