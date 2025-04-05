@@ -118,7 +118,9 @@ public abstract class ManagerBase {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = processingQueue.take();
                     event = processorHelper.processEvent(event);
-                    writeEventToQueue(event);
+                    if(!event.isBlank() && event!=null){
+                        writeEventToQueue(event);
+                    }
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

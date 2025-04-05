@@ -51,21 +51,26 @@ public class ProcessorHelper {
      * */
     private Processor getProcessor(Map<String, Object> parameters, Class<?> clazz) {
         if(parameters == null) return null;
-
-        if (clazz == MaskIPV4Address.class) {
-            List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
-            return new MaskIPV4Address(excludeRanges);
-        } else if (clazz == EnrichingProcessor.class) {
-            List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
-            return new EnrichingProcessor(enrichingFields);
-        } else if (clazz == RegexProcessor.class) {
-            List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
-            return new RegexProcessor(regexEntries);
-        } else if (clazz == FilterProcessor.class) {
-            List<String> termToFilter = (List<String>) parameters.get("termToFilter");
-            return new FilterProcessor(termToFilter);
+        try {
+            if (clazz == MaskIPV4Address.class) {
+                List<String> excludeRanges = (List<String>) parameters.get("excludeRanges");
+                return new MaskIPV4Address(excludeRanges);
+            } else if (clazz == EnrichingProcessor.class) {
+                List<String> enrichingFields = (List<String>) parameters.get("enrichingFields");
+                return new EnrichingProcessor(enrichingFields);
+            } else if (clazz == RegexProcessor.class) {
+                List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
+                return new RegexProcessor(regexEntries);
+            } else if (clazz == FilterProcessor.class) {
+                List<String> termToFilter = (List<String>) parameters.get("termToFilter");
+                return new FilterProcessor(termToFilter);
+            } else if (clazz == SampleProcessor.class) {
+                int sampleSize = (int) parameters.get("sampleSize");
+                return new SampleProcessor(sampleSize);
+            }
+        } catch (ClassCastException e) {
+            return null;
         }
-         // Add more processor types as needed
         return null;
     }
 

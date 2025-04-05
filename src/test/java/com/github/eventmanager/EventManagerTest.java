@@ -525,4 +525,41 @@ public class EventManagerTest {
         this.eventManager = eventManager;
         System.setOut(originalOut);
     }
+
+    @Test
+    void sampleEvents() throws InterruptedException {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("SampleProcessor");
+        processorEntry.setParameters(Map.of("sampleSize", 2));
+
+        logHandler.getConfig().getProcessors().add(processorEntry);
+
+        EventManager eventManager = new EventManager(logHandler);
+        for (int i = 0; i < 10; i++) {
+            eventManager.logErrorMessage("This is a test message " + i);
+        }
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+        assertTrue(output.contains("This is a test message 1"));
+        assertTrue(output.contains("This is a test message 3"));
+        assertTrue(output.contains("This is a test message 5"));
+        assertTrue(output.contains("This is a test message 7"));
+        assertTrue(output.contains("This is a test message 9"));
+
+        this.eventManager = eventManager;
+        System.setOut(originalOut);
+    }
 }
