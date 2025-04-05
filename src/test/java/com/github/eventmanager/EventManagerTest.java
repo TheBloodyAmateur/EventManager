@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EventManagerTest {
     String configPath = "config/loggingConfig.json";
@@ -291,7 +290,7 @@ public class EventManagerTest {
     }
 
     @Test
-    void testConsoleOutput() {
+    void consoleOutput() {
         //Redirect System.out to a ByteArrayOutputStream
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -470,7 +469,7 @@ public class EventManagerTest {
     }
 
     @Test
-    void testCustomLogLevel() {
+    void customLogLevel() {
         LogHandler logHandler = new LogHandler(configPath);
         logHandler.getConfig().getEvent().setEventFormat("default");
         logHandler.getConfig().getEvent().setPrintToConsole(false);
@@ -492,5 +491,38 @@ public class EventManagerTest {
         } catch (Exception e) {
             fail("Exception occurred while reading log file: " + e.getMessage());
         }
+    }
+
+    @Test
+    void filterOutEvents() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        ProcessorEntry processorEntry = new ProcessorEntry();
+        processorEntry.setName("FilterProcessor");
+        processorEntry.setParameters(Map.of("termToFilter", List.of("test")));
+
+        logHandler.getConfig().getProcessors().add(processorEntry);
+
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logErrorMessage("This is a test message");
+        eventManager.logErrorMessage("This is a message without the term");
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+        assertTrue(output.contains("This is a message without the term"));
+        assertFalse(output.contains("This is a test message"));
+
+        this.eventManager = eventManager;
+        System.setOut(originalOut);
     }
 }

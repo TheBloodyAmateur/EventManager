@@ -3,10 +3,7 @@ package com.github.eventmanager.internal;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.filehandlers.config.RegexEntry;
-import com.github.eventmanager.processors.EnrichingProcessor;
-import com.github.eventmanager.processors.MaskIPV4Address;
-import com.github.eventmanager.processors.Processor;
-import com.github.eventmanager.processors.RegexProcessor;
+import com.github.eventmanager.processors.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -64,7 +61,11 @@ public class ProcessorHelper {
         } else if (clazz == RegexProcessor.class) {
             List<RegexEntry> regexEntries = (List<RegexEntry>) parameters.get("regexEntries");
             return new RegexProcessor(regexEntries);
+        } else if (clazz == FilterProcessor.class) {
+            List<String> termToFilter = (List<String>) parameters.get("termToFilter");
+            return new FilterProcessor(termToFilter);
         }
+         // Add more processor types as needed
         return null;
     }
 
