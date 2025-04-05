@@ -2,13 +2,8 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventCreator;
-import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
-import com.github.eventmanager.helpers.EventMetaDataBuilder;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
+import com.github.eventmanager.internal.ManagerBase;
 
 /**
  * The EventManager class is responsible for managing and logging events.

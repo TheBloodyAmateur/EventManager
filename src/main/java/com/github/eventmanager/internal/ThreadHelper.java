@@ -1,4 +1,4 @@
-package com.github.eventmanager.helpers;
+package com.github.eventmanager.internal;
 
 import lombok.Getter;
 import java.util.concurrent.BlockingQueue;

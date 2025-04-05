@@ -33,14 +33,14 @@ class EventCreatorTest {
     void testJSONCustomLogLevel() {
         String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("CUSTOM").create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
-        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"},\"logLevel\": \"CUSTOM\"}", eventCreator);
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"},\"level\": \"CUSTOM\"}", eventCreator);
     }
 
     @Test
     void testJSONInfoLogLevel() {
         String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("INFO").create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
-        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"},\"logLevel\": \"INFO\"}", eventCreator);
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"},\"level\": \"INFO\"}", eventCreator);
     }
 
     @Test
@@ -68,14 +68,14 @@ class EventCreatorTest {
     void testXMLCustomLogLevel() {
         String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("CUSTOM").create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
-        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args><logLevel>CUSTOM</logLevel></event>", eventCreator);
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args><level>CUSTOM</level></event>", eventCreator);
     }
 
     @Test
     void testXMLInfoLogLevel() {
         String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("INFO").create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
-        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args><logLevel>INFO</logLevel></event>", eventCreator);
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args><level>INFO</level></event>", eventCreator);
     }
 
     @Test

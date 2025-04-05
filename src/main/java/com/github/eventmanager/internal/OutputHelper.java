@@ -1,4 +1,4 @@
-package com.github.eventmanager.helpers;
+package com.github.eventmanager.internal;
 
 import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
@@ -8,7 +8,6 @@ import com.github.eventmanager.outputs.LogOutput;
 import com.github.eventmanager.outputs.Output;
 import com.github.eventmanager.outputs.PrintOutput;
 import com.github.eventmanager.outputs.SocketOutput;
-import com.github.eventmanager.processors.Processor;
 
 import java.util.ArrayList;
 import java.util.List;

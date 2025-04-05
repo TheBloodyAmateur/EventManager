@@ -1,18 +1,13 @@
-package com.github.eventmanager;
+package com.github.eventmanager.internal;
 
+import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
-import com.github.eventmanager.helpers.EventMetaDataBuilder;
-import com.github.eventmanager.helpers.OutputHelper;
-import com.github.eventmanager.helpers.ProcessorHelper;
-import com.github.eventmanager.helpers.ThreadHelper;
-import com.github.eventmanager.outputs.Output;
 import lombok.Getter;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
@@ -189,7 +184,7 @@ public abstract class ManagerBase {
      * @param level   Log level (e.g., INFO, ERROR).
      * @param message Message content to log, which can be an Exception or String.
      */
-    void logMessage(String level, Object message) {
+    protected void logMessage(String level, Object message) {
         String formattedMessage = (message instanceof Exception)
                 ? ((Exception) message).getMessage()
                 : message.toString();
@@ -214,7 +209,7 @@ public abstract class ManagerBase {
      * @param level    the log level of the message.
      * @param messages an object array to be appended to the message.
      */
-    void logMessage(String level, KeyValueWrapper... messages) {
+    protected void logMessage(String level, KeyValueWrapper... messages) {
         Map<String, String> metaData = EventMetaDataBuilder.buildMetaData(level, this.logHandler);
         String eventFormat = this.logHandler.getConfig().getEvent().getEventFormat();
 
@@ -267,7 +262,7 @@ public abstract class ManagerBase {
      * @param output The output entry to add.
      * @return true if the output was added successfully, false otherwise.
      */
-    protected boolean addOutput(OutputEntry output) {
+    public boolean addOutput(OutputEntry output) {
         return this.outputHelper.addOutput(output);
     }
 
@@ -277,7 +272,7 @@ public abstract class ManagerBase {
      * @param outputEntry The output entry to remove.
      * @return true if the output was removed successfully, false otherwise.
      */
-    protected boolean removeOutput(OutputEntry outputEntry) {
+    public boolean removeOutput(OutputEntry outputEntry) {
         return this.outputHelper.removeOutput(outputEntry);
     }
 
@@ -287,7 +282,7 @@ public abstract class ManagerBase {
      * @param outputName The class name of the output to remove.
      * @return true if the output was removed successfully, false otherwise.
      */
-    protected boolean removeOutput(String outputName) {
+    public boolean removeOutput(String outputName) {
         return this.outputHelper.removeOutput(outputName);
     }
 
@@ -297,7 +292,7 @@ public abstract class ManagerBase {
      * @param processorName The processor entry to add.
      * @return true if the processor was added successfully, false otherwise.
      */
-    protected boolean addProcessor(ProcessorEntry processorName) {
+    public boolean addProcessor(ProcessorEntry processorName) {
         return this.processorHelper.addProcessor(processorName);
     }
 
@@ -307,7 +302,7 @@ public abstract class ManagerBase {
      * @param processorName The class name of the processor to remove.
      * @return true if the processor was removed successfully, false otherwise.
      */
-    protected boolean removeProcessor(String processorName) {
+    public boolean removeProcessor(String processorName) {
         return this.processorHelper.removeProcessor(processorName);
     }
 
