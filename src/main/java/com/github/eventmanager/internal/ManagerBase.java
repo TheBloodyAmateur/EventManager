@@ -1,17 +1,15 @@
-package com.github.eventmanager;
+package com.github.eventmanager.internal;
 
+import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
 import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
-import com.github.eventmanager.helpers.EventMetaDataBuilder;
-import com.github.eventmanager.helpers.OutputHelper;
-import com.github.eventmanager.helpers.ProcessorHelper;
-import com.github.eventmanager.helpers.ThreadHelper;
-import com.github.eventmanager.outputs.Output;
 import lombok.Getter;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -264,7 +262,7 @@ public abstract class ManagerBase {
      * @param output The output entry to add.
      * @return true if the output was added successfully, false otherwise.
      */
-    protected boolean addOutput(OutputEntry output) {
+    public boolean addOutput(OutputEntry output) {
         return this.outputHelper.addOutput(output);
     }
 
@@ -274,7 +272,7 @@ public abstract class ManagerBase {
      * @param outputEntry The output entry to remove.
      * @return true if the output was removed successfully, false otherwise.
      */
-    protected boolean removeOutput(OutputEntry outputEntry) {
+    public boolean removeOutput(OutputEntry outputEntry) {
         return this.outputHelper.removeOutput(outputEntry);
     }
 
@@ -284,7 +282,7 @@ public abstract class ManagerBase {
      * @param outputName The class name of the output to remove.
      * @return true if the output was removed successfully, false otherwise.
      */
-    protected boolean removeOutput(String outputName) {
+    public boolean removeOutput(String outputName) {
         return this.outputHelper.removeOutput(outputName);
     }
 
@@ -294,7 +292,7 @@ public abstract class ManagerBase {
      * @param processorName The processor entry to add.
      * @return true if the processor was added successfully, false otherwise.
      */
-    protected boolean addProcessor(ProcessorEntry processorName) {
+    public boolean addProcessor(ProcessorEntry processorName) {
         return this.processorHelper.addProcessor(processorName);
     }
 
@@ -304,7 +302,7 @@ public abstract class ManagerBase {
      * @param processorName The class name of the processor to remove.
      * @return true if the processor was removed successfully, false otherwise.
      */
-    protected boolean removeProcessor(String processorName) {
+    public boolean removeProcessor(String processorName) {
         return this.processorHelper.removeProcessor(processorName);
     }
 
@@ -316,5 +314,11 @@ public abstract class ManagerBase {
      */
     protected boolean removeProcessor(ProcessorEntry processorEntry) {
         return this.processorHelper.removeProcessor(processorEntry);
+    }
+
+    protected static String castExceptionStackTraceToString(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString().trim();
     }
 }

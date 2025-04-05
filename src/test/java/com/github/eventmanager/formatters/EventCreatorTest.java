@@ -30,6 +30,20 @@ class EventCreatorTest {
     }
 
     @Test
+    void testJSONCustomLogLevel() {
+        String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("CUSTOM").create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"},\"level\": \"CUSTOM\"}", eventCreator);
+    }
+
+    @Test
+    void testJSONInfoLogLevel() {
+        String eventCreator = new EventCreator("json").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("INFO").create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("{\"lineNumber\": \"" + lineNumber + "\",\"message\": \"Hello, World!\",\"args\": {\"args\":\"arg1\"},\"level\": \"INFO\"}", eventCreator);
+    }
+
+    @Test
     void testXMLEventOne() {
         String eventCreator = new EventCreator("xml").lineNumber().create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
@@ -51,6 +65,20 @@ class EventCreatorTest {
     }
 
     @Test
+    void testXMLCustomLogLevel() {
+        String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("CUSTOM").create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args><level>CUSTOM</level></event>", eventCreator);
+    }
+
+    @Test
+    void testXMLInfoLogLevel() {
+        String eventCreator = new EventCreator("xml").lineNumber().message("Hello, World!").args("args",new KeyValueWrapper("args", "arg1")).level("INFO").create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals("<event><lineNumber>" + lineNumber + "</lineNumber><message>Hello, World!</message><args><args>arg1</args></args><level>INFO</level></event>", eventCreator);
+    }
+
+    @Test
     void testCSVEventOne() {
         String eventCreator = new EventCreator("csv").lineNumber().create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
@@ -69,6 +97,20 @@ class EventCreatorTest {
         String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").args("args",new KeyValueWrapper("args", "arg1")).create();
         int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
         assertEquals(lineNumber + ",Hello World!,arg1", eventCreator);
+    }
+
+    @Test
+    void testCSVCustomLogLevel() {
+        String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").args("args",new KeyValueWrapper("args", "arg1")).level("CUSTOM").create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals(lineNumber + ",Hello World!,arg1,CUSTOM", eventCreator);
+    }
+
+    @Test
+    void testCSVInfoLogLevel() {
+        String eventCreator = new EventCreator("csv").lineNumber().message("Hello World!").args("args",new KeyValueWrapper("args", "arg1")).level("INFO").create();
+        int lineNumber = new Throwable().getStackTrace()[0].getLineNumber() - 1;
+        assertEquals(lineNumber + ",Hello World!,arg1,INFO", eventCreator);
     }
 
     @Test

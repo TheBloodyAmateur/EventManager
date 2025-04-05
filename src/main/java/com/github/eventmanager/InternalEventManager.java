@@ -1,9 +1,7 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
-
-import java.io.FileWriter;
-import java.io.IOException;
+import com.github.eventmanager.internal.ManagerBase;
 
 /**
  * The InternalEventManager class is responsible for managing internal events of the EventManager library. It provides

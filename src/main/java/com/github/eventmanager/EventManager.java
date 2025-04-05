@@ -2,13 +2,8 @@ package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventCreator;
-import com.github.eventmanager.formatters.EventFormatter;
 import com.github.eventmanager.formatters.KeyValueWrapper;
-import com.github.eventmanager.helpers.EventMetaDataBuilder;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Map;
+import com.github.eventmanager.internal.ManagerBase;
 
 /**
  * The EventManager class is responsible for managing and logging events.
@@ -84,6 +79,16 @@ public class EventManager extends ManagerBase {
     }
 
     /**
+     * Logs a message with the specified log level and message.
+     *
+     * @param logLevel the log level (e.g., "INFO", "ERROR", "DEBUG").
+     * @param message  the message to log.
+     */
+    public void logCustomMessage(String logLevel, Object message) {
+        logMessage(logLevel, message);
+    }
+
+    /**
      * Logs a fatal message.
      *
      * @param exception the exception to log.
@@ -106,7 +111,19 @@ public class EventManager extends ManagerBase {
      *
      * @param message the message to log.
      */
-    public void logFatalMessage(EventCreator message) {writeEventToQueue(message.create());}
+    public void logFatalMessage(EventCreator message) {
+        writeEventToQueue(message.create());
+    }
+
+    /**
+     * Logs a fatal message with an exception stack trace.
+     *
+     * @param exception the exception to log.
+     */
+    public void logFatalMessage(Exception exception) {
+        String stackTrace = castExceptionStackTraceToString(exception);
+        logMessage("FATAL",stackTrace);
+    }
 
     /**
      * Logs an error message.
@@ -131,7 +148,19 @@ public class EventManager extends ManagerBase {
      *
      * @param message the message to log.
      */
-    public void logErrorMessage(EventCreator message) {writeEventToQueue(message.create());}
+    public void logErrorMessage(EventCreator message) {
+        writeEventToQueue(message.create());
+    }
+
+    /**
+     * Logs an error message with an exception stack trace.
+     *
+     * @param exception the exception to log.
+     */
+    public void logErrorMessage(Exception exception) {
+        String stackTrace = castExceptionStackTraceToString(exception);
+        logMessage("ERROR", stackTrace);
+    }
 
     /**
      * Logs a warning message.
@@ -156,7 +185,19 @@ public class EventManager extends ManagerBase {
      *
      * @param message the message to log.
      */
-    public void logWarningMessage(EventCreator message) {writeEventToQueue(message.create());}
+    public void logWarningMessage(EventCreator message) {
+        writeEventToQueue(message.create());
+    }
+
+    /**
+     * Logs a warning message with an exception stack trace.
+     *
+     * @param exception the exception to log.
+     */
+    public void logWarningMessage(Exception exception) {
+        String stackTrace = castExceptionStackTraceToString(exception);
+        logMessage("WARNING", stackTrace);
+    }
 
     /**
      * Checks if informational logs are enabled.
@@ -203,6 +244,18 @@ public class EventManager extends ManagerBase {
     }
 
     /**
+     * Logs an informational message with an exception stack trace.
+     *
+     * @param exception the exception to log.
+     */
+    public void logInfoMessage(Exception exception) {
+        if (areInfoLogsEnabled()) {
+            String stackTrace = castExceptionStackTraceToString(exception);
+            logMessage("INFO", stackTrace);
+        }
+    }
+
+    /**
      * Logs a debug message.
      *
      * @param exception the exception to log.
@@ -232,6 +285,18 @@ public class EventManager extends ManagerBase {
     public void logDebugMessage(EventCreator message) {
         if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
             writeEventToQueue(message.create());
+        }
+    }
+
+    /**
+     * Logs a debug message with an exception stack trace.
+     *
+     * @param exception the exception to log.
+     */
+    public void logDebugMessage(Exception exception) {
+        if (this.logHandler.getConfig().getEvent().getDebuggingMode()) {
+            String stackTrace = castExceptionStackTraceToString(exception);
+            logMessage("DEBUG", stackTrace);
         }
     }
 }

@@ -282,4 +282,49 @@ public class EventCreator {
         }
         return event.toString();
     }
+
+    /**
+     * Appends a fatal log level to the event log.
+     * */
+    public EventCreator fatalLevel() {
+        appendElement("level", "FATAL");
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends an error log level to the event log.
+     * */
+    public EventCreator errorLevel() {
+        appendElement("level", "ERROR");
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends a warn log level to the event log.
+     * */
+    public EventCreator warnLevel() {
+        appendElement("level", "WARN");
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends an info log level to the event log.
+     * */
+    public EventCreator infoLevel() {
+        appendElement("level", "INFO");
+        appendSeperator();
+        return this;
+    }
+
+    /**
+     * Appends a trace log level to the event log.
+     * */
+    public EventCreator debugLevel() {
+        appendElement("level", "DEBUG");
+        appendSeperator();
+        return this;
+    }
 }

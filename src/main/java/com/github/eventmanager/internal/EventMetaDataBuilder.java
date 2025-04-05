@@ -1,4 +1,4 @@
-package com.github.eventmanager.helpers;
+package com.github.eventmanager.internal;
 
 import com.github.eventmanager.filehandlers.LogHandler;
 import java.time.ZonedDateTime;
