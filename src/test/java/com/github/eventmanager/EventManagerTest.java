@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -527,7 +528,7 @@ public class EventManagerTest {
     }
 
     @Test
-    void sampleEvents() throws InterruptedException {
+    void sampleEvents() {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         System.setOut(new PrintStream(outContent));
@@ -560,6 +561,36 @@ public class EventManagerTest {
         assertTrue(output.contains("This is a test message 9"));
 
         this.eventManager = eventManager;
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void monitor() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        LogHandler logHandler = new LogHandler(configPath, true);
+        logHandler.getConfig().getEvent().setEventFormat("json");
+
+        OutputEntry outputEntry = new OutputEntry();
+        outputEntry.setName("PrintOutput");
+        logHandler.getConfig().getOutputs().add(outputEntry);
+
+        this.eventManager = new EventManager(logHandler);
+        eventManager.monitor("test", Duration.ofMillis(100), () -> {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Check if the console output contains the error message
+        waitForEvents();
+        String output = outContent.toString();
+        assertTrue(output.contains("Operation test took 20"));
+
         System.setOut(originalOut);
     }
 }

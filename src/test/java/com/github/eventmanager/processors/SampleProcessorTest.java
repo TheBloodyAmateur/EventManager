@@ -35,7 +35,7 @@ class SampleProcessorTest {
         String json = "{\"event\": \"This is a test event\"}";
         String event = "";
 
-        for (int i = 0; i <= 5; i++) {
+        for (int i = 0; i < 5; i++) {
             event = sampleProcessor.processJSON(json);
         }
 

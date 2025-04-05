@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SocketOutputTest {
-    String configPath = "config/loggingConfig.json";
     private EventManager eventManager;
 
     // Wait for events to be logged because the event thread is asynchronous
