@@ -76,7 +76,18 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ProcessorEntry</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">The ProcessorEntry class holds the configuration settings for the event processors.
- It includes settings for the name of the processor and its parameters.</div>
+ It includes settings for the name of the processor and its parameters.
+
+ This example demonstrates how to create a ProcessorEntry object to configure a processor:
+
+ <pre><code>
+  ProcessorEntry processorEntry = new ProcessorEntry();
+  processorEntry.setName("FilterProcessor");
+  processorEntry.setParameters(Map.of("termToFilter", List.of("error", "warning")));
+
+  EventManager eventManager = new EventManager();
+  eventManager.setProcessor(processorEntry);
+  </code></pre></div>
 </section>
 <section class="summary">
 <ul class="summary-list">

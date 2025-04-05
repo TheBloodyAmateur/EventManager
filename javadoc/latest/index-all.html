@@ -185,17 +185,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigInternalEvents.html#%3Cinit%3E()" class="member-name-link">ConfigInternalEvents()</a> - Constructor for class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigInternalEvents.html" title="class in com.github.eventmanager.filehandlers.config">ConfigInternalEvents</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/ConfigLoader.html" class="type-name-link" title="class in com.github.eventmanager.filehandlers">ConfigLoader</a> - Class in <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/package-summary.html">com.github.eventmanager.filehandlers</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
-<div class="deprecation-comment">This class is deprecated and will be removed in a future release.
- Use the <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/LogHandler.html" title="class in com.github.eventmanager.filehandlers"><code>LogHandler</code></a> class from the com.github.eventmanager package instead.</div>
-</div>
-</dd>
-<dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/ConfigLoader.html#%3Cinit%3E(java.lang.String)" class="member-name-link">ConfigLoader(String)</a> - Constructor for class com.github.eventmanager.filehandlers.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/ConfigLoader.html" title="class in com.github.eventmanager.filehandlers">ConfigLoader</a></dt>
-<dd>
-<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
-</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogFile.html" class="type-name-link" title="class in com.github.eventmanager.filehandlers.config">ConfigLogFile</a> - Class in <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/package-summary.html">com.github.eventmanager.filehandlers.config</a></dt>
 <dd>
 <div class="block">The ConfigLogFile class holds the configuration settings related to log files for the EventManager application.</div>
@@ -311,6 +300,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Appends a fatal log level to the event log.</div>
 </dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html" class="type-name-link" title="class in com.github.eventmanager.processors">FilterProcessor</a> - Class in <a href="com.github.eventmanager/com/github/eventmanager/processors/package-summary.html">com.github.eventmanager.processors</a></dt>
+<dd>
+<div class="block">The FilterProcessor class is responsible for filtering out events based on a specified term.</div>
+</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html#%3Cinit%3E(java.util.List)" class="member-name-link">FilterProcessor(List&lt;String&gt;)</a> - Constructor for class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html" title="class in com.github.eventmanager.processors">FilterProcessor</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/formatters/EventFormatter.html#format(java.util.Map,com.github.eventmanager.formatters.KeyValueWrapper...)" class="member-name-link">format(Map&lt;String, String&gt;, KeyValueWrapper...)</a> - Method in enum class com.github.eventmanager.formatters.<a href="com.github.eventmanager/com/github/eventmanager/formatters/EventFormatter.html" title="enum class in com.github.eventmanager.formatters">EventFormatter</a></dt>
 <dd>
 <div class="block">Formats the event metadata and arguments.</div>
@@ -378,11 +373,15 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html#getPrintAndSaveToFile()" class="member-name-link">getPrintAndSaveToFile()</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html" title="class in com.github.eventmanager.filehandlers.config">ConfigEvent</a></dt>
 <dd>
-<div class="block">Gets whether logs should be printed and saved to a file.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">This feature was deprecated, with <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/OutputEntry.html" title="class in com.github.eventmanager.filehandlers.config"><code>OutputEntry</code></a> being the new method.</div>
+</div>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html#getPrintToConsole()" class="member-name-link">getPrintToConsole()</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html" title="class in com.github.eventmanager.filehandlers.config">ConfigEvent</a></dt>
 <dd>
-<div class="block">Gets whether logs should be printed to the console.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">This feature was deprecated, with <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/OutputEntry.html" title="class in com.github.eventmanager.filehandlers.config"><code>OutputEntry</code></a> being the new method.</div>
+</div>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogRotate.html#getRotationPeriodInSeconds()" class="member-name-link">getRotationPeriodInSeconds()</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogRotate.html" title="class in com.github.eventmanager.filehandlers.config">ConfigLogRotate</a></dt>
 <dd>
@@ -656,6 +655,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Appends the method name of the log to the event log.</div>
 </dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/EventManager.html#monitor(java.lang.String,java.time.Duration,java.lang.Runnable)" class="member-name-link">monitor(String, Duration, Runnable)</a> - Method in class com.github.eventmanager.<a href="com.github.eventmanager/com/github/eventmanager/EventManager.html" title="class in com.github.eventmanager">EventManager</a></dt>
+<dd>
+<div class="block">Monitors the execution time of a task and logs an error message if it exceeds the specified threshold.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
@@ -716,6 +719,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/EnrichingProcessor.html#processJSON(java.lang.String)" class="member-name-link">processJSON(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/EnrichingProcessor.html" title="class in com.github.eventmanager.processors">EnrichingProcessor</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html#processJSON(java.lang.String)" class="member-name-link">processJSON(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html" title="class in com.github.eventmanager.processors">FilterProcessor</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/MaskIPV4Address.html#processJSON(java.lang.String)" class="member-name-link">processJSON(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/MaskIPV4Address.html" title="class in com.github.eventmanager.processors">MaskIPV4Address</a></dt>
 <dd>
 <div class="block">Processes a JSON formatted event and masks any IPv4 addresses that match the CIDR ranges.</div>
@@ -728,7 +733,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/RegexProcessor.html#processJSON(java.lang.String)" class="member-name-link">processJSON(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/RegexProcessor.html" title="class in com.github.eventmanager.processors">RegexProcessor</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html#processJSON(java.lang.String)" class="member-name-link">processJSON(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html" title="class in com.github.eventmanager.processors">SampleProcessor</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/EnrichingProcessor.html#processKV(java.lang.String)" class="member-name-link">processKV(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/EnrichingProcessor.html" title="class in com.github.eventmanager.processors">EnrichingProcessor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html#processKV(java.lang.String)" class="member-name-link">processKV(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html" title="class in com.github.eventmanager.processors">FilterProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/MaskIPV4Address.html#processKV(java.lang.String)" class="member-name-link">processKV(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/MaskIPV4Address.html" title="class in com.github.eventmanager.processors">MaskIPV4Address</a></dt>
 <dd>
@@ -741,6 +750,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Processes a key-value formatted event.</div>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/RegexProcessor.html#processKV(java.lang.String)" class="member-name-link">processKV(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/RegexProcessor.html" title="class in com.github.eventmanager.processors">RegexProcessor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html#processKV(java.lang.String)" class="member-name-link">processKV(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html" title="class in com.github.eventmanager.processors">SampleProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/Processor.html" class="type-name-link" title="interface in com.github.eventmanager.processors">Processor</a> - Interface in <a href="com.github.eventmanager/com/github/eventmanager/processors/package-summary.html">com.github.eventmanager.processors</a></dt>
 <dd>
@@ -764,6 +775,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/EnrichingProcessor.html#processXML(java.lang.String)" class="member-name-link">processXML(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/EnrichingProcessor.html" title="class in com.github.eventmanager.processors">EnrichingProcessor</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html#processXML(java.lang.String)" class="member-name-link">processXML(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/FilterProcessor.html" title="class in com.github.eventmanager.processors">FilterProcessor</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/MaskIPV4Address.html#processXML(java.lang.String)" class="member-name-link">processXML(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/MaskIPV4Address.html" title="class in com.github.eventmanager.processors">MaskIPV4Address</a></dt>
 <dd>
 <div class="block">Processes an XML formatted event and masks any IPv4 addresses that match the CIDR ranges.</div>
@@ -775,6 +788,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Processes an XML formatted event.</div>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/processors/RegexProcessor.html#processXML(java.lang.String)" class="member-name-link">processXML(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/RegexProcessor.html" title="class in com.github.eventmanager.processors">RegexProcessor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html#processXML(java.lang.String)" class="member-name-link">processXML(String)</a> - Method in class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html" title="class in com.github.eventmanager.processors">SampleProcessor</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
@@ -826,6 +841,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:S">S</h2>
 <dl class="index">
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html" class="type-name-link" title="class in com.github.eventmanager.processors">SampleProcessor</a> - Class in <a href="com.github.eventmanager/com/github/eventmanager/processors/package-summary.html">com.github.eventmanager.processors</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html#%3Cinit%3E(int)" class="member-name-link">SampleProcessor(int)</a> - Constructor for class com.github.eventmanager.processors.<a href="com.github.eventmanager/com/github/eventmanager/processors/SampleProcessor.html" title="class in com.github.eventmanager.processors">SampleProcessor</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogRotate.html#setCompressionFormat(java.lang.String)" class="member-name-link">setCompressionFormat(String)</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogRotate.html" title="class in com.github.eventmanager.filehandlers.config">ConfigLogRotate</a></dt>
 <dd>
 <div class="block">Sets the compression format to use when rotating log files.</div>
@@ -880,11 +899,15 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html#setPrintAndSaveToFile(boolean)" class="member-name-link">setPrintAndSaveToFile(boolean)</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html" title="class in com.github.eventmanager.filehandlers.config">ConfigEvent</a></dt>
 <dd>
-<div class="block">Sets whether logs should be printed and saved to a file.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">This feature was deprecated, with <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/OutputEntry.html" title="class in com.github.eventmanager.filehandlers.config"><code>OutputEntry</code></a> being the new method.</div>
+</div>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html#setPrintToConsole(boolean)" class="member-name-link">setPrintToConsole(boolean)</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigEvent.html" title="class in com.github.eventmanager.filehandlers.config">ConfigEvent</a></dt>
 <dd>
-<div class="block">Sets whether logs should be printed to the console.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">This feature was deprecated, with <a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/OutputEntry.html" title="class in com.github.eventmanager.filehandlers.config"><code>OutputEntry</code></a> being the new method.</div>
+</div>
 </dd>
 <dt><a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogRotate.html#setRotationPeriodInSeconds(int)" class="member-name-link">setRotationPeriodInSeconds(int)</a> - Method in class com.github.eventmanager.filehandlers.config.<a href="com.github.eventmanager/com/github/eventmanager/filehandlers/config/ConfigLogRotate.html" title="class in com.github.eventmanager.filehandlers.config">ConfigLogRotate</a></dt>
 <dd>

@@ -76,7 +76,33 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">OutputEntry</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">The OutputEntry class holds the configuration settings for the event outputs.
- It includes settings for the name of the output and its parameters.</div>
+ It includes settings for the name of the output and its parameters.
+
+ This example demonstrates how to create an OutputEntry object to print output:
+
+ <pre><code>
+  OutputEntry outputEntry = new OutputEntry();
+  outputEntry.setName("PrintOutput");
+  outputEntry.setParameters();
+
+  LogHandler logHandler = new LogHandler();
+  logHandler.setOutput(outputEntry);
+ </code></pre>
+
+ This class is used to configure a socket output for the events.
+
+ <pre><code>
+  OutputEntry socketOutput = new OutputEntry();
+  socketOutput.setName("SocketOutput");
+  socketOutput.setParameters(Map.of("socketSettings",
+       List.of(
+                new SocketEntry("localhost", 6000)
+        )
+  ));
+
+  EventManager eventManager = new EventManager();
+  eventManager.setOutput(socketOutput);
+ </code></pre></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
