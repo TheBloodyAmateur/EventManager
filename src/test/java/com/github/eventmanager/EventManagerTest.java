@@ -468,4 +468,29 @@ public class EventManagerTest {
         System.setOut(originalOut);
 
     }
+
+    @Test
+    void testCustomLogLevel() {
+        LogHandler logHandler = new LogHandler(configPath);
+        logHandler.getConfig().getEvent().setEventFormat("default");
+        logHandler.getConfig().getEvent().setPrintToConsole(false);
+        EventManager eventManager = new EventManager(logHandler);
+        eventManager.logCustomMessage("CUSTOM","This is a custom log level message");
+
+        // Check if the log file exists
+        assertTrue(logHandler.checkIfLogFileExists());
+
+        // Check if the events were logged
+        try {
+            waitForEvents();
+            String filePath = logHandler.getConfig().getLogFile().getFilePath();
+            List<String> logLines = Files.readAllLines(Paths.get(filePath + logHandler.getCurrentFileName()));
+
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("This is a custom log level message")));
+            assertTrue(logLines.stream().anyMatch(line -> line.contains("CUSTOM")));
+            this.eventManager = eventManager;
+        } catch (Exception e) {
+            fail("Exception occurred while reading log file: " + e.getMessage());
+        }
+    }
 }

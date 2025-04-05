@@ -79,6 +79,16 @@ public class EventManager extends ManagerBase {
     }
 
     /**
+     * Logs a message with the specified log level and message.
+     *
+     * @param logLevel the log level (e.g., "INFO", "ERROR", "DEBUG").
+     * @param message  the message to log.
+     */
+    public void logCustomMessage(String logLevel, Object message) {
+        logMessage(logLevel, message);
+    }
+
+    /**
      * Logs a fatal message.
      *
      * @param exception the exception to log.
