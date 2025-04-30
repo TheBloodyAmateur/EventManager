@@ -32,8 +32,12 @@ public class SocketOutput implements Output {
             internalEventManager.logInfo("Sending " + size + " events to socket. Total size: " + bytes + " bytes.");
             sendToSocket(internalEventManager, String.join("\n", batch.getBatch()));
             batch.clearBatch();
+            internalEventManager.logDebug("Cleared batch");
             batch.tryAdd(event);
+            return;
         }
+        internalEventManager.logDebug("Current batch size: " + batch.getCurrentSizeInBytes() +
+                " bytes. Batch size: " + batch.getBatch().size());
     }
 
     private void sendToSocket(String event) {
@@ -50,10 +54,14 @@ public class SocketOutput implements Output {
 
     private void sendToSocket(InternalEventManager internalEventManager, String event) {
         for (SocketEntry socketEntry : socketSettings) {
+            internalEventManager.logDebug("Sending " + event.length() + " bytes to socket "
+                    + socketEntry.getHost() + ":" + socketEntry.getPort());
             try {
                 Socket socket = new Socket(socketEntry.getHost(), socketEntry.getPort());
                 socket.getOutputStream().write(event.getBytes());
                 socket.close();
+                internalEventManager.logDebug("Sent " + event.length() + " bytes to socket "
+                        + socketEntry.getHost() + ":" + socketEntry.getPort());
             } catch (Exception e) {
                 internalEventManager.logError("An error occurred in sendToSocket:" + e.getMessage());
             }
