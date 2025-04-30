@@ -310,18 +310,22 @@ public class EventManager extends ManagerBase {
      * @param task         the task to be executed and monitored.
      */
     public void monitor(String operationName, Duration threshold, Runnable task) {
+        this.logDebugMessage("Starting operation: " + operationName);
         long start = System.nanoTime();
         try {
             task.run();
         } catch (Exception e) {
+            this.logDebugMessage("An error occurred during operation: " + operationName);
             String stackTrace = castExceptionStackTraceToString(e);
             this.logErrorMessage(stackTrace);
         } finally {
+            this.logDebugMessage("Finished operation: " + operationName);
             long elapsed = System.nanoTime() - start;
             if (elapsed > threshold.toNanos()) {
                 String message = String.format("Operation %s took %d ms", operationName, elapsed / 1_000_000);
                 this.logErrorMessage(message);
             }
+            this.logDebugMessage("Operation " + operationName + " took " + elapsed / 1_000_000 + " ms");
         }
     }
 }
