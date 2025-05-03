@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The Config class holds the configuration settings for the EventManager application.
@@ -18,6 +19,7 @@ import java.util.List;
  *   <li>{@link ConfigLogRotate} - Configuration settings related to log file rotation.</li>
  *   <li>{@link ConfigInternalEvents} - Configuration settings related to internal events.</li>
  *   <li>{@link ProcessorEntry} - Configuration settings related to event processors.</li>
+ *   <li>{@link OutputEntry} - Configuration settings related to outputs.</li>
  * </ul>
  */
 @Getter
@@ -68,4 +70,9 @@ public class Config {
      * This includes settings such as the name of the output and its parameters.
      */
     private final List<OutputEntry> outputs = new ArrayList<>(DefaultOutput.createDefault());
+
+    /**
+     * Setting which indicates whether to enable hot reload for the configuration.
+     * */
+    private final AtomicBoolean enableHotConfigReload = new AtomicBoolean(false);
 }
