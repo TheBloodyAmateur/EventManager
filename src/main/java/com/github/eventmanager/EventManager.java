@@ -3,6 +3,7 @@ package com.github.eventmanager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.formatters.EventCreator;
 import com.github.eventmanager.formatters.KeyValueWrapper;
+import com.github.eventmanager.internal.InternalEventLogger;
 import com.github.eventmanager.internal.ManagerBase;
 
 import java.time.Duration;
@@ -12,7 +13,7 @@ import java.time.Duration;
  * It provides methods to log messages with different log levels and formats.
  */
 public class EventManager extends ManagerBase {
-    private final InternalEventManager internalEventManager;
+    private final InternalEventLogger internalEventManager;
 
     /**
      * Constructs an EventManager with the specified LogHandler.
@@ -72,7 +73,7 @@ public class EventManager extends ManagerBase {
      * @param path the file path to adjust.
      * @return the adjusted file path with the correct OS-specific separator.
      */
-    public static String setCorrectOSSeperator(String path) {
+    public static String setCorrectOSSeparator(String path) {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
             path = path.replace("/", "\\");

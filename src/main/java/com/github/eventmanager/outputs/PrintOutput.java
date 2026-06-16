@@ -1,7 +1,7 @@
 package com.github.eventmanager.outputs;
 
-import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.internal.InternalEventLogger;
 
 public class PrintOutput implements Output {
     @Override
@@ -10,7 +10,7 @@ public class PrintOutput implements Output {
     }
 
     @Override
-    public void write(InternalEventManager internalEventManager, String event) {
+    public void write(InternalEventLogger internalEventLogger, String event) {
         System.out.println(event);
     }
 }

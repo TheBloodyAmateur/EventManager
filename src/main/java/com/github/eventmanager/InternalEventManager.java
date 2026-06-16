@@ -1,18 +1,24 @@
 package com.github.eventmanager;
 
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.internal.InternalEventLogger;
 import com.github.eventmanager.internal.ManagerBase;
 
 /**
  * The InternalEventManager class is responsible for managing internal events of the EventManager library. It provides
  * a reliable way to identify and troubleshoot possibly issues within the library.
  * */
-public final class InternalEventManager extends ManagerBase {
+public final class InternalEventManager extends ManagerBase implements InternalEventLogger {
     private final String prefix = "INTERNAL:";
     public InternalEventManager(LogHandler logHandler) {
         super(logHandler);
         initiateThreads();
         logInfo("InternalEventManager started successfully.");
+    }
+
+    @Override
+    public LogHandler getLogHandler() {
+        return this.logHandler;
     }
 
     /**
