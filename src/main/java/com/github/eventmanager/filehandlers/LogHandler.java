@@ -2,10 +2,10 @@ package com.github.eventmanager.filehandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.eventmanager.EventManager;
-import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.compressors.Gzip;
 import com.github.eventmanager.compressors.Zip;
 import com.github.eventmanager.filehandlers.config.Config;
+import com.github.eventmanager.internal.InternalEventLogger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,7 +35,7 @@ public class LogHandler {
     @Getter
     @Setter
     private String currentInternalFileName;
-    private InternalEventManager internalEventManager;
+    private InternalEventLogger internalEventManager;
     private boolean printToConsole = false;
 
     /**
@@ -71,7 +71,7 @@ public class LogHandler {
 
     /**
      * Sets the correct file path. If the file path does not exist, the default file path is
-     * used based on the operating system.
+     * used based on the operating system's temp directory.
      *
      * @param filePath the file path to check.
      * @return the correct file path based on the operating system.
@@ -80,11 +80,8 @@ public class LogHandler {
         if (Files.exists(Paths.get(filePath))) {
             return filePath;
         } else {
-            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                return "C:\\Windows\\Temp\\";
-            } else {
-                return "/tmp/";
-            }
+            // Use the system's temp directory for cross-platform compatibility
+            return System.getProperty("java.io.tmpdir");
         }
     }
 
@@ -96,7 +93,7 @@ public class LogHandler {
      */
     private void loadConfigFile(String configPath) {
         // Get the path of the file and decode it to UTF-8 to cope with special characters
-        configPath = EventManager.setCorrectOSSeperator(configPath);
+        configPath = EventManager.setCorrectOSSeparator(configPath);
         String path = System.getProperty("user.dir") + File.separator + configPath;
         path = java.net.URLDecoder.decode(path, java.nio.charset.StandardCharsets.UTF_8);
 
@@ -104,12 +101,19 @@ public class LogHandler {
         try {
             ObjectMapper mapper = new ObjectMapper();
             config = mapper.readValue(new File(path), Config.class);
+            // Validate the configuration
+            ConfigValidator.validateConfig(config);
             initialiseInternalEventManager();
-            internalEventManager.logInfo("Config file loaded successfully.");
+            internalEventManager.logInfo("Config file loaded and validated successfully.");
+        } catch (IllegalArgumentException e) {
+            // Configuration validation failed
+            config = new Config();
+            initialiseInternalEventManager();
+            internalEventManager.logError("Configuration validation failed: " + e.getMessage() + ". Using default values.");
         } catch (Exception e) {
             config = new Config();
             initialiseInternalEventManager();
-            internalEventManager.logError("Could not load the config file. Using default values.");
+            internalEventManager.logError("Could not load the config file: " + e.getMessage() + ". Using default values.");
         }
     }
 
@@ -121,11 +125,11 @@ public class LogHandler {
     private void initialiseInternalEventManager() {
         if(this.printToConsole){
             this.config.getEvent().setPrintToConsole(true);
-            internalEventManager = new InternalEventManager(this);
+            internalEventManager = new com.github.eventmanager.InternalEventManager(this);
             return;
         }
         this.currentInternalFileName = this.createNewFileName(this.config.getInternalEvents().getFileName(), this.config.getInternalEvents().getFileExtension());
-        internalEventManager = new InternalEventManager(this);
+        internalEventManager = new com.github.eventmanager.InternalEventManager(this);
     }
 
     /**

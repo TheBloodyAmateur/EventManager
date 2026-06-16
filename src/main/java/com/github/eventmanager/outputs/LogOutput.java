@@ -1,7 +1,7 @@
 package com.github.eventmanager.outputs;
 
-import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
+import com.github.eventmanager.internal.InternalEventLogger;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,17 +23,17 @@ public class LogOutput implements Output {
     }
 
     @Override
-    public void write(InternalEventManager internalEventManager, String event) {
+    public void write(InternalEventLogger internalEventLogger, String event) {
         try {
-            if (!internalEventManager.getLogHandler().checkIfLogFileExists()) {
-                internalEventManager.getLogHandler().createLogFile();
+            if (!internalEventLogger.getLogHandler().checkIfLogFileExists()) {
+                internalEventLogger.getLogHandler().createLogFile();
             }
-            String filePath = internalEventManager.getLogHandler().getConfig().getLogFile().getFilePath();
-            FileWriter myWriter = new FileWriter(filePath + internalEventManager.getLogHandler().getCurrentFileName(), true);
+            String filePath = internalEventLogger.getLogHandler().getConfig().getLogFile().getFilePath();
+            FileWriter myWriter = new FileWriter(filePath + internalEventLogger.getLogHandler().getCurrentFileName(), true);
             myWriter.write(event + "\n");
             myWriter.close();
         } catch (IOException e) {
-            internalEventManager.logError("An error occurred in writeEventToLogFile:" + e.getMessage());
+            internalEventLogger.logError("An error occurred in writeEventToLogFile:" + e.getMessage());
         }
     }
 }

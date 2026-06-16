@@ -1,6 +1,5 @@
 package com.github.eventmanager.internal;
 
-import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.SocketEntry;
@@ -134,9 +133,9 @@ public class OutputHelper {
     /**
      * Output the event to all output destinations.
      * */
-    public void outputEvent(InternalEventManager internalEventManager, String event) {
+    public void outputEvent(InternalEventLogger internalEventLogger, String event) {
         for (Output output : outputs) {
-            output.write(internalEventManager, event);
+            output.write(internalEventLogger, event);
         }
     }
 }

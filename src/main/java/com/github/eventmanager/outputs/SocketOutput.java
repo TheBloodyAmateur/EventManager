@@ -1,8 +1,8 @@
 package com.github.eventmanager.outputs;
 
-import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.SocketEntry;
+import com.github.eventmanager.internal.InternalEventLogger;
 
 import java.net.Socket;
 import java.util.List;
@@ -25,18 +25,18 @@ public class SocketOutput implements Output {
     }
 
     @Override
-    public void write(InternalEventManager internalEventManager, String event) {
+    public void write(InternalEventLogger internalEventLogger, String event) {
         if (!batch.tryAdd(event)) {
             int bytes = batch.getCurrentSizeInBytes();
             int size = batch.getBatch().size();
-            internalEventManager.logInfo("Sending " + size + " events to socket. Total size: " + bytes + " bytes.");
-            sendToSocket(internalEventManager, String.join("\n", batch.getBatch()));
+            internalEventLogger.logInfo("Sending " + size + " events to socket. Total size: " + bytes + " bytes.");
+            sendToSocket(internalEventLogger, String.join("\n", batch.getBatch()));
             batch.clearBatch();
-            internalEventManager.logDebug("Cleared batch");
+            internalEventLogger.logDebug("Cleared batch");
             batch.tryAdd(event);
             return;
         }
-        internalEventManager.logDebug("Current batch size: " + batch.getCurrentSizeInBytes() +
+        internalEventLogger.logDebug("Current batch size: " + batch.getCurrentSizeInBytes() +
                 " bytes. Batch size: " + batch.getBatch().size());
     }
 
@@ -52,18 +52,18 @@ public class SocketOutput implements Output {
         }
     }
 
-    private void sendToSocket(InternalEventManager internalEventManager, String event) {
+    private void sendToSocket(InternalEventLogger internalEventLogger, String event) {
         for (SocketEntry socketEntry : socketSettings) {
-            internalEventManager.logDebug("Sending " + event.length() + " bytes to socket "
+            internalEventLogger.logDebug("Sending " + event.length() + " bytes to socket "
                     + socketEntry.getHost() + ":" + socketEntry.getPort());
             try {
                 Socket socket = new Socket(socketEntry.getHost(), socketEntry.getPort());
                 socket.getOutputStream().write(event.getBytes());
                 socket.close();
-                internalEventManager.logDebug("Sent " + event.length() + " bytes to socket "
+                internalEventLogger.logDebug("Sent " + event.length() + " bytes to socket "
                         + socketEntry.getHost() + ":" + socketEntry.getPort());
             } catch (Exception e) {
-                internalEventManager.logError("An error occurred in sendToSocket:" + e.getMessage());
+                internalEventLogger.logError("An error occurred in sendToSocket:" + e.getMessage());
             }
         }
     }

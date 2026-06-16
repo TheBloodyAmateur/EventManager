@@ -1,6 +1,5 @@
 package com.github.eventmanager.internal;
 
-import com.github.eventmanager.InternalEventManager;
 import com.github.eventmanager.filehandlers.LogHandler;
 import com.github.eventmanager.filehandlers.config.OutputEntry;
 import com.github.eventmanager.filehandlers.config.ProcessorEntry;
@@ -91,14 +90,14 @@ public abstract class ManagerBase {
     /**
      * Starts event processing and logging threads.
      */
-    protected void initiateThreads(InternalEventManager internalEventManager) {
+    protected void initiateThreads(InternalEventLogger internalEventLogger) {
         initialiseProcessorThreadAndOutputs();
 
         threadHelper.startEventThread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String event = eventQueue.take();
-                    outputEvent(internalEventManager, event);
+                    outputEvent(internalEventLogger, event);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -130,29 +129,29 @@ public abstract class ManagerBase {
 
     /**
      * Stops all threads gracefully and processes remaining events,
-     * using InternalEventManager for structured logging of shutdown status.
+     * using InternalEventLogger for structured logging of shutdown status.
      *
-     * @param internalEventManager The event manager used for logging shutdown information.
+     * @param internalEventLogger The event logger used for logging shutdown information.
      */
-    protected void stopAllThreads(InternalEventManager internalEventManager) {
+    protected void stopAllThreads(InternalEventLogger internalEventLogger) {
         threadHelper.stopThread(threadHelper.getProcessingThread(), processingQueue, event -> {
             try {
                 event = processorHelper.processEvent(event);
                 writeEventToQueue(event);
             } catch (Exception e) {
-                internalEventManager.logError("Error processing remaining events: " + e.getMessage());
+                internalEventLogger.logError("Error processing remaining events: " + e.getMessage());
             }
         });
-        internalEventManager.logInfo("Processing queue processed successfully.");
+        internalEventLogger.logInfo("Processing queue processed successfully.");
 
         threadHelper.stopThread(threadHelper.getEventThread(), eventQueue, event -> {
             try {
                 outputEvent(event);
             } catch (Exception e) {
-                internalEventManager.logError("Error writing remaining events: " + e.getMessage());
+                internalEventLogger.logError("Error writing remaining events: " + e.getMessage());
             }
         });
-        internalEventManager.logInfo("Event queue processed successfully.");
+        internalEventLogger.logInfo("Event queue processed successfully.");
     }
 
     /**
@@ -254,8 +253,8 @@ public abstract class ManagerBase {
     /**
      * Passes the event to the output or outputs specified in the runtime or config specification.
      */
-    protected void outputEvent(InternalEventManager internalEventManager, String event){
-        this.outputHelper.outputEvent(internalEventManager, event);
+    protected void outputEvent(InternalEventLogger internalEventLogger, String event){
+        this.outputHelper.outputEvent(internalEventLogger, event);
     }
 
     /**
